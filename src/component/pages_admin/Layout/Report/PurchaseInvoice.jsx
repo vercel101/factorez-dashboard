@@ -1,0 +1,140 @@
+import React, { useEffect } from "react";
+import { localDate } from "../../../../utils/stringToLocalDate";
+import { downloadInvoiceByInvoiceNumberApi, getAllPurchaseInvoiceApi } from "../../../../apis/adminApis";
+import { useState } from "react";
+// import pdfSvg from "../../../../assets/pdf.svg";
+import { ImFilePdf } from "react-icons/im";
+import { isRoleExists } from "../../../../utils/checkRole";
+
+const PurchaseInvoice = ({ tokenReducer, userInfoReducer }) => {
+    const [invData, setInvdata] = useState([]);
+    const getInvoice = async () => {
+        await getAllPurchaseInvoiceApi(tokenReducer)
+            .then((res) => {
+                console.log(res.data);
+                setInvdata(res.data.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+    const downloadPdfFn = async (invoiceNumber) => {
+        await downloadInvoiceByInvoiceNumberApi(invoiceNumber, "PURCHASE", tokenReducer)
+            .then((res) => {
+                let blob = res.data;
+                const url = window.URL.createObjectURL(new Blob([blob], { type: "application/pdf" }));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `${invoiceNumber}.pdf`);
+
+                // Append to html link element page
+                document.body.appendChild(link);
+
+                // Start download
+                link.click();
+
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+    };
+    useEffect(() => {
+        getInvoice();
+    }, []);
+    return (
+        <div>
+            <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Invoice number
+                            </th>
+                            {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) ? (
+                                <>
+                                    <th scope="col" class="px-6 py-3">
+                                        Seller name
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Buyer name
+                                    </th>
+                                </>
+                            ) : (
+                                <>
+                                    <th scope="col" class="px-6 py-3">
+                                        Buyer name
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Buyer Phone
+                                    </th>
+                                </>
+                            )}
+                            <th scope="col" class="px-6 py-3">
+                                Invoice Date
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Amount
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                PDF
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Satus
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {invData ? (
+                            invData.map((el, i) => (
+                                <tr key={el._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <td className="px-6 py-3">{el.invoiceNo}</td>
+                                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) ? (
+                                        <>
+                                            <td className="px-6 py-3">{el.soldBy.name}</td>
+                                            <td className="px-6 py-3">{el.billingAddress.name}</td>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <td className="px-6 py-3">{el.billingAddress.name}</td>
+                                            <td className="px-6 py-3">{el.billingAddress.phone}</td>
+                                        </>
+                                    )}
+                                    <td className="px-6 py-3">{localDate(el.invoiceDate)}</td>
+                                    <td className="px-6 py-3">{el.totalAmount + el.gstAmount}</td>
+                                    <td className="px-6 py-3">
+                                        <button
+                                            className="inline-flex items-center py-1 px-2 rounded space-x-3 border bg-slate-100 dark:bg-slate-500 dark:border-gray-700 text-red-400"
+                                            onClick={() => downloadPdfFn(el.invoiceNo)}>
+                                            <ImFilePdf size={20} />
+                                            <span>Download</span>
+                                        </button>
+                                    </td>
+                                    <td className="px-6 py-3">
+                                        <select
+                                            data-te-select-init
+                                            name=""
+                                            id=""
+                                            defaultValue={el.invoiceStatus}
+                                            className={`text-start outline-none rounded text-xs p-1 text-white ${
+                                                el.invoiceStatus === "PAID" ? "bg-green-500" : el.invoiceStatus === "UNPAID" ? "bg-[#637381]" : "bg-red-500"
+                                            }`}>
+                                            <option value="PAID">Paid</option>
+                                            <option value="UNPAID">Unpaid</option>
+                                            <option value="OVERDUE">Overdue</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr className="bg-white  dark:bg-gray-800 dark:border-gray-700">No record found...</tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+};
+
+export default PurchaseInvoice;
