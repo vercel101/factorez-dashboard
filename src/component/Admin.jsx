@@ -42,7 +42,7 @@ const Admin = () => {
     return (
         <>
             <Helmet>
-                <title>FactoEz - Admin</title>
+                <title>FactorEz - Admin</title>
             </Helmet>
 
             {spinnerOverlayReducer && <SpinnerOverlay />}
