@@ -5,12 +5,12 @@ import { MdDelete } from "react-icons/md";
 import { deleteCouponsAPI, getAllCouponsAPI } from "../../../../apis/adminApis";
 import { useSelector } from "react-redux";
 import { localDate } from "../../../../utils/stringToLocalDate";
-import { ToastContainer, toast } from 'react-toastify';
 import CouponInfoModel from "./CouponInfoModel";
-
+import { useToast } from "@chakra-ui/react";
 
 
 const AllCoupons = ({tokenReducer}) => {
+    const toast = useToast();
     const [coupons, setCoupons] = useState([]);
     const [activeInfoModel, setActiveInfoModel] = useState(false);
     const [activeInfoModelData, setActiveInfoModelData] = useState(null);
@@ -31,12 +31,23 @@ const AllCoupons = ({tokenReducer}) => {
             await deleteCouponsAPI(couponid, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
-                    toast.success(res.data.message);
+                    toast({
+                        title: "Coupon Deleted.",
+                        description: res.data.message,
+                        status: "success",
+                        position:'top',
+                        duration: 9000,
+                        isClosable: true,
+                    });
                     getAllCoupon();
                 })
                 .catch((err) => {
-                    toast.error('Something went wrong!')
-                    console.log(err.message);
+                    toast({
+                        title: err.message,
+                        status: 'error',
+                        position:'top',
+                        isClosable: true,
+                    });
                 });
         }
     };

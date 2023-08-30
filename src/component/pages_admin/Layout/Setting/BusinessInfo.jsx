@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { BsPlusCircleFill } from "react-icons/bs";
 import { CgSpinner } from "react-icons/cg";
 import { MdDelete } from "react-icons/md";
-import { toast } from "react-toastify";
 import { addBusinessFilesApi, addBusinessGstApi, addBusinessInfoApi, getBusinessInfoApi, setDefaultGstApi } from "../../../../apis/adminApis";
 import { useEffect } from "react";
+import { useToast } from "@chakra-ui/react";
 const BusinessInfo = ({ tokenReducer }) => {
+    const toast = useToast();
     const [saveFlag, setSaveFlag] = useState({
         save1: false,
         save2: false,
@@ -38,7 +39,12 @@ const BusinessInfo = ({ tokenReducer }) => {
     const [gstArr, setGstArr] = useState([]);
     const saveBInfo = async () => {
         if (bInfo.bEmail === "" || bInfo.bName === "" || bInfo.bNumber === "") {
-            toast.warning("all fields are required");
+            toast({
+                title: "all fields are required",
+                position: "top",
+                status: "warning",
+                isClosable: true,
+            });
         } else {
             await addBusinessInfoApi(bInfo, tokenReducer)
                 .then((res) => {
@@ -68,7 +74,12 @@ const BusinessInfo = ({ tokenReducer }) => {
     };
     const saveBGstInfo = async () => {
         if (gstArr.length === 0) {
-            toast.warning("Add gst to stack");
+            toast({
+                title: "Add gst to stack",
+                position: "top",
+                status: "warning",
+                isClosable: true,
+            });
         } else {
             await addBusinessGstApi({ gsts: gstArr }, tokenReducer)
                 .then((res) => {
@@ -96,7 +107,12 @@ const BusinessInfo = ({ tokenReducer }) => {
             formData.append("bTC", images.bTC);
         }
         if (Array.from(formData.keys()).length === 0) {
-            toast.warning("Atleast add one field");
+            toast({
+                title: "Atleast add one field",
+                position: "top",
+                status: "warning",
+                isClosable: true,
+            });
         } else {
             setSaveFlag((preStage) => {
                 return { ...preStage, save3: true };
@@ -130,7 +146,12 @@ const BusinessInfo = ({ tokenReducer }) => {
             });
             cancelBGstInfo();
         } else {
-            toast.warning("all fields are required");
+            toast({
+                title: "all fields are required",
+                position: "top",
+                status: "warning",
+                isClosable: true,
+            });
         }
     };
     const removeGstArr = (idx) => {
@@ -178,7 +199,13 @@ const BusinessInfo = ({ tokenReducer }) => {
         if (value !== "" && window.confirm("press ok to save this change")) {
             await setDefaultGstApi({ gst: value }, tokenReducer)
                 .then((res) => {
-                    toast.success(res.data.message);
+                    toast({
+                        title: "Default GST",
+                        description: res.data.message,
+                        status:'success',
+                        isClosable:true,
+                        position:'top'
+                    });
                     getBusinessInfo();
                 })
                 .catch((err) => {
@@ -334,15 +361,19 @@ const BusinessInfo = ({ tokenReducer }) => {
                     </button>
 
                     <div className="flex items-center">
-                        <span className="p-2 font-semibold text-white w-[100px] text-sm bg-orange-500 rounded-s-md border-e-0 border-orange-500 border outline-none">Default GST</span>
+                        <span className="p-2 font-semibold text-white w-[100px] text-sm bg-orange-500 rounded-s-md border-e-0 border-orange-500 border outline-none">
+                            Default GST
+                        </span>
                         <select
                             id="statusorder"
                             value={defGst}
                             onChange={(e) => saveDefaultGst(e.target.value)}
                             className="bg-gray-50 col-span-3 border outline-none border-gray-300 text-gray-900 text-sm rounded-e-md focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option value="">Select Default GST NO</option>
-                            {gstList.map((el,i) => (
-                                <option key={`${i}_defaultgst`} value={el}>{el}</option>
+                            {gstList.map((el, i) => (
+                                <option key={`${i}_defaultgst`} value={el}>
+                                    {el}
+                                </option>
                             ))}
                         </select>
                     </div>

@@ -3,9 +3,10 @@ import { CgClose } from "react-icons/cg";
 import { MdCancel, MdDoneAll, MdOutlineCancel, MdPlaylistAddCheck } from "react-icons/md";
 import { isRoleExists } from "../../../../utils/checkRole";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { useToast } from "@chakra-ui/react";
 
 const OrderStatusModel = ({ data, close, updatetrackingno, userInfoReducer, updateOrder, questions }) => {
+    const toast = useToast();
     const [removedProductIds, setRemovedProductIds] = useState([]);
     const [trackingId, setTrackingId] = useState(data.orderInfo.tracking_id);
     const [updateOption, setUpdateOption] = useState("");
@@ -56,15 +57,35 @@ const OrderStatusModel = ({ data, close, updatetrackingno, userInfoReducer, upda
             close(false);
         } else if (updateOption === "CANCEL" || updateOption === "PARTIAL_CONFIRMED") {
             if (cancelMessage === "") {
-                toast.warning("Please provide a product cancel reasone");
+                toast({
+                    title: "Please provide a product cancel reasone",
+                    position: "top",
+                    status: 'warning',
+                    isClosable: true,
+                });
             } else if (updateOption === "PARTIAL_CONFIRMED") {
-                toast.success("partial cancel ok");
+                toast({
+                    title: "partial cancel ok",
+                    position: "top",
+                    status: 'success',
+                    isClosable: true,
+                });
                 updateOrder(data.orderInfo.orderId, updateOption, cancelMessage, removedProductIds);
             } else if (questionId !== null) {
-                toast.success("cancel ok");
+                toast({
+                    title: "Cancel ok",
+                    position: "top",
+                    status: 'success',
+                    isClosable: true,
+                });
                 updateOrder(data.orderInfo.orderId, updateOption, cancelMessage, questionId);
             } else {
-                toast.warning("Please select a reason");
+                toast({
+                    title: "Please select a reason",
+                    position: "top",
+                    status: 'warning',
+                    isClosable: true,
+                });
             }
         } else {
             updateOrder(data.orderInfo.orderId, updateOption);

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { generateCouponsAPI } from "../../../../apis/adminApis";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { useToast } from "@chakra-ui/react";
 
-const AddNewCoupon = ({tokenReducer}) => {
+const AddNewCoupon = ({ tokenReducer }) => {
+    const toast = useToast();
     const [newCouponData, setNewCouponData] = useState({
         couponCode: "",
         validTill: "",
@@ -11,28 +12,60 @@ const AddNewCoupon = ({tokenReducer}) => {
         maxDiscPrice: "",
         discountType: "",
         discountAmt: "",
+        minOrderAmt: "",
     });
 
     const onSave = async () => {
-        if (newCouponData.couponCode === "" || newCouponData.maxUsers === "" || newCouponData.validTill === "" || newCouponData.discountType === "" || newCouponData.discountAmt === "") {
+        if (
+            newCouponData.couponCode === "" ||
+            newCouponData.maxUsers === "" ||
+            newCouponData.validTill === "" ||
+            newCouponData.discountType === "" ||
+            newCouponData.discountAmt === ""
+        ) {
             alert("All field are required");
         } else {
             if (newCouponData.maxUsers > 0) {
                 await generateCouponsAPI(newCouponData, tokenReducer)
                     .then((res) => {
                         if (res.data.status) {
-                            toast.success(res.data.message);
+                            toast({
+                                title: "Coupon created.",
+                                description: res.data.message,
+                                status: "success",
+                                position:'top',
+                                duration: 9000,
+                                isClosable: true,
+                            });
                             onCancel();
                         } else {
-                            toast.error(res.data.message);
+                            toast({
+                                title: `${res.data.message}`,
+                                status: 'error',
+                                position:'top',
+                                isClosable: true,
+                            });
                         }
                     })
                     .catch((err) => {
                         console.log(err);
                         toast.error("something went wrong!");
+                        toast({
+                            title: "something went wrong!",
+                            position:'top',
+                            status: "error",
+                            isClosable: true,
+                            
+                        });
                     });
             } else {
-                toast.warning("Uses limit should be grater than 0");
+                toast({
+                    title: "Uses limit should be grater than 0",
+                    position:'top',
+                    status: "warning",
+                    isClosable: true,
+                    
+                });
             }
             console.log(newCouponData);
         }
@@ -45,6 +78,7 @@ const AddNewCoupon = ({tokenReducer}) => {
             maxDiscPrice: "",
             discountType: "",
             discountAmt: "",
+            minOrderAmt: "",
         });
     };
 
@@ -96,14 +130,14 @@ const AddNewCoupon = ({tokenReducer}) => {
             {newCouponData.discountType !== "" && (
                 <>
                     <label htmlFor="disamt" className="mt-3">
-                        {newCouponData.discountType === "PRICE" ? 'Price ₹' : 'Discount %'}
+                        {newCouponData.discountType === "PRICE" ? "Price ₹" : "Discount %"}
                     </label>
                     <input
                         id="disamt"
                         type="number"
                         className="outline-none border dark:border-teal-600 p-1 dark:bg-teal-600"
                         value={newCouponData.discountAmt}
-                        placeholder={newCouponData.discountType === "PRICE" ? 'Amount ₹' : 'Discount in Percentage %'}
+                        placeholder={newCouponData.discountType === "PRICE" ? "Amount ₹" : "Discount in Percentage %"}
                         onChange={(e) =>
                             setNewCouponData((oldPre) => {
                                 return { ...oldPre, discountAmt: e.target.value };
@@ -122,7 +156,6 @@ const AddNewCoupon = ({tokenReducer}) => {
                         type="number"
                         className="outline-none border dark:border-teal-600 p-1 dark:bg-teal-600"
                         value={newCouponData.maxDiscPrice}
-                        
                         onChange={(e) =>
                             setNewCouponData((oldPre) => {
                                 return { ...oldPre, maxDiscPrice: e.target.value };
@@ -131,7 +164,7 @@ const AddNewCoupon = ({tokenReducer}) => {
                     />
                 </>
             )}
-            
+
             <label htmlFor="maxlimit" className="mt-3">
                 Max Used Limit
             </label>
@@ -144,6 +177,21 @@ const AddNewCoupon = ({tokenReducer}) => {
                 onChange={(e) =>
                     setNewCouponData((oldPre) => {
                         return { ...oldPre, maxUsers: e.target.value };
+                    })
+                }
+            />
+            <label htmlFor="mainOrderAmt" className="mt-3">
+                Minimum order amount
+            </label>
+            <input
+                id="mainOrderAmt"
+                type="number"
+                className="outline-none border dark:border-teal-600 p-1 dark:bg-teal-600"
+                value={newCouponData.minOrderAmt}
+                placeholder="Minimum order amount"
+                onChange={(e) =>
+                    setNewCouponData((oldPre) => {
+                        return { ...oldPre, minOrderAmt: e.target.value };
                     })
                 }
             />

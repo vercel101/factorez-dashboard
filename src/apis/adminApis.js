@@ -132,6 +132,25 @@ export const addNewAdmin = (data, token) => {
         data: data,
     });
 };
+export const updateAdminByid = (data, id, token) => {
+    return axios({
+        method: "PUT",
+        url: `${process.env.REACT_APP_API_ADDRESS}/update-admin/${id}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+export const deleteAdminByid = (id, token) => {
+    return axios({
+        method: "DELETE",
+        url: `${process.env.REACT_APP_API_ADDRESS}/delete-admin/${id}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
 
 export const adminLogin = (data) => {
     return axios({

@@ -3,11 +3,12 @@ import { useEffect } from "react";
 import { MdDelete } from "react-icons/md";
 import { allProductsForFilterApi, getallfeaturedproductsApi, removeFeaturedproductsApi, setHomepageProductsForBestSellingApi } from "../../../../apis/adminApis";
 import { calculateMarginAndSelling } from "../../../../utils/percentage";
-import { toast } from "react-toastify";
+import { useToast } from "@chakra-ui/react";
 const Homepage = ({ tokenReducer }) => {
+    const toast = useToast();
     const [filteredProduct, setFilteredProduct] = useState([]);
     const [products, setProducts] = useState([]);
-    const [featuredProduct, setFeaturedProduct] = useState([]);
+    const [featuredProductObj, setFeaturedProductObj] = useState(null);
     const [singleProduct, setSingleProduct] = useState(null);
     const [data, setData] = useState({
         newArrival: "",
@@ -60,15 +61,33 @@ const Homepage = ({ tokenReducer }) => {
             await setHomepageProductsForBestSellingApi(data, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
-                    toast.success("Successfully updatd");
+                    toast({
+                        title: "Successfully updatd",
+                        status: "success",
+                        description: res.data.message,
+                        position: "top",
+                        isClosable: true,
+                    });
                     allFeaturedProducts();
                 })
                 .catch((err) => {
                     console.log(err);
-                    toast.error("something went wrong.");
+                    toast({
+                        title: "Something went wrong.",
+                        status: "error",
+                        description: err.message,
+                        position: "top",
+                        isClosable: true,
+                    });
                 });
         } else {
-            toast.warning("Atleast one filed should be checked");
+            toast({
+                title: "Warning",
+                status: "warning",
+                position: "top",
+                description: "Atleast one filed should be checked",
+                isClosable: true,
+            });
         }
     };
 
@@ -76,6 +95,7 @@ const Homepage = ({ tokenReducer }) => {
         await allProductsForFilterApi(tokenReducer)
             .then((res) => {
                 console.log(res.data);
+
                 setProducts(res.data.data);
                 setFilteredProduct(res.data.data);
             })
@@ -87,7 +107,7 @@ const Homepage = ({ tokenReducer }) => {
         await getallfeaturedproductsApi(tokenReducer)
             .then((res) => {
                 console.log(res.data);
-                setFeaturedProduct(res.data.data);
+                setFeaturedProductObj(res.data.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -99,12 +119,24 @@ const Homepage = ({ tokenReducer }) => {
             await removeFeaturedproductsApi({ key: key, id: id }, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
-                    toast.success(res.data.message);
+                    toast({
+                        title: "Successfully removed",
+                        status: "success",
+                        description: res.data.message,
+                        position: "top",
+                        isClosable: true,
+                    });
                     allFeaturedProducts();
                 })
                 .catch((err) => {
                     console.log(err);
-                    toast.error(err.message);
+                    toast({
+                        title: "Something went wrong.",
+                        status: "error",
+                        description: err.message,
+                        position: "top",
+                        isClosable: true,
+                    });
                 });
         }
     };
@@ -224,7 +256,6 @@ const Homepage = ({ tokenReducer }) => {
                                                 onClick={() => saveData()}
                                                 className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 rounded flex items-center justify-between text-sm text-white font-semibold disabled:bg-[#ababab]">
                                                 Save
-                                                {/* {saveFlag.save1 && <CgSpinner size={20} color="white" className="ms-2 animate-spin" />} */}
                                             </button>
                                             <button onClick={() => homepageCancel()} className="bg-[#637381]  dark:bg-[#333b43] px-3 py-2 rounded text-sm text-white font-semibold">
                                                 Cancel
@@ -242,8 +273,9 @@ const Homepage = ({ tokenReducer }) => {
                     <h1 className="mb-2 font-bold">Featured Product</h1>
                     <div className="border dark:border-[#525355] rounded bg-white dark:bg-teal-950 p-3">
                         <div className="grid gap-3 grid-cols-3">
-                            {featuredProduct.featuredProduct ? (
-                                featuredProduct.featuredProduct.map((el, i) => (
+                            {featuredProductObj &&
+                                featuredProductObj.featuredProduct &&
+                                featuredProductObj.featuredProduct.map((el, i) => (
                                     <div key={el._id} className="border dark:border-[#525355] rounded-md">
                                         <div className="w-full h-[150px] rounded-t-md overflow-hidden">
                                             <img src={el.thumbnail_pic} alt="" className=" object-contain h-full w-full" />
@@ -261,10 +293,8 @@ const Homepage = ({ tokenReducer }) => {
                                             </div>
                                         </div>
                                     </div>
-                                ))
-                            ) : (
-                                <h1>Hello</h1>
-                            )}
+                                ))}
+                            {(featuredProductObj === null || featuredProductObj.featuredProduct.length === 0) && <h1>Nothing to show</h1>}
                         </div>
                     </div>
                 </div>
@@ -272,8 +302,8 @@ const Homepage = ({ tokenReducer }) => {
                     <h1 className="mb-2 font-bold">Best Selling</h1>
                     <div className="border dark:border-[#525355] rounded bg-white dark:bg-teal-950 p-3">
                         <div className="grid gap-3 grid-cols-3">
-                            {featuredProduct.bestSelling ? (
-                                featuredProduct.bestSelling.map((el, i) => (
+                            {featuredProductObj && featuredProductObj.bestSelling && (
+                                featuredProductObj.bestSelling.map((el, i) => (
                                     <div key={el._id} className="border dark:border-[#525355] rounded-md">
                                         <div className="w-full h-[150px] rounded-t-md overflow-hidden">
                                             <img src={el.thumbnail_pic} alt="" className=" object-contain h-full w-full" />
@@ -292,9 +322,8 @@ const Homepage = ({ tokenReducer }) => {
                                         </div>
                                     </div>
                                 ))
-                            ) : (
-                                <p>Nothing to show in featured product</p>
                             )}
+                            {(featuredProductObj === null || featuredProductObj.bestSelling.length === 0) && <h1>Nothing to show</h1>}
                         </div>
                     </div>
                 </div>
@@ -302,8 +331,8 @@ const Homepage = ({ tokenReducer }) => {
                     <h1 className="mb-2 font-bold">New Arrival</h1>
                     <div className="border dark:border-[#525355] rounded bg-white dark:bg-teal-950 p-3">
                         <div className="grid gap-3 grid-cols-3">
-                            {featuredProduct.newArrival ? (
-                                featuredProduct.newArrival.map((el, i) => (
+                            {featuredProductObj && featuredProductObj.newArrival && (
+                                featuredProductObj.newArrival.map((el, i) => (
                                     <div key={el._id} className="border dark:border-[#525355] rounded-md">
                                         <div className="w-full h-[150px] rounded-t-md overflow-hidden">
                                             <img src={el.thumbnail_pic} alt="" className=" object-contain h-full w-full" />
@@ -322,9 +351,7 @@ const Homepage = ({ tokenReducer }) => {
                                         </div>
                                     </div>
                                 ))
-                            ) : (
-                                <p>Nothing to show in featured product</p>
-                            )}
+                            )}{(featuredProductObj === null || featuredProductObj.newArrival.length === 0) && <h1>Nothing to show</h1>}
                         </div>
                     </div>
                 </div>

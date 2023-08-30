@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { blockCustomerByIdApi, deleteCustomerByIdApi, getAllCustomerAPi } from "../../../../apis/adminApis";
-import { toast } from "react-toastify";
+import { useToast } from "@chakra-ui/react";
 import { localDate } from "../../../../utils/stringToLocalDate";
 
 const AllCustomers = ({ tokenReducer }) => {
     const [customers, setCustomers] = useState([]);
-
+    const toast = useToast();
     const getAllCustomer = async () => {
         await getAllCustomerAPi(tokenReducer)
             .then((res) => {
@@ -15,7 +15,13 @@ const AllCustomers = ({ tokenReducer }) => {
             })
             .catch((err) => {
                 console.log(err);
-                toast.error("something went wrong");
+                toast({
+                    title: "something went wrong",
+                    description: err.message,
+                    position: "top",
+                    status: "error",
+                    isClosable: true,
+                });
             });
     };
     const deleteCustomer = async (customerId) => {
@@ -23,12 +29,24 @@ const AllCustomers = ({ tokenReducer }) => {
             await deleteCustomerByIdApi(customerId, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
-                    toast.success(res.data.message);
+                    toast({
+                        title: "something went wrong",
+                        description: res.data.message,
+                        position: "top",
+                        status: "success",
+                        isClosable: true,
+                    });
                     getAllCustomer();
                 })
                 .catch((err) => {
                     console.log(err);
-                    toast.error("something went wrong!");
+                    toast({
+                        title: "something went wrong",
+                        description: err.message,
+                        position: "top",
+                        status: "error",
+                        isClosable: true,
+                    });
                 });
         }
     };
@@ -38,12 +56,24 @@ const AllCustomers = ({ tokenReducer }) => {
             await blockCustomerByIdApi(customerId, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
-                    toast.success(res.data.message);
+                    toast({
+                        title: "something went wrong",
+                        description: res.data.message,
+                        position: "top",
+                        status: "success",
+                        isClosable: true,
+                    });
                     getAllCustomer();
                 })
                 .catch((err) => {
                     console.log(err);
-                    toast.error("something went wrong");
+                    toast({
+                        title: "something went wrong",
+                        description: err.message,
+                        position: "top",
+                        status: "error",
+                        isClosable: true,
+                    });
                 });
         }
     };
