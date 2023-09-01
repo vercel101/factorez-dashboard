@@ -210,7 +210,7 @@ const Homepage = ({ tokenReducer }) => {
 
                                             <div className="text-lg font-extrabold text-blue-600 p-1">
                                                 <span className="">
-                                                    ₹ {calculateMarginAndSelling(singleProduct.selling_price, singleProduct.margin, singleProduct.sellingGST).toFixed(2)}
+                                                    ₹ {calculateMarginAndSelling(singleProduct.seller_price, singleProduct.margin, singleProduct.sellingGST).toFixed(2)}
                                                 </span>
                                             </div>
                                         </div>
@@ -288,7 +288,7 @@ const Homepage = ({ tokenReducer }) => {
                                             </div>
 
                                             <div className="flex items-center justify-between dark:border-[#afb2b7] border-t p-1">
-                                                <span className="">₹ {calculateMarginAndSelling(el.selling_price, el.margin, el.sellingGST).toFixed(2)}</span>
+                                                <span className="">₹ {calculateMarginAndSelling(el.seller_price, el.margin, el.sellingGST).toFixed(2)}</span>
                                                 <MdDelete size={20} color="red" className="cursor-pointer" onClick={() => removeProduct("featuredProduct", el._id)} />
                                             </div>
                                         </div>
@@ -316,7 +316,7 @@ const Homepage = ({ tokenReducer }) => {
                                             </div>
 
                                             <div className="flex items-center justify-between dark:border-[#afb2b7] border-t p-1">
-                                                <span className="">₹ {calculateMarginAndSelling(el.selling_price, el.margin, el.sellingGST).toFixed(2)}</span>
+                                                <span className="">₹ {calculateMarginAndSelling(el.seller_price, el.margin, el.sellingGST).toFixed(2)}</span>
                                                 <MdDelete size={20} color="red" className="cursor-pointer" onClick={() => removeProduct("bestSelling", el._id)} />
                                             </div>
                                         </div>
@@ -345,7 +345,7 @@ const Homepage = ({ tokenReducer }) => {
                                             </div>
 
                                             <div className="flex items-center justify-between dark:border-[#afb2b7] border-t p-1">
-                                                <span className="">₹ {calculateMarginAndSelling(el.selling_price, el.margin, el.sellingGST).toFixed(2)}</span>
+                                                <span className="">₹ {calculateMarginAndSelling(el.seller_price, el.margin, el.sellingGST).toFixed(2)}</span>
                                                 <MdDelete size={20} color="red" className="cursor-pointer" onClick={() => removeProduct("newArrival", el._id)} />
                                             </div>
                                         </div>
