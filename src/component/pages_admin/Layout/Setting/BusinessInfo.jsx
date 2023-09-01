@@ -49,16 +49,28 @@ const BusinessInfo = ({ tokenReducer }) => {
                 isClosable: true,
             });
         } else {
-             dispatch(spinnerOverlayOnFn());
             await addBusinessInfoApi(bInfo, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
+                    toast({
+                        title: "Business Information",
+                        position: "top",
+                        status: "success",
+                        description:res.data.message,
+                        isClosable: true,
+                    });
                     getBusinessInfo();
                 })
                 .catch((err) => {
                     console.log(err);
+                    toast({
+                        title: "Error",
+                        position: "top",
+                        description:err.message,
+                        status: "error",
+                        isClosable: true,
+                    });
                 });
-             dispatch(spinnerOverlayOffFn());
         }
         console.log(bInfo);
     };
@@ -90,12 +102,26 @@ const BusinessInfo = ({ tokenReducer }) => {
             await addBusinessGstApi({ gsts: gstArr }, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
+                    toast({
+                        title: "GST",
+                        position: "top",
+                        status: "success",
+                        description:res.data.message,
+                        isClosable: true,
+                    });
                     getBusinessInfo();
                 })
                 .catch((err) => {
                     console.log(err);
+                    toast({
+                        title: "Error",
+                        position: "top",
+                        description:err.message,
+                        status: "error",
+                        isClosable: true,
+                    });
                 });
-            dispatch(spinnerOverlayOffFn());
+                dispatch(spinnerOverlayOffFn());
         }
     };
 
@@ -128,13 +154,27 @@ const BusinessInfo = ({ tokenReducer }) => {
             await addBusinessFilesApi(formData, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
+                    toast({
+                        title: "File upload",
+                        position: "top",
+                        description:res.data.message,
+                        status: "success",
+                        isClosable: true,
+                    });
                     cancelBImage();
                     getBusinessInfo();
                 })
                 .catch((err) => {
                     console.log(err);
+                    toast({
+                        title: "Error",
+                        position: "top",
+                        description:err.message,
+                        status: "error",
+                        isClosable: true,
+                    });
                 });
-            dispatch(spinnerOverlayOffFn());
+                dispatch(spinnerOverlayOffFn());
             setSaveFlag((preStage) => {
                 return { ...preStage, save3: false };
             });
@@ -206,7 +246,6 @@ const BusinessInfo = ({ tokenReducer }) => {
 
     const saveDefaultGst = async (value) => {
         if (value !== "" && window.confirm("press ok to save this change")) {
-            dispatch(spinnerOverlayOnFn());
             await setDefaultGstApi({ gst: value }, tokenReducer)
                 .then((res) => {
                     toast({
@@ -220,8 +259,14 @@ const BusinessInfo = ({ tokenReducer }) => {
                 })
                 .catch((err) => {
                     console.log(err);
+                    toast({
+                        title: "Error",
+                        description: err.message,
+                        status:'error',
+                        isClosable:true,
+                        position:'top'
+                    });
                 });
-            dispatch(spinnerOverlayOffFn());
         }
     };
     useEffect(() => {
