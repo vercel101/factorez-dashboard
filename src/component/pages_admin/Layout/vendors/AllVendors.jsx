@@ -192,13 +192,13 @@ function AllVendors({ tokenReducer }) {
                                                 Firm Name
                                             </th>
                                             <th scope="col" className="px-6 py-3 border-r dark:border-neutral-500 text-start">
-                                                Vender Name
+                                                Name
                                             </th>
                                             <th scope="col" className="px-6 py-3 border-r dark:border-neutral-500 text-start">
                                                 Margin %
                                             </th>
                                             <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                Moblie Number
+                                                Mobile Number
                                             </th>
                                             <th scope="col" className="px-6 py-3 border-r dark:border-neutral-500 text-start">
                                                 Email ID
