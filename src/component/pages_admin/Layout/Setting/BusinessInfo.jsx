@@ -4,9 +4,12 @@ import { CgSpinner } from "react-icons/cg";
 import { MdDelete } from "react-icons/md";
 import { addBusinessFilesApi, addBusinessGstApi, addBusinessInfoApi, getBusinessInfoApi, setDefaultGstApi } from "../../../../apis/adminApis";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useToast } from "@chakra-ui/react";
+import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
 const BusinessInfo = ({ tokenReducer }) => {
     const toast = useToast();
+    const dispatch = useDispatch();
     const [saveFlag, setSaveFlag] = useState({
         save1: false,
         save2: false,
@@ -46,6 +49,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                 isClosable: true,
             });
         } else {
+             dispatch(spinnerOverlayOnFn());
             await addBusinessInfoApi(bInfo, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
@@ -54,6 +58,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                 .catch((err) => {
                     console.log(err);
                 });
+             dispatch(spinnerOverlayOffFn());
         }
         console.log(bInfo);
     };
@@ -81,6 +86,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                 isClosable: true,
             });
         } else {
+            dispatch(spinnerOverlayOnFn());
             await addBusinessGstApi({ gsts: gstArr }, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
@@ -89,6 +95,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                 .catch((err) => {
                     console.log(err);
                 });
+            dispatch(spinnerOverlayOffFn());
         }
     };
 
@@ -117,6 +124,7 @@ const BusinessInfo = ({ tokenReducer }) => {
             setSaveFlag((preStage) => {
                 return { ...preStage, save3: true };
             });
+            dispatch(spinnerOverlayOnFn());
             await addBusinessFilesApi(formData, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
@@ -126,6 +134,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                 .catch((err) => {
                     console.log(err);
                 });
+            dispatch(spinnerOverlayOffFn());
             setSaveFlag((preStage) => {
                 return { ...preStage, save3: false };
             });
@@ -197,6 +206,7 @@ const BusinessInfo = ({ tokenReducer }) => {
 
     const saveDefaultGst = async (value) => {
         if (value !== "" && window.confirm("press ok to save this change")) {
+            dispatch(spinnerOverlayOnFn());
             await setDefaultGstApi({ gst: value }, tokenReducer)
                 .then((res) => {
                     toast({
@@ -211,6 +221,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                 .catch((err) => {
                     console.log(err);
                 });
+            dispatch(spinnerOverlayOffFn());
         }
     };
     useEffect(() => {
