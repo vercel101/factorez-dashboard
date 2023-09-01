@@ -99,11 +99,11 @@ const AllProducts = () => {
                 <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.sku_code}</td>
                 <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.product_name}</td>
                 <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.brandId.brand_name}</td>
-                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.articleId.article_name}</td>
+                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.hsn_code}</td>
                 <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.categoryId.category_name}</td>
                 <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.subCatId.subcategory_name}</td>
                 <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{localDate(el.createdAt)}</td>
-                {userInfoReducer.userType !== "Seller" && <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.vendor_id.firmName}</td>}
+                {userInfoReducer.userType !== "Seller" && el.vendor_id && <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.vendor_id.firmName}</td>}
 
                 <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.status}</td>
                 <td className="whitespace-nowrap px-6 py-2 flex">
@@ -187,7 +187,7 @@ const AllProducts = () => {
                                                 Brand
                                             </th>
                                             <th scope="col" className="px-6 py-3 border-r dark:border-neutral-500 text-start">
-                                                Article
+                                                HSN code
                                             </th>
                                             <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
                                                 Category
@@ -200,7 +200,7 @@ const AllProducts = () => {
                                             </th>
                                             {userInfoReducer.userType !== "Seller" && (
                                                 <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                    Firm Name
+                                                    Seller Name
                                                 </th>
                                             )}
 

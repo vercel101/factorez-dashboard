@@ -71,10 +71,6 @@ const TableProductModel = ({ details, actionClose, save, changeStatusHandler, ve
                                         <td className={`text-start ps-2`}>{details.brandId.brand_name}</td>
                                     </tr>
                                     <tr className={`border-b`}>
-                                        <th className={`border-r dark:border-neutral-500  text-start w-[140px] min-w-[140px] ps-2 py-1`}>Article</th>
-                                        <td className={`text-start ps-2`}>{details.articleId.article_name}</td>
-                                    </tr>
-                                    <tr className={`border-b`}>
                                         <th className={`border-r dark:border-neutral-500  text-start w-[140px] min-w-[140px] ps-2 py-1`}>Category</th>
                                         <td className={`text-start ps-2`}>{details.categoryId.category_name}</td>
                                     </tr>

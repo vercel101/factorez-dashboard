@@ -11,7 +11,7 @@ const Products = () => {
     const Brand = lazy(() => import('./Layout/products/Brand'))
     const ImportProduct = lazy(() => import('./Layout/products/ImportProduct'))
 
-    const {sidebarCollapse, darkModeReducer, userInfoReducer} = useSelector((state) => state);
+    const {sidebarCollapse, darkModeReducer, productBrandDDindexReducer, userInfoReducer, tokenReducer} = useSelector((state) => state);
     const [data, setData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,]);
     let size = 5;
 
@@ -103,7 +103,7 @@ const Products = () => {
                     <TabPanel className="mt-5">
                         <div className=" p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
                             <Suspense fallback={"Loading..."}>
-                                <Brand/>
+                                <Brand productBrandDDindexReducer={productBrandDDindexReducer} userInfoReducer={userInfoReducer} tokenReducer={tokenReducer}/>
                             </Suspense>
                         </div>
                     </TabPanel>)}

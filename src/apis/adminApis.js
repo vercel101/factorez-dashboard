@@ -53,10 +53,13 @@ export const updateBrandApi = (brandId, data, token) => {
         data: data,
     });
 };
-export const getAllBrandApi = () => {
+export const getAllBrandApi = (token) => {
     return axios({
         method: "GET",
         url: `${process.env.REACT_APP_API_ADDRESS}/brands`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
     });
 };
 export const getAllBrandByVendorApi = (vendorId, token) => {
@@ -99,6 +102,16 @@ export const getAllVentorApi = (token) => {
         headers: {
             Authorization: "Bearer " + token,
         },
+    });
+};
+export const deleteVendorApi = (id, token) => {
+    return axios({
+        method: "DELETE",
+        url: `${process.env.REACT_APP_API_ADDRESS}/deleteVendor`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: { vendorId: id },
     });
 };
 /* ----------------------- Vendor Apis end ------------------- */
@@ -508,7 +521,6 @@ export const removeFeaturedproductsApi = (data, token) => {
     });
 };
 
-
 export const getAllSaleInvoiceApi = (token) => {
     return axios({
         method: "GET",
@@ -528,7 +540,11 @@ export const getAllPurchaseInvoiceApi = (token) => {
     });
 };
 
-export const downloadInvoiceByInvoiceNumberApi = (invoiceNumber,invoiceType,token) => {
+export const downloadInvoiceByInvoiceNumberApi = (
+    invoiceNumber,
+    invoiceType,
+    token
+) => {
     return axios({
         method: "GET",
         url: `${process.env.REACT_APP_API_ADDRESS}/downloadpdf/${invoiceNumber}/${invoiceType}`,

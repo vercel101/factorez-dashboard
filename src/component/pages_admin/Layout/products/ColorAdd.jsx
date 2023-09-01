@@ -3,8 +3,9 @@ import {MdDeleteOutline} from "react-icons/md";
 import {useDispatch, useSelector} from "react-redux";
 import {spinnerOverlayOffFn, spinnerOverlayOnFn} from "../../../../Redux/ReducerAction";
 import {addNewColorApi, deleteColorByIdApi, getAllColorApi} from "../../../../apis/adminApis";
-
+import { useToast } from "@chakra-ui/react";
 const ColorAdd = () => {
+    const toast = useToast();
     const dispatch = useDispatch();
     const {tokenReducer} = useSelector(state => state);
     const [colorData, setColorData] = useState([]);
@@ -26,7 +27,13 @@ const ColorAdd = () => {
             setColorData(res.data.data);
         }).catch(error => {
             console.log(error);
-            alert("Error occurred!");
+            toast({
+                title: "Error occurred!",
+                position: "top",
+                description:error.message,
+                status: "error",
+                isClosable: true,
+            });
         })
         dispatch(spinnerOverlayOffFn());
     }
@@ -35,10 +42,22 @@ const ColorAdd = () => {
             dispatch(spinnerOverlayOnFn());
             await deleteColorByIdApi(tokenReducer, id).then(res => {
                 getAllColor();
-                alert(res.data.message);
+                toast({
+                    title: "Color Delete",
+                    position: "top",
+                    description:res.data.message,
+                    status: "success",
+                    isClosable: true,
+                });
             }).catch(error => {
                 console.log(error);
-                alert("Error occurred!");
+                toast({
+                    title: "Error occurred!",
+                    position: "top",
+                    description:error.message,
+                    status: "error",
+                    isClosable: true,
+                });
             })
             dispatch(spinnerOverlayOffFn());
         }
@@ -49,14 +68,31 @@ const ColorAdd = () => {
             dispatch(spinnerOverlayOnFn());
             await addNewColorApi(color, tokenReducer).then(res => {
                 getAllColor();
-                alert(res.data.message);
+                toast({
+                    title: "Color Upload",
+                    position: "top",
+                    description:res.data.message,
+                    status: "success",
+                    isClosable: true,
+                });
             }).catch(error => {
                 console.log(error);
-                alert(error.response.data.message);
+                toast({
+                    title: "Error occurred!",
+                    position: "top",
+                    description:error.response.data.message,
+                    status: "error",
+                    isClosable: true,
+                });
             })
             dispatch(spinnerOverlayOffFn());
         } else {
-            alert("Select Color and Insert Color Name");
+            toast({
+                title: "Select Color and Insert Color Name",
+                position: "top",
+                status: "warning",
+                isClosable: true,
+            });
         }
     }
 

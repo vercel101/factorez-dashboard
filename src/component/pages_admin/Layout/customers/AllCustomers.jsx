@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { blockCustomerByIdApi, deleteCustomerByIdApi, getAllCustomerAPi } from "../../../../apis/adminApis";
 import { useToast } from "@chakra-ui/react";
-import { localDate } from "../../../../utils/stringToLocalDate";
+import { localDate, localDateInIndiaTime } from "../../../../utils/stringToLocalDate";
 
 const AllCustomers = ({ tokenReducer }) => {
     const [customers, setCustomers] = useState([]);
@@ -92,11 +92,14 @@ const AllCustomers = ({ tokenReducer }) => {
                         <th scope="col" className="ps-1 py-3">
                             Name
                         </th>
-                        <th scope="col" className="ps-1 py-3">
+                        {/* <th scope="col" className="ps-1 py-3">
                             Gender
                         </th>
                         <th scope="col" className="ps-1 py-3">
                             DOB
+                        </th> */}
+                        <th scope="col" className="ps-1 py-3">
+                            SIGNUP DATE
                         </th>
                         <th scope="col" className="ps-1 py-3">
                             GST
@@ -126,8 +129,9 @@ const AllCustomers = ({ tokenReducer }) => {
                                 <th scope={`row`} className={`ps-1 border-e py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white`}>
                                     {el.name}
                                 </th>
-                                <td className={`ps-1 border-e py-1`}>{el.gender}</td>
-                                <td className={`ps-1 border-e py-1`}>{localDate(el.DOB)}</td>
+                                <td className={`ps-1 border-e py-1`}>{localDateInIndiaTime(el.createdAt)}</td>
+                                {/* <td className={`ps-1 border-e py-1`}>{el.gender}</td>
+                                <td className={`ps-1 border-e py-1`}>{localDate(el.DOB)}</td> */}
                                 <td className={`ps-1 border-e py-1`}>{el.gstNo}07AAGFF2194N1Z1</td>
                                 <td className={`ps-1 border-e py-1`}>{el.email}</td>
                                 <td className={`ps-1 border-e py-1`}>{el.phone}</td>
