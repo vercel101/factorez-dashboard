@@ -175,7 +175,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                                     <td className={`px-6 py-1`}>{el.shipping_address.address}</td>
                                 </>
                             )}
-                            <td className={`px-6 py-1`}>{el.ordered_products.products.length}</td>
+                            <td className={`px-6 py-1`}>{el.ordered_products.products && el.ordered_products.products.length}</td>
                             <td className={`px-6 py-1`}>
                                 &#8377;{userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) ? el.grand_total : el.vendorAmtInfo.grandTotal}
                             </td>
