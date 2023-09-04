@@ -175,7 +175,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                                     <td className={`px-6 py-1`}>{el.shipping_address.address}</td>
                                 </>
                             )}
-                            <td className={`px-6 py-1`}>{el.ordered_products.products && el.ordered_products.products.length}</td>
+                            <td className={`px-6 py-1`}>{el.ordered_products && el.ordered_products.products.length}</td>
                             <td className={`px-6 py-1`}>
                                 &#8377;{userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) ? el.grand_total : el.vendorAmtInfo.grandTotal}
                             </td>
@@ -187,16 +187,16 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                                                 items-center text-center
                                                 px-2
                                                 ${
-                                                    el.order_status_id.status === "PENDING"
+                                                    el.order_status_id && el.order_status_id.status === "PENDING"
                                                         ? "bg-gray-400 border-0 text-black"
-                                                        : el.order_status_id.status === "PARTIAL_CONFIRMED"
+                                                        : el.order_status_id && el.order_status_id.status === "PARTIAL_CONFIRMED"
                                                         ? "bg-blue-400 border-0 text-white"
-                                                        : el.order_status_id.status === "CANCELLED"
+                                                        : el.order_status_id && el.order_status_id.status === "CANCELLED"
                                                         ? "bg-red-600 text-white border-0"
                                                         : "bg-green-500 border-0 text-white"
                                                 }
                                                 `}>
-                                    {el.order_status_id.status.replace("_", " ")}
+                                    {el.order_status_id && el.order_status_id.status.replace("_", " ")}
                                 </div>
                             </td>
                             <td>
