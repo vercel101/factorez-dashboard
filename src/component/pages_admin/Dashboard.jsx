@@ -2,8 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { FiUserCheck, FiUser } from "react-icons/fi";
 import { HiOutlineDocument, HiOutlineDocumentText } from "react-icons/hi";
-const Dashboard = () => {
-    const { sidebarCollapse, darkModeReducer } = useSelector((state) => state);
+const Dashboard = ({ sidebarCollapse, darkModeReducer }) => {
     return (
         <div
             className={`${

@@ -9,7 +9,7 @@ import { CiSearch } from "react-icons/ci";
 import { deleteVendorApi, getAllVentorApi, verifyVendorApi } from "../../../../apis/adminApis";
 import { localDate } from "../../../../utils/stringToLocalDate";
 import TableActionModel from "../TableActionModel";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
 import { useToast } from "@chakra-ui/react";
 function AllVendors({ tokenReducer }) {
@@ -198,7 +198,7 @@ function AllVendors({ tokenReducer }) {
                                                 Margin %
                                             </th>
                                             <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                Mobile Number
+                                                Moblie Number
                                             </th>
                                             <th scope="col" className="px-6 py-3 border-r dark:border-neutral-500 text-start">
                                                 Email ID

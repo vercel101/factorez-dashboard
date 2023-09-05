@@ -11,9 +11,8 @@ import {
     spinnerOverlayOnFn,
 } from "../../../../Redux/ReducerAction";
 import { useToast } from "@chakra-ui/react";
-const ImportProduct = () => {
+const ImportProduct = ({ tokenReducer }) => {
     const toast = useToast();
-    const { tokenReducer } = useSelector((state) => state);
     const [csvFile, setCsvFile] = useState(null);
     const dispatch = useDispatch();
 

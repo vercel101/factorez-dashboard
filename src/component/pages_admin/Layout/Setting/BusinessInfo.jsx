@@ -49,6 +49,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                 isClosable: true,
             });
         } else {
+            dispatch(spinnerOverlayOnFn());
             await addBusinessInfoApi(bInfo, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
@@ -71,6 +72,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                         isClosable: true,
                     });
                 });
+                dispatch(spinnerOverlayOffFn());
         }
         console.log(bInfo);
     };
@@ -246,6 +248,7 @@ const BusinessInfo = ({ tokenReducer }) => {
 
     const saveDefaultGst = async (value) => {
         if (value !== "" && window.confirm("press ok to save this change")) {
+            dispatch(spinnerOverlayOnFn());
             await setDefaultGstApi({ gst: value }, tokenReducer)
                 .then((res) => {
                     toast({
@@ -267,6 +270,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                         position:'top'
                     });
                 });
+                dispatch(spinnerOverlayOffFn());
         }
     };
     useEffect(() => {

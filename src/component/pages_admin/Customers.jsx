@@ -6,8 +6,7 @@ import {roleEnums} from "../../utils/enums";
 import AllCustomers from './Layout/customers/AllCustomers';
 import CustomerOrder from './Layout/customers/CustomerOrder';
 
-function Customers(props) {
-    const {sidebarCollapse, darkModeReducer, userInfoReducer, tokenReducer} = useSelector((state) => state);
+function Customers({sidebarCollapse, darkModeReducer, userInfoReducer, tokenReducer}) {
 
     return (
         <div
@@ -19,7 +18,7 @@ function Customers(props) {
                 <Tabs>
                     <TabList
                         className="flex flex-wrap -mb-px text-sm font-medium text-center border-b dark:border-[#525355]">
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN']) && (
+                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN','CUSTOMER_ALL_CUSTOMER']) && (
 
                             <Tab
                                 selectedClassName="bg-teal-100 dark:bg-teal-800 bg-teal-100 border-b-2 border-blue-500"
@@ -28,7 +27,7 @@ function Customers(props) {
                                 All Customers
                             </Tab>
                         )}
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN']) && (
+                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN','CUSTOMER_CUSTOMER_ORDER_BY_PHONE']) && (
 
                             <Tab
                                 selectedClassName="bg-teal-100 dark:bg-teal-800 bg-teal-100 border-b-2 border-blue-500"
@@ -38,12 +37,12 @@ function Customers(props) {
                             </Tab>
                         )}
                     </TabList>
-                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN']) && (
+                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN','CUSTOMER_ALL_CUSTOMER']) && (
                         <TabPanel className="mt-5">
                             <AllCustomers tokenReducer={tokenReducer}/>
                         </TabPanel>
                     )}
-                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN']) && (
+                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN','CUSTOMER_CUSTOMER_ORDER_BY_PHONE']) && (
                         <TabPanel className="mt-5">
                             <CustomerOrder userInfoReducer={userInfoReducer} tokenReducer={tokenReducer}/>
                         </TabPanel>

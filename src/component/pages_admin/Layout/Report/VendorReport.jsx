@@ -1,6 +1,7 @@
 import React from "react";
 
-const VendorReport = ({tokenReducer}) => {
+
+const VendorReport = ({ tokenReducer }) => {
     return (
         <div>
             Vendor reports

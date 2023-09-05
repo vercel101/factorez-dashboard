@@ -4,10 +4,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {spinnerOverlayOffFn, spinnerOverlayOnFn} from "../../../../Redux/ReducerAction";
 import {addNewColorApi, deleteColorByIdApi, getAllColorApi} from "../../../../apis/adminApis";
 import { useToast } from "@chakra-ui/react";
-const ColorAdd = () => {
+const ColorAdd = ({tokenReducer}) => {
     const toast = useToast();
     const dispatch = useDispatch();
-    const {tokenReducer} = useSelector(state => state);
     const [colorData, setColorData] = useState([]);
     const [color, setColor] = useState({
         colorHex: "",

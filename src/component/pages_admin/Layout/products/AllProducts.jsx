@@ -12,9 +12,8 @@ import TableActionModel from "../TableActionModel";
 import TableProductModel from "../TableProductModel";
 import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
 
-const AllProducts = () => {
+const AllProducts = ({userInfoReducer, tokenReducer }) => {
     const dispatch = useDispatch();
-    const { userInfoReducer, tokenReducer } = useSelector((state) => state);
     const [allProduct, setAllProducts] = useState([]);
     const [activeTableModel, setActiveTableModel] = useState({
         flag: false,

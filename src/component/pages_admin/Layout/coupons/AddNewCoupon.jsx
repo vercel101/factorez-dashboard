@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { generateCouponsAPI } from "../../../../apis/adminApis";
-import { useSelector } from "react-redux";
 import { useToast } from "@chakra-ui/react";
 
 const AddNewCoupon = ({ tokenReducer }) => {

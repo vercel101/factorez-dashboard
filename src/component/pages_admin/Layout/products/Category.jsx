@@ -19,10 +19,8 @@ import {
 } from "../../../../apis/adminApis";
 import { FaSearch } from "react-icons/fa";
 
-const Category = () => {
+const Category = ({productCategoryNewReducer, productCategoryDDindexReducer}) => {
    const [catData, setCatData] = useState([]);
-   const { productCategoryNewReducer, productCategoryDDindexReducer } =
-      useSelector((rState) => rState);
    const dispatch = useDispatch();
    const [catTitle, setCatTitle] = useState("");
    const [isEditing, setEditing] = useState({ flag: false, _id: "" });

@@ -48,6 +48,66 @@ export const roleEnums = {
    ADD_EMPLOYEE: "ADD_EMPLOYEE",
    EXPORT_INFORMATION: "EXPORT_INFORMATION",
 };
+export let accessControls = {
+    ORDERS: {
+        ACCESS: { ORDERS_VIEW: false, ORDERS_EDIT: false, ORDERS_DOWNLOAD: false },
+        ORDERS_ALL_ORDERS: "ALL_ORDERS",
+        ORDERS_CHANGE_ORDER_STATUS: "CHANGE_ORDER_STATUS",
+        ORDERS_ABANDONED_ORDERS: "ABANDONED_ORDERS",
+    },
+    COUPON: {
+        ACCESS: { COUPON_VIEW: false, COUPON_EDIT: false, COUPON_DOWNLOAD: false },
+        COUPON_ALL_COUPON: "ALL_COUPON",
+        COUPON_ADD_NEW_COUPON: "ADD_NEW_COUPON",
+    },
+    PRODUCT: {
+        ACCESS: { PRODUCT_VIEW: false, PRODUCT_EDIT: false, PRODUCT_DOWNLOAD: false },
+        PRODUCT_ALL_PRODUCT: "ALL_PRODUCT",
+        PRODUCT_ADD_PRODUCT: "ADD_PRODUCT",
+    },
+    VENDOR: {
+        ACCESS: { VENDOR_VIEW: false, VENDOR_EDIT: false, VENDOR_DOWNLOAD: false },
+        VENDOR_ALL_VENDOR: "ALL_VENDOR",
+        VENDOR_ADD_VENDOR: "ADD_VENDOR",
+        VENDOR_VENDOR_PAYMENT: "VENDOR_PAYMENT",
+        VENDOR_VENDOR_MOV: "VENDOR_MOV",
+    },
+    CUSTOMER: {
+        ACCESS: { CUSTOMER_VIEW: false, CUSTOMER_EDIT: false, CUSTOMER_DOWNLOAD: false },
+        CUSTOMER_ALL_CUSTOMER: "ALL_CUSTOMER",
+        CUSTOMER_CUSTOMER_ORDER_BY_PHONE: "CUSTOMER_ORDER_BY_PHONE",
+    },
+    SETTING: {
+        SETTING_BUSINESS_INFO_SETTING: "BUSINESS_INFO_SETTING",
+        SETTING_HOMEPAGE_SETTING: "HOMEPAGE_SETTING",
+    },
+    REPORT: {
+        ACCESS: { REPORT_VIEW: false, REPORT_DOWNLOAD: false },
+    },
+    SUB_ADMIN: {
+        ACCESS: { SUBADMIN_VIEW: false, SUBADMIN_DOWNLOAD: false },
+        SUB_ADMIN_ALL_ADMIN: "ALL_ADMIN",
+        SUB_ADMIN_ADD_ADMIN: "ADD_ADMIN",
+    },
+};
+
+export const listOfAccessControll = () => {
+    let arr = ["ADMIN"];
+    for (let x of Object.keys(accessControls)) {
+        if (typeof accessControls[x] !== "string") {
+            for (let y of Object.keys(accessControls[x])) {
+                if (typeof accessControls[x][y] !== "string") {
+                    for (let z of Object.keys(accessControls[x][y])) {
+                        arr.push(z);
+                    }
+                } else {
+                    arr.push(y);
+                }
+            }
+        }
+    }
+    return arr;
+};
 
 export const listOfRoleEnums = () => {
    let arr = ["ADMIN"];

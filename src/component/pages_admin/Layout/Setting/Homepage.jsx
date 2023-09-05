@@ -34,6 +34,7 @@ const Homepage = ({ tokenReducer }) => {
         }
     };
     const singleProductHandler = (el) => {
+        console.log(el)
         setSingleProduct(el);
         setData({
             newArrival: "",

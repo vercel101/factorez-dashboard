@@ -29,10 +29,9 @@ import {
 } from "chakra-react-select";
 import { useToast } from "@chakra-ui/react";
 
-const ProductCreate = () => {
+const ProductCreate = ({ userInfoReducer, tokenReducer }) => {
     const dispatch = useDispatch();
     const toast = useToast();
-    const { userInfoReducer, tokenReducer } = useSelector((state) => state);
     const [thumbnailImg, setThumbnail] = useState(null);
     const [thumbnailUrl, setThumbnailUrl] = useState(null);
     const [imgOrLink, setImgOrLink] = useState(false);
@@ -274,6 +273,7 @@ const ProductCreate = () => {
                 formData.append("margin", productMargin);
                 formData.append("sellingGST", sellingGst);
                 formData.append("vendor_id", vendorid.value);
+                formData.append("best_arrival",JSON.parse(bestSellingNewArrival));
                 dispatch(spinnerOverlayOnFn());
                 await createProductApi(formData, tokenReducer)
                     .then((res) => {

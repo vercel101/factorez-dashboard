@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { MdDelete } from "react-icons/md";
 import { deleteCouponsAPI, getAllCouponsAPI } from "../../../../apis/adminApis";
-import { useSelector } from "react-redux";
 import { localDate } from "../../../../utils/stringToLocalDate";
 import CouponInfoModel from "./CouponInfoModel";
 import { useToast } from "@chakra-ui/react";
