@@ -393,9 +393,21 @@ const BusinessInfo = ({ tokenReducer }) => {
             await saveSocialMediaApi(socialMedia, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
+                    toast({
+                        title: res.data.message,
+                        position: "top",
+                        status: "success",
+                        isClosable: true,
+                    });
                 })
                 .catch((err) => {
                     console.log(err);
+                    toast({
+                        title: err.response.data.message,
+                        position: "top",
+                        status: "error",
+                        isClosable: true,
+                    });
                 });
             dispatch(spinnerOverlayOffFn());
         }
