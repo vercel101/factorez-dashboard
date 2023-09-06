@@ -371,6 +371,13 @@ const BusinessInfo = ({ tokenReducer }) => {
                     bNumber: obj.contactNo ? obj.contactNo : "",
                 });
                 setGstArr(obj.gsts);
+                setSocialMedia({
+                    facebook: obj.socialMedia.facebook ? obj.socialMedia.facebook : "",
+                    twitter: obj.socialMedia.twitter ? obj.socialMedia.twitter : "",
+                    instagram: obj.socialMedia.instagram ? obj.socialMedia.instagram : "",
+                    linkedin: obj.socialMedia.linkedin ? obj.socialMedia.linkedin : "",
+                    youtube: obj.socialMedia.youtube ? obj.socialMedia.youtube : "",
+                });
                 let arr = [];
                 for (let gst of obj.gsts) {
                     arr.push(gst.gstNo);
@@ -531,6 +538,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                         <InputLeftAddon width={"150px"} children="facebook.com/" />
                         <Input
                             placeholder="username"
+                            value={socialMedia.facebook}
                             onChange={(e) =>
                                 setSocialMedia((old) => {
                                     return { ...old, facebook: e.target.value };
@@ -542,6 +550,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                         <InputLeftAddon width={"150px"} children="instagram.com/" />
                         <Input
                             placeholder="username"
+                            value={socialMedia.instagram}
                             onChange={(e) =>
                                 setSocialMedia((old) => {
                                     return { ...old, instagram: e.target.value };
@@ -553,6 +562,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                         <InputLeftAddon width={"150px"} children="youtube.com/" />
                         <Input
                             placeholder="username"
+                            value={socialMedia.youtube}
                             onChange={(e) =>
                                 setSocialMedia((old) => {
                                     return { ...old, youtube: e.target.value };
@@ -564,6 +574,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                         <InputLeftAddon width={"150px"} children="linkedin.com/" />
                         <Input
                             placeholder="in/username"
+                            value={socialMedia.linkedin}
                             onChange={(e) =>
                                 setSocialMedia((old) => {
                                     return { ...old, linkedin: e.target.value };
@@ -575,6 +586,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                         <InputLeftAddon width={"150px"} children="twitter.com/" />
                         <Input
                             placeholder="username"
+                            value={socialMedia.twitter}
                             onChange={(e) =>
                                 setSocialMedia((old) => {
                                     return { ...old, twitter: e.target.value };
