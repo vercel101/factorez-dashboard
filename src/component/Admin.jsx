@@ -22,6 +22,7 @@ import {
     subadminEnumList,
     vendorsEnumList,
 } from "../utils/checkRole";
+import Profile from "./pages_admin/Layout/profile/Profile";
 
 const Admin = () => {
     const {
@@ -291,7 +292,19 @@ const Admin = () => {
                                     }
                                 />
                             )}
-
+                        <Route
+                            path={"admin/profile"}
+                            exact
+                            element={
+                                <React.Suspense fallback={"Loading..."}>
+                                    <Profile
+                                        tokenReducer={tokenReducer}
+                                        sidebarCollapse={sidebarCollapse}
+                                        userInfoReducer={userInfoReducer}
+                                    />
+                                </React.Suspense>
+                            }
+                        />
                         {/* <Footer/> */}
                     </Routes>
                 </div>

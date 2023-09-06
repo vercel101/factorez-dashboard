@@ -563,3 +563,16 @@ export const downloadInvoiceByInvoiceNumberApi = (
         },
     });
 };
+
+
+
+export const updateUserProfileApi = (data, token) => {
+    return axios({
+        method:'PUT',
+        url: `${process.env.REACT_APP_API_ADDRESS}/update-userprofile`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data:data
+    })
+}
