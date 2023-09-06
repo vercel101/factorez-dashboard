@@ -549,11 +549,7 @@ export const getAllPurchaseInvoiceApi = (token) => {
     });
 };
 
-export const downloadInvoiceByInvoiceNumberApi = (
-    invoiceNumber,
-    invoiceType,
-    token
-) => {
+export const downloadInvoiceByInvoiceNumberApi = (invoiceNumber, invoiceType, token) => {
     return axios({
         method: "GET",
         url: `${process.env.REACT_APP_API_ADDRESS}/downloadpdf/${invoiceNumber}/${invoiceType}`,
@@ -564,15 +560,64 @@ export const downloadInvoiceByInvoiceNumberApi = (
     });
 };
 
-
-
 export const updateUserProfileApi = (data, token) => {
     return axios({
-        method:'PUT',
+        method: "PUT",
         url: `${process.env.REACT_APP_API_ADDRESS}/update-userprofile`,
         headers: {
             Authorization: "Bearer " + token,
         },
-        data:data
-    })
-}
+        data: data,
+    });
+};
+
+export const addNewQuestionApi = (data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/addquestion`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+
+export const deleteQuestionByIdApi = (questionid, token) => {
+    return axios({
+        method: "DELETE",
+        url: `${process.env.REACT_APP_API_ADDRESS}/delete-question-byid/${questionid}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const getAllQuestionApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/getallquestion`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+export const getAllQuestionByUserApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/getallquestionbyuser`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const saveSocialMediaApi = (data,token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/savesocialmedia`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};

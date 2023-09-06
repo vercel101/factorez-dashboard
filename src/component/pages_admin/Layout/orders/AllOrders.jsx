@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    changeOrderStatusApi,
-    getAllOrdersAPI,
-    getAllQuestions,
-    getOrderedProductAPI,
-    patchTrackingIDByOrderId,
-    updateOrderByOrderId,
-} from "../../../../apis/adminApis";
+import { changeOrderStatusApi, getAllOrdersAPI, getAllQuestionByUserApi, getAllQuestions, getOrderedProductAPI, patchTrackingIDByOrderId, updateOrderByOrderId } from "../../../../apis/adminApis";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { FaListCheck } from "react-icons/fa6";
@@ -15,6 +8,7 @@ import { GoDotFill } from "react-icons/go";
 import OrderStatusModel from "./OrderStatusModel";
 import { isRoleExists } from "../../../../utils/checkRole";
 import { useToast } from "@chakra-ui/react";
+import { dateToLocalDateTime } from "../../../../utils/dateUtils";
 
 function AllOrders({ tokenReducer, userInfoReducer }) {
     const toast = useToast();
@@ -75,8 +69,8 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                 });
             });
     };
-    const allQuestions = async (id) => {
-        await getAllQuestions(tokenReducer)
+    const allQuestions = async () => {
+        await getAllQuestionByUserApi(tokenReducer)
             .then((res) => {
                 console.log(res.data);
                 setListOfQuestion(res.data.data);
@@ -85,12 +79,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                 console.log(err);
             });
     };
-    const updateOrder = async (
-        orderId,
-        orderType,
-        cancelMessage,
-        removedProductIdsOrQuestionId
-    ) => {
+    const updateOrder = async (orderId, orderType, cancelMessage, removedProductIdsOrQuestionId) => {
         let data = { orderType };
         if (orderType === "CANCEL") {
             data.cancelMessage = cancelMessage;
@@ -155,12 +144,8 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                     changeOrderStatus={changeOrderStatus}
                 />
             )}
-            <table
-                className={`w-full text-sm text-left text-gray-500 dark:text-gray-400`}
-            >
-                <thead
-                    className={`text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400`}
-                >
+            <table className={`w-full text-sm text-left text-gray-500 dark:text-gray-400`}>
+                <thead className={`text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400`}>
                     <tr>
                         <th scope="col" className="px-6 py-3">
                             #
@@ -171,23 +156,22 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                         <th scope="col" className="px-6 py-3">
                             Order Date
                         </th>
-                        {userInfoReducer.role &&
-                            isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
-                                <>
-                                    <th scope="col" className="px-6 py-3">
-                                        Seller
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Buyer
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Buyer Phone
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Shipping Address
-                                    </th>
-                                </>
-                            )}
+                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
+                            <>
+                                <th scope="col" className="px-6 py-3">
+                                    Seller
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Buyer
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Buyer Phone
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Shipping Address
+                                </th>
+                            </>
+                        )}
                         <th scope="col" className="px-6 py-3">
                             Item Qty
                         </th>
@@ -204,47 +188,24 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                 </thead>
                 <tbody>
                     {orders.map((el, i) => (
-                        <tr
-                            key={el._id}
-                            className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600`}
-                        >
+                        <tr key={el._id} className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600`}>
                             <td className={`px-6 py-1`}>{i + 1}</td>
-                            <th
-                                scope={`row`}
-                                className={`px-6 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white`}
-                            >
+                            <th scope={`row`} className={`px-6 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white`}>
                                 {el.orderId}
                             </th>
-                            <td className={`px-6 py-1`}>{el.order_date}</td>
-                            {userInfoReducer.role &&
-                                isRoleExists(userInfoReducer.role, [
-                                    "ADMIN",
-                                ]) && (
-                                    <>
-                                        <td className={`px-6 py-1`}>
-                                            {el.vendorId.firmName}
-                                        </td>
-                                        <td className={`px-6 py-1`}>
-                                            {el.customer_id.name}
-                                        </td>
-                                        <td className={`px-6 py-1`}>
-                                            {el.customer_id.phone}
-                                        </td>
-                                        <td className={`px-6 py-1`}>
-                                            {el.shipping_address.address}
-                                        </td>
-                                    </>
-                                )}
-                            <td className={`px-6 py-1`}>
-                                {el.ordered_products &&
-                                    el.ordered_products.products.length}
-                            </td>
+                            <td className={`px-6 py-1`}>{dateToLocalDateTime(el.order_date)}</td>
+                            {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
+                                <>
+                                    <td className={`px-6 py-1`}>{el.vendorId.firmName}</td>
+                                    <td className={`px-6 py-1`}>{el.customer_id.name}</td>
+                                    <td className={`px-6 py-1`}>{el.customer_id.phone}</td>
+                                    <td className={`px-6 py-1`}>{el.shipping_address.address}</td>
+                                </>
+                            )}
+                            <td className={`px-6 py-1`}>{el.ordered_products && el.ordered_products.products.length}</td>
                             <td className={`px-6 py-1`}>
                                 &#8377;
-                                {userInfoReducer.role &&
-                                isRoleExists(userInfoReducer.role, ["ADMIN"])
-                                    ? el.grand_total
-                                    : el.vendorAmtInfo.grandTotal}
+                                {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) ? el.grand_total : el.vendorAmtInfo.grandTotal}
                             </td>
                             <td className={`px-6 py-1`}>
                                 <button
@@ -256,41 +217,22 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                                                 px-2
                                                 text-xs
                                                 ${
-                                                    el.order_status_id &&
-                                                    el.order_status_id
-                                                        .status === "PENDING"
+                                                    el.order_status_id && el.order_status_id.status === "PENDING"
                                                         ? "bg-gray-400 border-0 text-black"
-                                                        : el.order_status_id &&
-                                                          el.order_status_id
-                                                              .status ===
-                                                              "PARTIAL_CONFIRMED"
+                                                        : el.order_status_id && el.order_status_id.status === "PARTIAL_CONFIRMED"
                                                         ? "bg-blue-400 border-0 text-white"
-                                                        : el.order_status_id &&
-                                                          el.order_status_id
-                                                              .status ===
-                                                              "CANCELLED"
+                                                        : el.order_status_id && el.order_status_id.status === "CANCELLED"
                                                         ? "bg-red-600 text-white border-0"
                                                         : "bg-green-500 border-0 text-white"
                                                 }
                                                 `}
                                 >
-                                    {el.order_status_id &&
-                                        el.order_status_id.status.replace(
-                                            "_",
-                                            " "
-                                        )}
+                                    {el.order_status_id && el.order_status_id.status.replace("_", " ")}
                                 </button>
                             </td>
                             <td>
-                                <div
-                                    className="flex items-center justify-center"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    <FaListCheck
-                                        size={30}
-                                        onClick={() => setStatusListFlag(true)}
-                                        className="hover:bg-teal-300 p-1 rounded cursor-pointer"
-                                    />
+                                <div className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                                    <FaListCheck size={30} onClick={() => setStatusListFlag(true)} className="hover:bg-teal-300 p-1 rounded cursor-pointer" />
                                 </div>
                             </td>
                         </tr>
@@ -298,18 +240,10 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                 </tbody>
             </table>
 
-            <div
-                className={`bg-white pt-12 z-10 dark:bg-neutral-800 dark:border-gray-700 border-s transition-transform h-screen w-96 fixed top-0 right-0 ${
-                    !statusListFlag && "translate-x-full"
-                }`}
-            >
+            <div className={`bg-white pt-12 z-10 dark:bg-neutral-800 dark:border-gray-700 border-s transition-transform h-screen w-96 fixed top-0 right-0 ${!statusListFlag && "translate-x-full"}`}>
                 <div className="flex items-center justify-between p-2">
                     <h1 className="font-bold text-2xl">Status List</h1>
-                    <GrClose
-                        className="border cursor-pointer p-1 rounded-md hover:bg-teal-200"
-                        size={30}
-                        onClick={() => setStatusListFlag(false)}
-                    />
+                    <GrClose className="border cursor-pointer p-1 rounded-md hover:bg-teal-200" size={30} onClick={() => setStatusListFlag(false)} />
                 </div>
                 <div className="overflow-y-auto h-[calc(100vh_-_100px)] px-7 pt-4">
                     <ul>
@@ -321,8 +255,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                                 </span>
                                 <span>Ready For Dispatch</span>
                             </span>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Minus, ut.
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, ut.
                         </li>
                         <li className="py-5 border-s-4 ps-8 relative  min-h-[88px]">
                             <span className="absolute -top-3 -left-2 flex items-center space-x-2">
@@ -362,8 +295,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                                 </span>
                                 <span>Delivered</span>
                             </span>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Minus, ut.
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, ut.
                         </li>
                     </ul>
                 </div>

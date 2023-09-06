@@ -2,10 +2,20 @@ import React, { useState } from "react";
 import { BsPlusCircleFill } from "react-icons/bs";
 import { CgSpinner } from "react-icons/cg";
 import { MdDelete } from "react-icons/md";
-import { addBusinessFilesApi, addBusinessGstApi, addBusinessInfoApi, getBusinessInfoApi, setDefaultGstApi } from "../../../../apis/adminApis";
+import {
+    addBusinessFilesApi,
+    addBusinessGstApi,
+    addBusinessInfoApi,
+    addNewQuestionApi,
+    deleteQuestionByIdApi,
+    getAllQuestionApi,
+    getBusinessInfoApi,
+    saveSocialMediaApi,
+    setDefaultGstApi,
+} from "../../../../apis/adminApis";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useToast } from "@chakra-ui/react";
+import { Button, Input, InputGroup, InputLeftAddon, InputLeftElement, useToast } from "@chakra-ui/react";
 import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
 const BusinessInfo = ({ tokenReducer }) => {
     const toast = useToast();
@@ -39,7 +49,25 @@ const BusinessInfo = ({ tokenReducer }) => {
         stateCode: "",
         pickupAddress: "",
     });
+    const [adminQuestion, setAdminQuestion] = useState([]);
+    const [customerQuestion, setCustomerQuestion] = useState([]);
+    const [sellerQuestion, setSellerQuestion] = useState([]);
+    const [questionInput, setQuestionInput] = useState({
+        adminQuestionInput: "",
+        sellerQuestionInput: "",
+        customerQuestionInput: "",
+    });
+
     const [gstArr, setGstArr] = useState([]);
+
+    const [socialMedia, setSocialMedia] = useState({
+        facebook: "",
+        instagram: "",
+        youtube: "",
+        linkedin: "",
+        twitter: "",
+    });
+
     const saveBInfo = async () => {
         if (bInfo.bEmail === "" || bInfo.bName === "" || bInfo.bNumber === "") {
             toast({
@@ -57,7 +85,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                         title: "Business Information",
                         position: "top",
                         status: "success",
-                        description:res.data.message,
+                        description: res.data.message,
                         isClosable: true,
                     });
                     getBusinessInfo();
@@ -67,12 +95,12 @@ const BusinessInfo = ({ tokenReducer }) => {
                     toast({
                         title: "Error",
                         position: "top",
-                        description:err.message,
+                        description: err.message,
                         status: "error",
                         isClosable: true,
                     });
                 });
-                dispatch(spinnerOverlayOffFn());
+            dispatch(spinnerOverlayOffFn());
         }
         console.log(bInfo);
     };
@@ -108,7 +136,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                         title: "GST",
                         position: "top",
                         status: "success",
-                        description:res.data.message,
+                        description: res.data.message,
                         isClosable: true,
                     });
                     getBusinessInfo();
@@ -118,12 +146,12 @@ const BusinessInfo = ({ tokenReducer }) => {
                     toast({
                         title: "Error",
                         position: "top",
-                        description:err.message,
+                        description: err.message,
                         status: "error",
                         isClosable: true,
                     });
                 });
-                dispatch(spinnerOverlayOffFn());
+            dispatch(spinnerOverlayOffFn());
         }
     };
 
@@ -159,7 +187,7 @@ const BusinessInfo = ({ tokenReducer }) => {
                     toast({
                         title: "File upload",
                         position: "top",
-                        description:res.data.message,
+                        description: res.data.message,
                         status: "success",
                         isClosable: true,
                     });
@@ -171,12 +199,12 @@ const BusinessInfo = ({ tokenReducer }) => {
                     toast({
                         title: "Error",
                         position: "top",
-                        description:err.message,
+                        description: err.message,
                         status: "error",
                         isClosable: true,
                     });
                 });
-                dispatch(spinnerOverlayOffFn());
+            dispatch(spinnerOverlayOffFn());
             setSaveFlag((preStage) => {
                 return { ...preStage, save3: false };
             });
@@ -213,6 +241,119 @@ const BusinessInfo = ({ tokenReducer }) => {
         });
     };
 
+    const questionHandler = async (type) => {
+        console.log("first");
+
+        if (type === "ADMIN" && !questionInput.adminQuestionInput) {
+            toast({
+                status: "warning",
+                position: "top",
+                title: "Question is required",
+                isClosable: true,
+            });
+        } else if (type === "VENDOR" && !questionInput.sellerQuestionInput) {
+            toast({
+                status: "warning",
+                position: "top",
+                title: "Question is required",
+                isClosable: true,
+            });
+        } else if (type === "CUSTOMER" && !questionInput.customerQuestionInput) {
+            toast({
+                status: "warning",
+                position: "top",
+                title: "Question is required",
+                isClosable: true,
+            });
+        } else {
+            let data = {
+                questionFor: "",
+                question: "",
+            };
+            if (type === "ADMIN") {
+                data.question = questionInput.adminQuestionInput;
+                data.questionFor = type;
+            } else if (type === "VENDOR") {
+                data.question = questionInput.sellerQuestionInput;
+                data.questionFor = type;
+            } else if (type === "CUSTOMER") {
+                data.question = questionInput.customerQuestionInput;
+                data.questionFor = type;
+            }
+
+            if (data.question && data.questionFor) {
+                dispatch(spinnerOverlayOnFn());
+                await addNewQuestionApi(data, tokenReducer)
+                    .then((res) => {
+                        console.log(res.data);
+                        if (type === "ADMIN") {
+                            setAdminQuestion(res.data.data);
+                        }
+                        if (type === "VENDOR") {
+                            setSellerQuestion(res.data.data);
+                        }
+                        if (type === "CUSTOMER") {
+                            setCustomerQuestion(res.data.data);
+                        }
+                        toast({
+                            status: "success",
+                            position: "top",
+                            title: "Success",
+                            description: res.data.message,
+                            isClosable: true,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        toast({
+                            status: "error",
+                            position: "top",
+                            title: "Error",
+                            description: err.response.data.message,
+                            isClosable: true,
+                        });
+                    });
+                dispatch(spinnerOverlayOffFn());
+            }
+        }
+    };
+
+    const deleteQuestion = async (questionid, type) => {
+        if (window.confirm("Are you sure?")) {
+            dispatch(spinnerOverlayOnFn());
+            await deleteQuestionByIdApi(questionid, tokenReducer)
+                .then((res) => {
+                    toast({
+                        status: "success",
+                        position: "top",
+                        title: "Success",
+                        description: res.data.message,
+                        isClosable: true,
+                    });
+                    if (type === "ADMIN") {
+                        setAdminQuestion(res.data.data);
+                    }
+                    if (type === "VENDOR") {
+                        setSellerQuestion(res.data.data);
+                    }
+                    if (type === "CUSTOMER") {
+                        setCustomerQuestion(res.data.data);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast({
+                        status: "error",
+                        position: "top",
+                        title: "Error",
+                        description: err.response.data.message,
+                        isClosable: true,
+                    });
+                });
+            dispatch(spinnerOverlayOffFn());
+        }
+    };
+
     const getBusinessInfo = async () => {
         await getBusinessInfoApi(tokenReducer)
             .then((res) => {
@@ -246,6 +387,20 @@ const BusinessInfo = ({ tokenReducer }) => {
             });
     };
 
+    const saveSocialMedia = async () => {
+        if (socialMedia.facebook || socialMedia.instagram || socialMedia.linkedin || socialMedia.twitter || socialMedia.youtube) {
+            dispatch(spinnerOverlayOnFn());
+            await saveSocialMediaApi(socialMedia, tokenReducer)
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            dispatch(spinnerOverlayOffFn());
+        }
+    };
+
     const saveDefaultGst = async (value) => {
         if (value !== "" && window.confirm("press ok to save this change")) {
             dispatch(spinnerOverlayOnFn());
@@ -254,9 +409,9 @@ const BusinessInfo = ({ tokenReducer }) => {
                     toast({
                         title: "Default GST",
                         description: res.data.message,
-                        status:'success',
-                        isClosable:true,
-                        position:'top'
+                        status: "success",
+                        isClosable: true,
+                        position: "top",
                     });
                     getBusinessInfo();
                 })
@@ -265,16 +420,28 @@ const BusinessInfo = ({ tokenReducer }) => {
                     toast({
                         title: "Error",
                         description: err.message,
-                        status:'error',
-                        isClosable:true,
-                        position:'top'
+                        status: "error",
+                        isClosable: true,
+                        position: "top",
                     });
                 });
-                dispatch(spinnerOverlayOffFn());
+            dispatch(spinnerOverlayOffFn());
         }
+    };
+    const getAllQuestions = async () => {
+        await getAllQuestionApi(tokenReducer)
+            .then((res) => {
+                setAdminQuestion(res.data.data.admin);
+                setSellerQuestion(res.data.data.vendor);
+                setCustomerQuestion(res.data.data.customer);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
     useEffect(() => {
         getBusinessInfo();
+        getAllQuestions();
     }, []);
 
     return (
@@ -335,13 +502,87 @@ const BusinessInfo = ({ tokenReducer }) => {
                     <button
                         onClick={() => saveBInfo()}
                         disabled={saveFlag.save1}
-                        className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 rounded flex items-center justify-between text-sm text-white font-semibold disabled:bg-[#ababab]">
+                        className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 rounded flex items-center justify-between text-sm text-white font-semibold disabled:bg-[#ababab]"
+                    >
                         Save
                         {saveFlag.save1 && <CgSpinner size={20} color="white" className="ms-2 animate-spin" />}
                     </button>
                     <button disabled={false} onClick={() => cancelBInfo()} className="bg-[#637381]  dark:bg-[#333b43] px-3 py-2 rounded text-sm text-white font-semibold">
                         Cancel
                     </button>
+                </div>
+            </div>
+            <h1 className="mb-2 mt-10 font-bold">Social media links</h1>
+            <div className="border dark:border-[#525355] rounded bg-white dark:bg-teal-950 p-3">
+                <div className="grid grid-cols-3 gap-3">
+                    <InputGroup>
+                        <InputLeftAddon width={"150px"} children="facebook.com/" />
+                        <Input
+                            placeholder="username"
+                            onChange={(e) =>
+                                setSocialMedia((old) => {
+                                    return { ...old, facebook: e.target.value };
+                                })
+                            }
+                        />
+                    </InputGroup>
+                    <InputGroup>
+                        <InputLeftAddon width={"150px"} children="instagram.com/" />
+                        <Input
+                            placeholder="username"
+                            onChange={(e) =>
+                                setSocialMedia((old) => {
+                                    return { ...old, instagram: e.target.value };
+                                })
+                            }
+                        />
+                    </InputGroup>
+                    <InputGroup>
+                        <InputLeftAddon width={"150px"} children="youtube.com/" />
+                        <Input
+                            placeholder="username"
+                            onChange={(e) =>
+                                setSocialMedia((old) => {
+                                    return { ...old, youtube: e.target.value };
+                                })
+                            }
+                        />
+                    </InputGroup>
+                    <InputGroup>
+                        <InputLeftAddon width={"150px"} children="linkedin.com/" />
+                        <Input
+                            placeholder="in/username"
+                            onChange={(e) =>
+                                setSocialMedia((old) => {
+                                    return { ...old, linkedin: e.target.value };
+                                })
+                            }
+                        />
+                    </InputGroup>
+                    <InputGroup>
+                        <InputLeftAddon width={"150px"} children="twitter.com/" />
+                        <Input
+                            placeholder="username"
+                            onChange={(e) =>
+                                setSocialMedia((old) => {
+                                    return { ...old, twitter: e.target.value };
+                                })
+                            }
+                        />
+                    </InputGroup>
+                </div>
+                <div className="mt-4 flex items-center space-x-3">
+                    <button
+                        onClick={() => saveSocialMedia()}
+                        disabled={saveFlag.save1}
+                        className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 rounded flex items-center justify-between text-sm text-white font-semibold disabled:bg-[#ababab]"
+                    >
+                        Save
+                        {saveFlag.save1 && <CgSpinner size={20} color="white" className="ms-2 animate-spin" />}
+                    </button>
+                    {/* <button disabled={false} onClick={() => cancelBInfo()} className="bg-[#637381]  dark:bg-[#333b43] px-3 py-2 rounded text-sm text-white font-semibold">
+                        Cancel
+                    </button> */}
                 </div>
             </div>
             <h1 className="my-2 mt-10 font-bold">GST Information</h1>
@@ -412,7 +653,8 @@ const BusinessInfo = ({ tokenReducer }) => {
                     <button
                         disabled={saveFlag.save2}
                         onClick={() => saveBGstInfo()}
-                        className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 rounded text-sm text-white font-semibold flex items-center justify-between disabled:bg-[#ababab]">
+                        className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 rounded text-sm text-white font-semibold flex items-center justify-between disabled:bg-[#ababab]"
+                    >
                         Save
                         {saveFlag.save2 && <CgSpinner size={20} color="white" className="ms-2 animate-spin" />}
                     </button>
@@ -421,14 +663,13 @@ const BusinessInfo = ({ tokenReducer }) => {
                     </button>
 
                     <div className="flex items-center">
-                        <span className="p-2 font-semibold text-white w-[100px] text-sm bg-orange-500 rounded-s-md border-e-0 border-orange-500 border outline-none">
-                            Default GST
-                        </span>
+                        <span className="p-2 font-semibold text-white w-[100px] text-sm bg-orange-500 rounded-s-md border-e-0 border-orange-500 border outline-none">Default GST</span>
                         <select
                             id="statusorder"
                             value={defGst}
                             onChange={(e) => saveDefaultGst(e.target.value)}
-                            className="bg-gray-50 col-span-3 border outline-none border-gray-300 text-gray-900 text-sm rounded-e-md focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            className="bg-gray-50 col-span-3 border outline-none border-gray-300 text-gray-900 text-sm rounded-e-md focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        >
                             <option value="">Select Default GST NO</option>
                             {gstList.map((el, i) => (
                                 <option key={`${i}_defaultgst`} value={el}>
@@ -512,24 +753,101 @@ const BusinessInfo = ({ tokenReducer }) => {
                     </div>
                     <div className="border rounded">{imageFile.img1 !== "" && <img src={imageFile.img1} alt="" />}</div>
                     <div className="border rounded">{imageFile.img2 !== "" && <img src={imageFile.img2} alt="" />}</div>
-                    <div className="border rounded">
-                        {imageFile.img3 !== "" && <embed className="h-full" name="plugin" src={`${imageFile.img3}#toolbar=0&scrollbar=0`} type="application/pdf" />}
-                    </div>
-                    <div className="border rounded">
-                        {imageFile.img4 !== "" && <embed className="h-full" name="plugin" src={`${imageFile.img4}#toolbar=0&scrollbar=0`} type="application/pdf" />}
-                    </div>
+                    <div className="border rounded">{imageFile.img3 !== "" && <embed className="h-full" name="plugin" src={`${imageFile.img3}`} type="application/pdf" />}</div>
+                    <div className="border rounded">{imageFile.img4 !== "" && <embed className="h-full" name="plugin" src={`${imageFile.img4}#toolbar=0&scrollbar=0`} type="application/pdf" />}</div>
                 </div>
                 <div className="mt-4 flex items-center space-x-3">
                     <button
                         disabled={saveFlag.save3}
                         onClick={() => saveBImage()}
-                        className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 flex items-center justify-between rounded text-sm text-white font-semibold disabled:bg-[#ababab]">
+                        className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 flex items-center justify-between rounded text-sm text-white font-semibold disabled:bg-[#ababab]"
+                    >
                         Save
                         {saveFlag.save3 && <CgSpinner size={20} color="white" className="ms-2 animate-spin" />}
                     </button>
                     <button onClick={() => cancelBImage()} className="bg-[#637381] dark:bg-[#333b43] px-3 py-2 rounded text-sm text-white font-semibold">
                         Cancel
                     </button>
+                </div>
+            </div>
+            <h1 className="my-2 mt-10 font-bold">Add Cancel Reason</h1>
+            <div className="border dark:border-[#525355] rounded bg-white dark:bg-teal-950 p-3">
+                <div className="grid grid-cols-3 gap-2">
+                    <div className="border-e px-2">
+                        <h1 className="font-bold">Admin Question</h1>
+                        <Input
+                            onChange={(e) =>
+                                setQuestionInput((old) => {
+                                    return { ...old, adminQuestionInput: e.target.value };
+                                })
+                            }
+                        />
+                        <button onClick={() => questionHandler("ADMIN")} className="bg-[#ff9f43] dark:bg-[#88613a] mt-2 px-3 py-2 rounded text-sm text-white font-semibold">
+                            Save
+                        </button>
+                        <ul className="mt-2">
+                            {adminQuestion.length > 0 ? (
+                                adminQuestion.map((el) => (
+                                    <li key={el._id} className="border-b p-2 flex items-center justify-between hover:bg-teal-100">
+                                        <span>{el.question}</span>
+                                        <MdDelete className="cursor-pointer" onClick={() => deleteQuestion(el._id, "ADMIN")} />
+                                    </li>
+                                ))
+                            ) : (
+                                <li>No record found</li>
+                            )}
+                        </ul>
+                    </div>
+                    <div className="border-e px-2">
+                        <h1 className="font-bold">Seller Question</h1>
+                        <Input
+                            onChange={(e) =>
+                                setQuestionInput((old) => {
+                                    return { ...old, sellerQuestionInput: e.target.value };
+                                })
+                            }
+                        />
+                        <button onClick={() => questionHandler("VENDOR")} className="bg-[#ff9f43] dark:bg-[#88613a] mt-2 px-3 py-2 rounded text-sm text-white font-semibold">
+                            Save
+                        </button>
+                        <ul className="mt-2">
+                            {sellerQuestion.length > 0 ? (
+                                sellerQuestion.map((el) => (
+                                    <li key={el._id} className="border-b p-2 flex items-center justify-between hover:bg-teal-100">
+                                        <span>{el.question}</span>
+                                        <MdDelete className="cursor-pointer" onClick={() => deleteQuestion(el._id, "VENDOR")} />
+                                    </li>
+                                ))
+                            ) : (
+                                <li>No record found</li>
+                            )}
+                        </ul>
+                    </div>
+                    <div className="px-2">
+                        <h1 className="font-bold">Customer Question</h1>
+                        <Input
+                            onChange={(e) =>
+                                setQuestionInput((old) => {
+                                    return { ...old, customerQuestionInput: e.target.value };
+                                })
+                            }
+                        />
+                        <button onClick={() => questionHandler("CUSTOMER")} className="bg-[#ff9f43] dark:bg-[#88613a] mt-2 px-3 py-2 rounded text-sm text-white font-semibold">
+                            Save
+                        </button>
+                        <ul className="mt-2">
+                            {customerQuestion.length > 0 ? (
+                                customerQuestion.map((el) => (
+                                    <li key={el._id} className="border-b p-2 flex items-center justify-between hover:bg-teal-100">
+                                        <span>{el.question}</span>
+                                        <MdDelete className="cursor-pointer" onClick={() => deleteQuestion(el._id, "CUSTOMER")} />
+                                    </li>
+                                ))
+                            ) : (
+                                <li>No record found</li>
+                            )}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

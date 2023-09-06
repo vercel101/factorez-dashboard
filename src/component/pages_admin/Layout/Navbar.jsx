@@ -107,10 +107,10 @@ const Navbar = () => {
                 >
                     {userInfoReducer.photo ? (
                         <div className="bg-[#EDEAEA] rounded-md me-2 dark:bg-[#3d0f82]">
-                        <img
-                            src={userInfoReducer.photo}
-                            className="h-8 w-8 rounded-md object-cover"
-                        />
+                            <img
+                                src={userInfoReducer.photo}
+                                className="h-8 w-8 rounded-md object-cover"
+                            />
                         </div>
                     ) : (
                         <div className="bg-[#EDEAEA] p-1 rounded-md me-2 dark:bg-[#3d0f82]">

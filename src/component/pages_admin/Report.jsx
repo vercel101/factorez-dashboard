@@ -72,7 +72,7 @@ const Report = ({ sidebarCollapse, tokenReducer, userInfoReducer }) => {
                             "VENDOR",
                         ]) && (
                             <TabPanel className="mt-5">
-                                <SaleInvoice tokenReducer={tokenReducer} />
+                                <SaleInvoice userInfoReducer={userInfoReducer} tokenReducer={tokenReducer} />
                             </TabPanel>
                         )}
                     {userInfoReducer.role &&

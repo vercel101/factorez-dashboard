@@ -9,7 +9,6 @@ import {
     Input,
     InputGroup,
     InputRightElement,
-    useDisclosure,
     useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
@@ -26,7 +25,6 @@ const Profile = ({ sidebarCollapse, tokenReducer, userInfoReducer }) => {
     const dispatch = useDispatch();
     const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
     const [showPass, setShowPass] = React.useState(false);
-    const [userInfoFetched, setUserInfoFetched] = useState(null);
     const [userProfileUrl, setUserProfileUrl] = useState(null);
     const [userInfo, setUserInfo] = useState({
         fullName: "",
@@ -143,7 +141,7 @@ const Profile = ({ sidebarCollapse, tokenReducer, userInfoReducer }) => {
         if (userInfoReducer.photo) {
             setUserProfileUrl(userInfoReducer.photo);
         }
-    }, []);
+    }, [userInfoReducer]);
 
     return (
         <div

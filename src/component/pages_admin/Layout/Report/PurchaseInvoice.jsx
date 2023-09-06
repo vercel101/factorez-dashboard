@@ -5,8 +5,13 @@ import { useState } from "react";
 // import pdfSvg from "../../../../assets/pdf.svg";
 import { ImFilePdf } from "react-icons/im";
 import { isRoleExists } from "../../../../utils/checkRole";
+import { useDispatch } from "react-redux";
+import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
+import { useToast } from "@chakra-ui/react";
 
 const PurchaseInvoice = ({ tokenReducer, userInfoReducer }) => {
+    const toast = useToast();
+    const dispatch = useDispatch();
     const [invData, setInvdata] = useState([]);
     const getInvoice = async () => {
         await getAllPurchaseInvoiceApi(tokenReducer)
@@ -19,6 +24,7 @@ const PurchaseInvoice = ({ tokenReducer, userInfoReducer }) => {
             });
     };
     const downloadPdfFn = async (invoiceNumber) => {
+        dispatch(spinnerOverlayOnFn());
         await downloadInvoiceByInvoiceNumberApi(invoiceNumber, "PURCHASE", tokenReducer)
             .then((res) => {
                 let blob = res.data;
@@ -35,10 +41,23 @@ const PurchaseInvoice = ({ tokenReducer, userInfoReducer }) => {
 
                 // Clean up and remove the link
                 link.parentNode.removeChild(link);
+                toast({
+                    title: "Invoice Downloaded",
+                    status: "success",
+                    position: "top",
+                    isClosable: true,
+                });
             })
             .catch((err) => {
                 console.log(err.message);
+                toast({
+                    title: "Error in downloading",
+                    status: "error",
+                    position: "top",
+                    isClosable: true,
+                });
             });
+        dispatch(spinnerOverlayOffFn());
     };
     useEffect(() => {
         getInvoice();
@@ -106,7 +125,8 @@ const PurchaseInvoice = ({ tokenReducer, userInfoReducer }) => {
                                     <td className="px-6 py-3">
                                         <button
                                             className="inline-flex items-center py-1 px-2 rounded space-x-3 border bg-slate-100 dark:bg-slate-500 dark:border-gray-700 text-red-400"
-                                            onClick={() => downloadPdfFn(el.invoiceNo)}>
+                                            onClick={() => downloadPdfFn(el.invoiceNo)}
+                                        >
                                             <ImFilePdf size={20} />
                                             <span>Download</span>
                                         </button>
@@ -119,7 +139,8 @@ const PurchaseInvoice = ({ tokenReducer, userInfoReducer }) => {
                                             defaultValue={el.invoiceStatus}
                                             className={`text-start outline-none rounded text-xs p-1 text-white ${
                                                 el.invoiceStatus === "PAID" ? "bg-green-500" : el.invoiceStatus === "UNPAID" ? "bg-[#637381]" : "bg-red-500"
-                                            }`}>
+                                            }`}
+                                        >
                                             <option value="PAID">Paid</option>
                                             <option value="UNPAID">Unpaid</option>
                                             <option value="OVERDUE">Overdue</option>
