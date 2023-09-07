@@ -611,10 +611,43 @@ export const getAllQuestionByUserApi = (token) => {
     });
 };
 
-export const saveSocialMediaApi = (data,token) => {
+export const saveSocialMediaApi = (data, token) => {
     return axios({
         method: "POST",
         url: `${process.env.REACT_APP_API_ADDRESS}/savesocialmedia`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+
+export const getOrderReportApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/order-report`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const exportSaleReport = (data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/export-sale-report`,
+        responseType: "blob",
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+export const exportPurchaseReport = (data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/export-purchase-report`,
+        responseType: "blob",
         headers: {
             Authorization: "Bearer " + token,
         },

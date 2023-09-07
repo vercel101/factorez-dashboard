@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { changeOrderStatusApi, getAllOrdersAPI, getAllQuestionByUserApi, getAllQuestions, getOrderedProductAPI, patchTrackingIDByOrderId, updateOrderByOrderId } from "../../../../apis/adminApis";
+import {
+    changeOrderStatusApi,
+    downloadInvoiceByInvoiceNumberApi,
+    getAllOrdersAPI,
+    getAllQuestionByUserApi,
+    getAllQuestions,
+    getOrderedProductAPI,
+    patchTrackingIDByOrderId,
+    updateOrderByOrderId,
+} from "../../../../apis/adminApis";
 import { MdDelete } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaListCheck } from "react-icons/fa6";
 import { GrClose } from "react-icons/gr";
 import { GoDotFill } from "react-icons/go";
 import OrderStatusModel from "./OrderStatusModel";
 import { isRoleExists } from "../../../../utils/checkRole";
-import { useToast } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import { dateToLocalDateTime } from "../../../../utils/dateUtils";
+import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
 
 function AllOrders({ tokenReducer, userInfoReducer }) {
     const toast = useToast();
+    const dispatch = useDispatch();
     const [orders, setOrders] = useState([]);
     const [listOfQuestion, setListOfQuestion] = useState([]);
     const [orderModelFlag, setOrderModelFlag] = useState(false);
@@ -101,6 +112,43 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
             });
     };
 
+    const downloadPdfFn = async (invoiceNumber, invType) => {
+        dispatch(spinnerOverlayOnFn());
+        await downloadInvoiceByInvoiceNumberApi(invoiceNumber, invType, tokenReducer)
+            .then((res) => {
+                let blob = res.data;
+                const url = window.URL.createObjectURL(new Blob([blob], { type: "application/pdf" }));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `${invoiceNumber}.pdf`);
+
+                // Append to html link element page
+                document.body.appendChild(link);
+
+                // Start download
+                link.click();
+
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+                toast({
+                    title: "Invoice Downloaded",
+                    status: "success",
+                    position: "top",
+                    isClosable: true,
+                });
+            })
+            .catch((err) => {
+                console.log(err.message);
+                toast({
+                    title: "Error in downloading",
+                    status: "error",
+                    position: "top",
+                    isClosable: true,
+                });
+            });
+        dispatch(spinnerOverlayOffFn());
+    };
+
     const updateTrackingIdFn = async (orderid, trackingid) => {
         await patchTrackingIDByOrderId(orderid, trackingid, tokenReducer)
             .then((res) => {
@@ -181,6 +229,9 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                         <th scope="col" className="px-6 py-3">
                             Action
                         </th>
+                        <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                            Invoice Download
+                        </th>
                         <th scope="col" className="px-6 py-3">
                             Status
                         </th>
@@ -229,6 +280,24 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                                 >
                                     {el.order_status_id && el.order_status_id.status.replace("_", " ")}
                                 </button>
+                            </td>
+                            <td className={`px-6 py-1`}>
+                                <div className="flex items-center justify-center space-x-2">
+                                    <button
+                                        disabled={!el.saleInvoice}
+                                        className="px-2 py-1 border disabled:text-white bg-green-300 border-green-300 text-blue-700 disabled:bg-gray-200 disabled:border-gray-200 rounded"
+                                        onClick={() => downloadPdfFn(el.saleInvoice && el.saleInvoice.invoiceNo, "SALE")}
+                                    >
+                                        Sale
+                                    </button>
+                                    <button
+                                        disabled={!el.purchaseInvoice}
+                                        className="px-2 bg-blue-300 text-white disabled:bg-gray-200 py-1 border border-blue-300 disabled:border-gray-200 rounded"
+                                        onClick={() => downloadPdfFn(el.purchaseInvoice && el.purchaseInvoice.invoiceNo, "PURCHASE")}
+                                    >
+                                        Purchase
+                                    </button>
+                                </div>
                             </td>
                             <td>
                                 <div className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
