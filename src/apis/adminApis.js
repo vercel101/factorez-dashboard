@@ -654,3 +654,22 @@ export const exportPurchaseReport = (data, token) => {
         data: data,
     });
 };
+export const getPaymentReportApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/payment-report`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+export const updatePaymentReportApi = (orderId, data, token) => {
+    return axios({
+        method: "PUT",
+        url: `${process.env.REACT_APP_API_ADDRESS}/update-payment-report/${orderId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};

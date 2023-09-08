@@ -74,7 +74,7 @@ const Navbar = () => {
                 {/*</div>*/}
             </div>
             <div className="flex items-center">
-                <HiOutlineMail
+                {/* <HiOutlineMail
                     size={25}
                     className="mx-2 cursor-pointer dark:text-white"
                     title="Mail Box"
@@ -83,7 +83,7 @@ const Navbar = () => {
                     size={25}
                     className="mx-2 cursor-pointer dark:text-white"
                     title="Notifications"
-                />
+                /> */}
                 <div>
                     {darkModeReducer ? (
                         <CiLight
