@@ -1,4 +1,4 @@
-const capitalizeString = (text) => {
+export const capitalizeString = (text) => {
     text = text.toLowerCase();
     let arr = text.replaceAll("_", " ");
     arr = arr.split(" ");
@@ -10,4 +10,4 @@ const capitalizeString = (text) => {
     return str2;
 };
 
-module.exports = { capitalizeString };
+
