@@ -136,6 +136,7 @@ const PaymentReport = ({ tokenReducer, userInfoReducer }) => {
                                     }
                                 >
                                     <option value="PENDING">Pending</option>
+                                    <option value="DUE">Due</option>
                                     <option value="PARTIAL_PAID">Partial Paid</option>
                                     <option value="FULL_PAID">Full Paid</option>
                                     <option value="SETTLED_PAID">Settled Paid</option>
@@ -300,7 +301,7 @@ const PaymentReport = ({ tokenReducer, userInfoReducer }) => {
                                     )}
                                     <Td>{el.orderId}</Td>
                                     <Td>{dateToLocalDateTime(el.order_date)}</Td>
-                                    <Td>12500</Td>
+                                    <Td>{el.vendorAmtInfo && el.vendorAmtInfo.grandTotal}</Td>
                                     <Td>
                                         <Badge py={1} colorScheme={Object.keys(badgeColor).includes(el.order_status_id && el.order_status_id.status) ? badgeColor[el.order_status_id.status] : "cyan"}>
                                             {el.order_status_id && el.order_status_id.status}

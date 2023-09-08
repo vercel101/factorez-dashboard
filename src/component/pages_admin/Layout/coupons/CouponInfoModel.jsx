@@ -2,16 +2,17 @@ import React from "react";
 import { MdClose } from "react-icons/md";
 import { localDate } from "../../../../utils/stringToLocalDate";
 const CouponInfoModel = ({ data, close }) => {
+    console.log(data);
     return (
         <div className={`fixed z-20 top-0 left-0 right-0 bottom-0 bg-[#00000043] `}>
-            <div className={`w-1/4 bg-white dark:bg-slate-600 mt-16 absolute m-auto right-0 left-0 rounded border-2 border-red-400 dark:border-blue-600`}>
+            <div className={`w-1/3 bg-white dark:bg-slate-600 mt-16 absolute m-auto right-0 left-0 rounded border-2 border-red-400 dark:border-blue-600`}>
                 <div className="w-full px-2 bg-red-400 dark:bg-blue-600 text-white flex items-center justify-between">
                     <span>Coupon Code Information</span>
 
                     <MdClose className="bg-transparent hover:bg-teal-200 hover:text-black cursor-pointer " onClick={() => close()} />
                 </div>
                 <div className="p-2">
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="grid grid-cols-2 gap-2 ">
                         <div className="border dark:border-teal-600/70 border-teal-600/20 p-1">
                             <span>Coupon Code : </span>
                             <span>{data.couponCode}</span>
@@ -36,6 +37,10 @@ const CouponInfoModel = ({ data, close }) => {
                             <span>Disc.Value : </span>
                             <span>{data.discountAmt}</span>
                         </div>
+                        <div className="border dark:border-teal-600/70 border-teal-600/20 p-1 col-span-2">
+                            <span>Minimum Order Amount : </span>
+                            <span>{data.minOrderAmt}</span>
+                        </div>
                         {data.discountType === "PERCENTAGE" && (
                             <div className="border dark:border-teal-600/70 border-teal-600/20 p-1">
                                 <span>Max Disc.Price : </span>
@@ -43,8 +48,8 @@ const CouponInfoModel = ({ data, close }) => {
                             </div>
                         )}
                     </div>
-                    <div className="mt-2  max-h-[300px] overflow-y-scroll">
-                        <table className={`w-full text-xs text-left text-gray-500 dark:text-gray-400`}>
+                    <div className="mt-2  max-h-[300px] overflow-y-auto">
+                        <table className={`w-full text-left text-gray-500 dark:text-gray-400`}>
                             <thead className={`text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400`}>
                                 <tr>
                                     <th scope="col" className="">

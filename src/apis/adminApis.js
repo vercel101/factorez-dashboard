@@ -673,3 +673,14 @@ export const updatePaymentReportApi = (orderId, data, token) => {
         data: data,
     });
 };
+
+export const updatePaymentStatusApi = (paymentId, data, token) => {
+    return axios({
+        method: "PUT",
+        url: `${process.env.REACT_APP_API_ADDRESS}/updatepaymentstatus/${paymentId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};

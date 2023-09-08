@@ -5,7 +5,6 @@ function App() {
     return (
         <div className={`${darkModeReducer && "dark"}`}>
             <Admin />
-            hello boss
         </div>
     );
 }
