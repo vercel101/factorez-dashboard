@@ -32,6 +32,7 @@ import { dateToLocalDateTime } from "../../../../utils/dateUtils";
 import { useDispatch } from "react-redux";
 import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
 import { GrTooltip } from "react-icons/gr";
+import { capitalizeString } from "../../../../utils/capitalize";
 
 export const badgeColor = {
     CANCELLED: "red",
@@ -233,7 +234,7 @@ const PaymentReport = ({ tokenReducer, userInfoReducer }) => {
                                     {selectedRowData && selectedRowData.paymentReportStatus && selectedRowData.paymentReportStatus.logs.length > 0 ? (
                                         selectedRowData.paymentReportStatus.logs.map((el) => (
                                             <Tr>
-                                                <Td>{el.paymentStatus && el.paymentStatus.replace('_'," ")}</Td>
+                                                <Td>{el.paymentStatus && capitalizeString(el.paymentStatus)}</Td>
                                                 <Td>{el.paidAmount ? el.paidAmount : 0}</Td>
                                                 <Td>{el.updateAt ? dateToLocalDateTime(el.updateAt) : ""}</Td>
                                                 <Td>{el.settlementAmt ? el.settlementAmt : 0}</Td>
@@ -304,7 +305,7 @@ const PaymentReport = ({ tokenReducer, userInfoReducer }) => {
                                     <Td>{el.vendorAmtInfo && el.vendorAmtInfo.grandTotal}</Td>
                                     <Td>
                                         <Badge py={1} colorScheme={Object.keys(badgeColor).includes(el.order_status_id && el.order_status_id.status) ? badgeColor[el.order_status_id.status] : "cyan"}>
-                                            {el.order_status_id && el.order_status_id.status}
+                                            {el.order_status_id && capitalizeString(el.order_status_id.status)}
                                         </Badge>
                                     </Td>
                                     <Td>

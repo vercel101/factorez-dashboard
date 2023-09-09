@@ -58,7 +58,7 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                     console.log(err);
                     toast({
                         title: "Error",
-                        description: err.message,
+                        description: err.response.data.message,
                         position: "top",
                         isClosable: true,
                         status: "error",
@@ -107,7 +107,7 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                             Status
                         </label>
                         <Select
-                            disabled={selectedRowData && selectedRowData.payment_id && selectedRowData.payment_id.payment_status === "RETURNED" && true}
+                            disabled={selectedRowData && selectedRowData.payment_id && selectedRowData.payment_id.payment_status === "REFUNDED" && true}
                             onChange={(e) =>
                                 setModelData((old) => {
                                     return { ...old, payment_status: e.target.value };
@@ -116,10 +116,16 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                             id="paymentStatus"
                             placeholder="Select option"
                         >
-                            <option disabled={selectedRowData && selectedRowData.payment_id && selectedRowData.payment_id.payment_status === "RECEIVED" && true} value={"RECEIVED"}>
+                            <option
+                                disabled={
+                                    (selectedRowData && selectedRowData.payment_id && selectedRowData.payment_id.payment_status === "RECEIVED" && true) ||
+                                    (selectedRowData && selectedRowData.payment_id && selectedRowData.payment_id.return_amount > 0 && true)
+                                }
+                                value={"RECEIVED"}
+                            >
                                 Received
                             </option>
-                            <option value={"RETURNED"}>Returned</option>
+                            <option value={"REFUNDED"}>Refunded</option>
                         </Select>
                         <div className="grid grid-cols-2 gap-1 mt-1">
                             <div>
@@ -173,14 +179,33 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                     <Thead bg={"teal.100"}>
                         <Tr>
                             <Th py={2}>Order ID</Th>
-                            <Th py={2}>Order Value</Th>
-                            <Th py={2}>Invoice Value</Th>
-                            <Th py={2}>Advance</Th>
-                            <Th py={2}>Discount</Th>
-                            <Th py={2}>Total</Th>
-                            <Th py={2}>Refund</Th>
-                            <Th py={2}>COD</Th>
-                            <Th py={2}>Status</Th>
+                            <Th isNumeric py={2}>
+                                Order Value
+                            </Th>
+                            <Th isNumeric py={2}>
+                                Invoice Value
+                            </Th>
+                            <Th isNumeric py={2}>
+                                Discount
+                            </Th>
+                            <Th isNumeric py={2}>
+                                Total
+                            </Th>
+                            <Th isNumeric py={2}>
+                                Advance
+                            </Th>
+                            <Th isNumeric py={2}>
+                                Net Total
+                            </Th>
+                            <Th isNumeric py={2}>
+                                Refund
+                            </Th>
+                            <Th isNumeric py={2}>
+                                COD
+                            </Th>
+                            <Th isNumeric py={2}>
+                                Status
+                            </Th>
                             <Th isNumeric py={2}>
                                 Action
                             </Th>
@@ -191,8 +216,8 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                             records.map((el) => (
                                 <Tr className="hover:bg-teal-50">
                                     <Td>{el.orderId}</Td>
-                                    <Td>{el.partialCancelOrderInfo ? el.partialCancelOrderInfo.orderedAmtInfo.grand_total : el.grand_total}</Td>
-                                    <Td>
+                                    <Td isNumeric>{el.partialCancelOrderInfo ? el.partialCancelOrderInfo.orderedAmtInfo.grand_total : el.grand_total}</Td>
+                                    <Td isNumeric>
                                         {el.saleInvoice ? (
                                             el.grand_total
                                         ) : (
@@ -201,21 +226,28 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                                             </Badge>
                                         )}
                                     </Td>
-                                    <Td>{el.payment_id.partial_payment ? el.payment_id.partial_payment.payment_amount : el.payment_id.payment_amount ? el.payment_id.payment_amount : 0}</Td>
-                                    <Td>{el.discounted_amount ? el.discounted_amount : 0}</Td>
-                                    <Td>
+                                    <Td isNumeric>{el.discounted_amount ? el.discounted_amount : 0}</Td>
+                                    <Td isNumeric>
                                         {el.partialCancelOrderInfo
                                             ? (el.partialCancelOrderInfo.orderedAmtInfo.grand_total - el.discounted_amount).toFixed(2)
                                             : (el.grand_total - el.discounted_amount).toFixed(2)}
                                     </Td>
-                                    <Td>0</Td>
-                                    <Td>{el.payment_id.balance_amount}</Td>
-                                    <Td>
+                                    <Td textColor={"whatsapp.700"} fontWeight={"bold"} isNumeric>
+                                        {el.payment_id.payment_status === "RECEIVED"
+                                            ? el.payment_id.payment_amount
+                                            : el.payment_id.payment_status === "PENDING"
+                                            ? 0
+                                            : el.payment_id.partial_payment.payment_amount}
+                                    </Td>
+                                    <Td isNumeric>{el.payment_id.balance_amount}</Td>
+                                    <Td isNumeric>{el.payment_id && el.payment_id.return_amount && el.payment_id.return_amount}</Td>
+                                    <Td isNumeric>{el.payment_id.balance_amount}</Td>
+                                    <Td isNumeric>
                                         {el.payment_id.payment_status === "RECEIVED" ? (
                                             <Badge userSelect={"none"} p={1} variant="solid" colorScheme="green">
                                                 {capitalizeString(el.payment_id.payment_status)}
                                             </Badge>
-                                        ) : el.payment_id.payment_status === "RETURNED" || el.payment_id.payment_status === "FAILED" ? (
+                                        ) : el.payment_id.payment_status === "REFUNDED" || el.payment_id.payment_status === "FAILED" ? (
                                             <Badge userSelect={"none"} p={1} variant={"solid"} colorScheme="red">
                                                 {capitalizeString(el.payment_id.payment_status)}
                                             </Badge>

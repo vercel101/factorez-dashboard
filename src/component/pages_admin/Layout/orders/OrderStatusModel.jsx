@@ -485,16 +485,16 @@ const OrderStatusModel = ({ data, close, updatetrackingno, userInfoReducer, upda
                                 </option>
                                 {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
                                     <>
-                                        <option value="PICKUP_ALLIGNED" disabled={statusList.includes("PICKUP_ALLIGNED")}>
-                                            Pickup alligned
+                                        <option value="PICKUP_ALIGNED" disabled={statusList.includes("PICKUP_ALIGNED")}>
+                                            Pickup aligned
                                         </option>
                                         <option value="PICKUP_DONE" disabled={statusList.includes("PICKUP_DONE")}>
                                             Pickup Done/InTransit
                                         </option>
-                                        <option value="RETURNED" disabled={statusList.includes("RETURNED")}>
+                                        <option value="RETURNED_RTO" disabled={statusList.includes("RETURNED_RTO")}>
                                             RTO
                                         </option>
-                                        <option value="RETURNED" disabled={statusList.includes("RETURNED")}>
+                                        <option value="RETURNED_RTO_DELIVERED" disabled={statusList.includes("RETURNED_RTO_DELIVERED")}>
                                             RTO Delivered To seller
                                         </option>
                                         <option value="OUT_FOR_DELIVERY" disabled={statusList.includes("OUT_FOR_DELIVERY")}>
