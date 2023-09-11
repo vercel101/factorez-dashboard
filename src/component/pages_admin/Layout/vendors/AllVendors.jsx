@@ -4,7 +4,6 @@ import { MdClose, MdDeleteOutline, MdEdit } from "react-icons/md";
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import { LuEye } from "react-icons/lu";
 import { TbDots } from "react-icons/tb";
-import ReactPaginate from "react-paginate";
 import { CiSearch } from "react-icons/ci";
 import { deleteVendorApi, getAllVentorApi, verifyVendorApi } from "../../../../apis/adminApis";
 import { localDate } from "../../../../utils/stringToLocalDate";
