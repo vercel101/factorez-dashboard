@@ -29,4 +29,4 @@ const customStyles = {
         },
     },
 };
-module.exports = { customStyles };
+module = { customStyles };
