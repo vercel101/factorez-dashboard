@@ -1,4 +1,4 @@
-const customStyles = {
+export const customStyles = {
     rows: {
         style: {
             minHeight: "60px",
@@ -29,4 +29,3 @@ const customStyles = {
         },
     },
 };
-module = { customStyles };
