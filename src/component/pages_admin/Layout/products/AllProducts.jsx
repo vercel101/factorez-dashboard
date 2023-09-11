@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuEye } from "react-icons/lu";
 import { MdDeleteOutline, MdEdit } from "react-icons/md";
-import ReactPaginate from "react-paginate";
 import { TbDots } from "react-icons/tb";
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
 import { allProductApi, changeProductStatusApi, changeProductStockStatusApi } from "../../../../apis/adminApis";
