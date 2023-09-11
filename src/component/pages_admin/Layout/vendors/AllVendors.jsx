@@ -31,7 +31,7 @@ function AllVendors({ tokenReducer }) {
         const link = document.createElement("a");
         let csv = convertVendorArrayOfObjectsToCSV(array);
         if (csv == null) return;
-        const filename = "products.csv";
+        const filename = "vendors.csv";
         if (!csv.match(/^data:text\/csv/i)) {
             csv = `data:text/csv;charset=utf-8,${csv}`;
         }
