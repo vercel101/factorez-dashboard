@@ -226,7 +226,7 @@ export const createProductApi = (data, token) => {
         data: data,
     });
 };
-export const chnageProductStatusApi = (data, productId, token) => {
+export const changeProductStatusApi = (data, productId, token) => {
     return axios({
         method: "PATCH",
         url: `${process.env.REACT_APP_API_ADDRESS}/changeproductstatus/${productId}`,
@@ -237,7 +237,7 @@ export const chnageProductStatusApi = (data, productId, token) => {
     });
 };
 
-export const chnageProductStockStatusApi = (data, productId, token) => {
+export const changeProductStockStatusApi = (data, productId, token) => {
     return axios({
         method: "PATCH",
         url: `${process.env.REACT_APP_API_ADDRESS}/changeproductstockstatus/${productId}`,

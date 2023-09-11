@@ -16,7 +16,7 @@ const OrderStatusModel = ({ data, close, updatetrackingno, userInfoReducer, upda
     const [cancelMessage, setCancelMessage] = useState("");
     const [questionId, setQuestionId] = useState(null);
     const options = document.querySelectorAll("li");
-    console.log(data);
+    // console.log(data);
     for (let i = 0; i < options.length; i++) {
         options[i].onclick = () => {
             document.activeElement.blur();

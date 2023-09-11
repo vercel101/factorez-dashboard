@@ -6,28 +6,139 @@ import { MdDeleteOutline, MdEdit } from "react-icons/md";
 import ReactPaginate from "react-paginate";
 import { TbDots } from "react-icons/tb";
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
-import { allProductApi, chnageProductStatusApi, chnageProductStockStatusApi } from "../../../../apis/adminApis";
+import { allProductApi, changeProductStatusApi, changeProductStockStatusApi } from "../../../../apis/adminApis";
 import { localDate } from "../../../../utils/stringToLocalDate";
 import TableActionModel from "../TableActionModel";
 import TableProductModel from "../TableProductModel";
 import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
+import DataTable from "react-data-table-component";
+import { PiMicrosoftExcelLogoDuotone } from "react-icons/pi";
+import { Badge, Button, Checkbox, Input, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, PopoverTrigger, Portal } from "@chakra-ui/react";
+import { FilterByProductName } from "./FilterComponent";
+import { customStyles } from "../../../../utils/customStylesDataTable";
+import { convertProductArrayOfObjectsToCSV } from "../../../../utils/convertArrayToCsv";
 
-const AllProducts = ({userInfoReducer, tokenReducer }) => {
+const AllProducts = ({ userInfoReducer, tokenReducer }) => {
     const dispatch = useDispatch();
     const [allProduct, setAllProducts] = useState([]);
     const [activeTableModel, setActiveTableModel] = useState({
         flag: false,
         data: null,
     });
-    const [data, setData] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-    let size = 5;
-    const pageCount = Math.ceil(data.length / size);
-    const handlePageClick = (event) => {};
+    const [filterText, setFilterText] = React.useState("");
+    const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
+
+    function downloadCSV(array) {
+        const link = document.createElement("a");
+        let csv = convertProductArrayOfObjectsToCSV(array);
+        if (csv == null) return;
+        const filename = "products.csv";
+        if (!csv.match(/^data:text\/csv/i)) {
+            csv = `data:text/csv;charset=utf-8,${csv}`;
+        }
+        link.setAttribute("href", encodeURI(csv));
+        link.setAttribute("download", filename);
+        link.click();
+    }
+    const Export = ({ onExport }) => (
+        <Button colorScheme="whatsapp" leftIcon={<PiMicrosoftExcelLogoDuotone size={25} />} onClick={(e) => onExport(e.target.value)}>
+            Export
+        </Button>
+    );
+
+    const paginationComponentOptions = {
+        rowsPerPageText: "No of Rows",
+        rangeSeparatorText: "Total Records",
+        selectAllRowsItem: true,
+        selectAllRowsItemText: "HSN code",
+    };
+
+    const columns = [
+        {
+            name: "Img",
+            selector: (row) => <img className=" object-contain h-12 w-12" src={row.thumbnail_pic} alt={row.product_name} />,
+        },
+        {
+            name: "SKU CODE",
+            selector: (row) => row.sku_code,
+        },
+        {
+            name: <span className="whitespace-normal">Product Name</span>,
+            selector: (row) => <span className="whitespace-normal">{row.product_name}</span>,
+        },
+        {
+            name: "Brand",
+            selector: (row) => <span className="whitespace-normal">{row.brandId.brand_name}</span>,
+        },
+        {
+            name: "HSN code",
+            selector: (row) => row.hsn_code,
+        },
+        {
+            name: "Category",
+            selector: (row) => <span className="whitespace-normal">{row.categoryId.category_name}</span>,
+        },
+        {
+            name: <span className="whitespace-normal">Sub Category</span>,
+            selector: (row) => row.subCatId.subcategory_name,
+        },
+        {
+            name: <span className="whitespace-normal">Dt. Added</span>,
+            selector: (row) => localDate(row.createdAt),
+        },
+        {
+            name: "Seller Name",
+            selector: (row) => row.vendor_id.firmName,
+        },
+        {
+            name: "Status",
+            selector: (row) => <Badge py={1} variant={'solid'}>{row.status}</Badge>,
+        },
+        {
+            name: "Action",
+            selector: (row) => (
+                <Popover
+                    placement="left"
+                    styleConfig={{
+                        popper: {
+                            maxWidth: "unset",
+                            width: "unset",
+                        },
+                    }}
+                >
+                    <PopoverTrigger>
+                        <button className="focus:outline-none">
+                            <BsThreeDotsVertical size={35} className=" border dark:border-neutral-500 cursor-pointer py-1 rounded-md hover:bg-teal-100 dark:hover:bg-teal-800" />
+                        </button>
+                    </PopoverTrigger>
+                    <Portal>
+                        <PopoverContent className="bg-white rounded shadow-md">
+                            <PopoverBody>
+                                <div className="flex items-center">
+                                    <LuEye size={30} color="green" className="m-2 cursor-pointer" title="Information" onClick={() => eyeBtn(row._id, row)} />
+                                    {/* {userInfoReducer.userType !== "Seller" && (
+                                        <>
+                                            <MdEdit size={30} color="blue" className="m-2 cursor-pointer" title="Edit Product" onClick={() => editBtn(row._id)} />
+                                            <MdDeleteOutline size={30} color="red" className="m-2 cursor-pointer" title="Delete" onClick={() => deleteBtn(row._id)} />
+                                        </>
+                                    )} */}
+                                </div>
+                            </PopoverBody>
+                        </PopoverContent>
+                    </Portal>
+                </Popover>
+            ),
+        },
+    ];
+
     const getAllProduct = async () => {
         await allProductApi(tokenReducer)
             .then((res) => {
                 console.log(res.data);
-                setAllProducts(res.data.data);
+                setAllProducts((old) => {
+                    let arr = res.data.data;
+                    return arr;
+                });
             })
             .catch((err) => {
                 console.log(err);
@@ -37,7 +148,7 @@ const AllProducts = ({userInfoReducer, tokenReducer }) => {
     const updateProduct = async (data) => {
         dispatch(spinnerOverlayOnFn());
         if (data.newStatus === "Approved") {
-            await chnageProductStatusApi({ newStatus: data.newStatus, margin: data.marginGst.margin, sellingGST: data.marginGst.sellingGst }, data.productId, tokenReducer)
+            await changeProductStatusApi({ newStatus: data.newStatus, margin: data.marginGst.margin, sellingGST: data.marginGst.sellingGst }, data.productId, tokenReducer)
                 .then((res) => {
                     setActiveTableModel({ flag: false, data: null });
                     // console.log(res.data);
@@ -48,7 +159,7 @@ const AllProducts = ({userInfoReducer, tokenReducer }) => {
                     console.log(err);
                 });
         } else {
-            await chnageProductStatusApi({ newStatus: data.newStatus }, data.productId, tokenReducer)
+            await changeProductStatusApi({ newStatus: data.newStatus }, data.productId, tokenReducer)
                 .then((res) => {
                     setActiveTableModel({ flag: false, data: null });
                     console.log(res.data);
@@ -63,7 +174,7 @@ const AllProducts = ({userInfoReducer, tokenReducer }) => {
     };
     const changeStockStatusFn = async (data) => {
         dispatch(spinnerOverlayOnFn());
-        await chnageProductStockStatusApi({ newStockStatus: data.newStockStatus }, data.productId, tokenReducer)
+        await changeProductStockStatusApi({ newStockStatus: data.newStockStatus }, data.productId, tokenReducer)
             .then((res) => {
                 setActiveTableModel({ flag: false, data: null });
                 console.log(res.data);
@@ -85,54 +196,41 @@ const AllProducts = ({userInfoReducer, tokenReducer }) => {
     const deleteBtn = (objId) => {
         console.log(objId);
     };
-
-    const updatedTable = () => {
-        return allProduct.map((el, i) => (
-            <tr key={el._id} className="border-b dark:border-neutral-500 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td className="whitespace-nowrap border-r px-6 py-2 font-medium dark:border-neutral-500">
-                    <input type="checkbox" name="" id="" className="scale-150 " />
-                </td>
-                <td className="whitespace-nowrap border-r h-12 w-12 max-h-12 max-w-12 overflow-hidden font-medium dark:border-neutral-500">
-                    <img className=" object-contain h-full w-full" src={el.thumbnail_pic} alt={el.product_name} />
-                </td>
-                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.sku_code}</td>
-                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.product_name}</td>
-                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.brandId.brand_name}</td>
-                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.hsn_code}</td>
-                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.categoryId.category_name}</td>
-                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.subCatId.subcategory_name}</td>
-                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{localDate(el.createdAt)}</td>
-                {userInfoReducer.userType !== "Seller" && el.vendor_id && <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.vendor_id.firmName}</td>}
-
-                <td className="whitespace-nowrap border-r px-6 py-2 dark:border-neutral-500">{el.status}</td>
-                <td className="whitespace-nowrap px-6 py-2 flex">
-                    <div tabIndex="0" className="group relative inline-block ">
-                        <button className="focus:outline-none">
-                            <BsThreeDotsVertical size={35} className=" border dark:border-neutral-500 cursor-pointer py-1 rounded-md hover:bg-teal-100 dark:hover:bg-teal-800" />
-                        </button>
-                        <div className="hidden group-focus-within:block items-center dark:border-neutral-500 rounded-md p-1 list-none absolute border dark:bg-teal-800 bg-teal-100 right-10 top-0 z-1 shadow-lg animate-slideIn">
-                            <div className="flex">
-                                <LuEye size={30} className="m-2 cursor-pointer" title="Information" onClick={(e) => eyeBtn(el._id, el)} />
-                                {userInfoReducer.userType !== "Seller" && (
-                                    <>
-                                        <MdEdit size={30} className="m-2 cursor-pointer" title="Edit Product" onClick={(e) => editBtn(el._id)} />
-                                        <MdDeleteOutline size={30} className="m-2 cursor-pointer" title="Delete" onClick={(e) => deleteBtn(el._id)} />
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        ));
+    const filteredItems = allProduct.filter((item) => {
+        let record = null;
+        if (
+            item.product_name.toLowerCase().includes(filterText.toLowerCase()) ||
+            item.sku_code.includes(filterText.toLowerCase()) ||
+            item.vendor_id.firmName.toLowerCase().includes(filterText.toLowerCase())
+        ) {
+            record = item;
+        }
+        return record;
+    });
+    const subHeaderComponent = React.useMemo(() => {
+        const handleClear = () => {
+            if (filteredItems) {
+                setResetPaginationToggle(!resetPaginationToggle);
+                setFilterText("");
+            }
+        };
+        return (
+            <div className="flex items-center space-x-3">
+                <FilterByProductName onFilter={(e) => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
+                {console.log(filteredItems)}
+                <Export onExport={() => downloadCSV(filteredItems)} />
+            </div>
+        );
+    }, [filterText, filteredItems, resetPaginationToggle]);
+    const selectedRows = (e) => {
+        console.log(e);
     };
-
     useEffect(() => {
         getAllProduct();
     }, []);
 
     return (
-        <div className=" p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+        <div className="bg-gray-50 dark:bg-gray-800">
             {activeTableModel.flag && (
                 <TableProductModel
                     save={updateProduct}
@@ -141,111 +239,19 @@ const AllProducts = ({userInfoReducer, tokenReducer }) => {
                     actionClose={() => setActiveTableModel({ data: null, flag: false })}
                 />
             )}
-            <div className="flex justify-start items-center text-sm">
-                <select name="" id="" className="outline-none bg-white dark:bg-teal-800 px-3 py-1 rounded-s-full border">
-                    <option value="">Test Product 1</option>
-                    <option value="">Test Product 2</option>
-                    <option value="">Test Product 3</option>
-                    <option value="">Test Product 4</option>
-                </select>
-                <select name="" id="" className="outline-none bg-white px-3 py-1 dark:bg-teal-800 border border-s-0">
-                    <option value="">Test Product 1</option>
-                    <option value="">Test Product 2</option>
-                    <option value="">Test Product 3</option>
-                    <option value="">Test Product 4</option>
-                </select>
-                <select name="" id="" className="outline-none bg-white px-3 py-1 border dark:bg-teal-800 border-s-0 rounded-e-full">
-                    <option value="">Test Product 1</option>
-                    <option value="">Test Product 2</option>
-                    <option value="">Test Product 3</option>
-                    <option value="">Test Product 4</option>
-                </select>
-            </div>
-
-            <div className="mt-10">
-                <div className="flex flex-col">
-                    <div className="overflow-x-auto ">
-                        <div className="inline-block min-w-full py-2 ">
-                            <div className="">
-                                <table className="min-w-full bg-white dark:bg-gray-800 border text-start text-sm font-light dark:border-neutral-500">
-                                    <thead className="border-b font-medium dark:border-neutral-500">
-                                        <tr>
-                                            <th scope="col" className="border-r w-1 p-3 dark:border-neutral-500 ">
-                                                <input type="checkbox" name="" id="" className="scale-150 " />
-                                            </th>
-                                            <th scope="col" className="border-r w-[20px] px-6 py-3 dark:border-neutral-500">
-                                                Img.
-                                            </th>
-                                            <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                SKU CODE
-                                            </th>
-                                            <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                Product Name
-                                            </th>
-                                            <th scope="col" className="px-6 py-3 border-r dark:border-neutral-500 text-start">
-                                                Brand
-                                            </th>
-                                            <th scope="col" className="px-6 py-3 border-r dark:border-neutral-500 text-start">
-                                                HSN code
-                                            </th>
-                                            <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                Category
-                                            </th>
-                                            <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                Sub Category
-                                            </th>
-                                            <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                Dt. Added
-                                            </th>
-                                            {userInfoReducer.userType !== "Seller" && (
-                                                <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                    Seller Name
-                                                </th>
-                                            )}
-
-                                            <th scope="col" className="border-r px-6 py-3 dark:border-neutral-500 text-start">
-                                                Status
-                                            </th>
-                                            <th scope="col" className="px-6 w-1 py-3 border-r dark:border-neutral-500 text-start">
-                                                Action
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>{allProduct.length > 0 && updatedTable()}</tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-5 flex justify-between items-center">
-                        <div className="flex items-center">
-                            <input
-                                type="text"
-                                placeholder="page"
-                                className="h-12 w-20 outline-none text-center border dark:border-teal-500 dark:bg-teal-800 text-lg font-semibold"
-                            />
-                            <button type="text" className="h-12 w-12 dark:bg-teal-500 bg-teal-200 text-center">
-                                Go!
-                            </button>
-                        </div>
-                        <ReactPaginate
-                            breakLabel={<TbDots size={20} />}
-                            nextLabel={<AiFillCaretRight />}
-                            breakClassName="h-12 w-16 border dark:border-neutral-500"
-                            className="flex justify-center items-center select-none"
-                            pageClassName="h-12 w-16 border dark:border-neutral-500"
-                            previousClassName="h-12 w-16 border dark:border-neutral-500"
-                            nextClassName="h-12 w-16 border dark:border-neutral-500"
-                            activeClassName="bg-[#ddd] dark:bg-teal-800"
-                            disabledLinkClassName="bg-black dark:bg-white"
-                            onPageChange={handlePageClick}
-                            pageRangeDisplayed={5}
-                            pageCount={pageCount}
-                            previousLabel={<AiFillCaretLeft />}
-                            renderOnZeroPageCount={null}
-                        />
-                    </div>
-                </div>
-            </div>
+            <DataTable
+                columns={columns}
+                data={filteredItems}
+                selectableRows
+                pagination
+                paginationComponentOptions={paginationComponentOptions}
+                paginationResetDefaultPage={resetPaginationToggle}
+                subHeader
+                onSelectedRowsChange={selectedRows}
+                subHeaderComponent={subHeaderComponent}
+                customStyles={customStyles}
+                subHeaderAlign={"left"}
+            />
         </div>
     );
 };

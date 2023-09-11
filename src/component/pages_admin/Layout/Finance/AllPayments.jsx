@@ -75,6 +75,69 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
             });
         }
     };
+
+    const refundBtnIsDisabled = (orderStatus, paymentStatus, refundAmt) => {
+        if (orderStatus === "PENDING") {
+            return true;
+        } else if (orderStatus === "CANCELLED" && paymentStatus !== "REFUNDED" && refundAmt > 0) {
+            return false;
+        } else if (orderStatus === "PARTIAL_CONFIRMED" && refundAmt > 0 && paymentStatus !== "PARTIAL_REFUNDED") {
+            return false;
+        } else {
+            return true;
+        }
+    };
+
+    const modelBtnIsDisabled = (orderStatus, paymentStatus, refundAmt, balanceAmt) => {
+        if (orderStatus === "PENDING") {
+            return true;
+        } else if (orderStatus === "CANCELLED" && paymentStatus !== "REFUNDED" && refundAmt > 0) {
+            return false;
+        } else if (orderStatus === "PARTIAL_CONFIRMED" && refundAmt > 0 && paymentStatus !== "PARTIAL_REFUNDED") {
+            return false;
+        } else if (balanceAmt > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+
+    const orderStatusBadge = (status) => {
+        let variant = "";
+        let colorScheme = "";
+        //"PENDING", "CONFIRMED", "PARTIAL_CONFIRMED",
+        //"READY_TO_DISPATCH", "PICKUP_ALIGNED", "PICKUP_DONE",
+        //"RETURNED","RETURNED_RTO","RETURNED_RTO_DELIVERED",
+        //"DELIVERED", "CANCELLED", "OUT_FOR_DELIVERY"
+        if (status === "CONFIRMED") {
+            variant = "solid";
+            colorScheme = "green";
+        } else if (status === "OUT_FOR_DELIVERY") {
+            variant = "outline";
+            colorScheme = "green";
+        } else if (status === "PENDING") {
+            variant = "outline";
+            colorScheme = "facebook";
+        } else if (status === "PARTIAL_CONFIRMED") {
+            variant = "solid";
+            colorScheme = "whatsapp";
+        } else if (status === "CANCELLED") {
+            variant = "solid";
+            colorScheme = "red";
+        } else if (status === "DELIVERED") {
+            variant = "solid";
+            colorScheme = "orange";
+        } else {
+            variant = "solid";
+            colorScheme = "";
+        }
+        return (
+            <Badge p={1} colorScheme={colorScheme} variant={variant}>
+                {capitalizeString(status)}
+            </Badge>
+        );
+    };
+
     const fetchOrders = async () => {
         await getOrderReportApi(tokenReducer)
             .then((res) => {
@@ -107,7 +170,13 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                             Status
                         </label>
                         <Select
-                            disabled={selectedRowData && selectedRowData.payment_id && selectedRowData.payment_id.payment_status === "REFUNDED" && true}
+                            disabled={
+                                selectedRowData &&
+                                selectedRowData.payment_id &&
+                                selectedRowData.payment_id.payment_status === "REFUNDED" &&
+                                selectedRowData.payment_id.order_amount - selectedRowData.payment_id.discount_amt === selectedRowData.payment_id.return_amount &&
+                                true
+                            }
                             onChange={(e) =>
                                 setModelData((old) => {
                                     return { ...old, payment_status: e.target.value };
@@ -125,7 +194,16 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                             >
                                 Received
                             </option>
-                            <option value={"REFUNDED"}>Refunded</option>
+                            <option
+                                disabled={
+                                    selectedRowData &&
+                                    selectedRowData.payment_id &&
+                                    refundBtnIsDisabled(selectedRowData.payment_id.order_status, selectedRowData.payment_id.payment_status, selectedRowData.payment_id.return_amount)
+                                }
+                                value={"REFUNDED"}
+                            >
+                                Refunded
+                            </option>
                         </Select>
                         <div className="grid grid-cols-2 gap-1 mt-1">
                             <div>
@@ -180,6 +258,9 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                         <Tr>
                             <Th py={2}>Order ID</Th>
                             <Th isNumeric py={2}>
+                                Order Status
+                            </Th>
+                            <Th isNumeric py={2}>
                                 Order Value
                             </Th>
                             <Th isNumeric py={2}>
@@ -189,19 +270,19 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                                 Discount
                             </Th>
                             <Th isNumeric py={2}>
-                                Total
+                                Net Value
                             </Th>
                             <Th isNumeric py={2}>
                                 Advance
                             </Th>
                             <Th isNumeric py={2}>
-                                Net Total
+                                COD
+                            </Th>
+                            <Th isNumeric py={2}>
+                                COD Received
                             </Th>
                             <Th isNumeric py={2}>
                                 Refund
-                            </Th>
-                            <Th isNumeric py={2}>
-                                COD
                             </Th>
                             <Th isNumeric py={2}>
                                 Status
@@ -216,6 +297,7 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                             records.map((el) => (
                                 <Tr className="hover:bg-teal-50">
                                     <Td>{el.orderId}</Td>
+                                    <Td isNumeric>{el.order_status_id && orderStatusBadge(el.order_status_id.status)}</Td>
                                     <Td isNumeric>{el.partialCancelOrderInfo ? el.partialCancelOrderInfo.orderedAmtInfo.grand_total : el.grand_total}</Td>
                                     <Td isNumeric>
                                         {el.saleInvoice ? (
@@ -227,21 +309,20 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                                         )}
                                     </Td>
                                     <Td isNumeric>{el.discounted_amount ? el.discounted_amount : 0}</Td>
-                                    <Td isNumeric>
-                                        {el.partialCancelOrderInfo
-                                            ? (el.partialCancelOrderInfo.orderedAmtInfo.grand_total - el.discounted_amount).toFixed(2)
-                                            : (el.grand_total - el.discounted_amount).toFixed(2)}
-                                    </Td>
+                                    <Td isNumeric>{(el.grand_total - el.discounted_amount).toFixed(2)}</Td>
+
+                                    {/* "CUSTOM", "TWENTY_ADV", "PREPAID" */}
                                     <Td textColor={"whatsapp.700"} fontWeight={"bold"} isNumeric>
-                                        {el.payment_id.payment_status === "RECEIVED"
+                                        {el.payment_id.payment_mode === "CUSTOM" || el.payment_id.payment_mode === "TWENTY_ADV"
+                                            ? el.payment_id.partial_payment.payment_amount
+                                            : el.payment_id.payment_mode === "PREPAID"
                                             ? el.payment_id.payment_amount
-                                            : el.payment_id.payment_status === "PENDING"
-                                            ? 0
-                                            : el.payment_id.partial_payment.payment_amount}
+                                            : 0}
                                     </Td>
                                     <Td isNumeric>{el.payment_id.balance_amount}</Td>
+                                    <Td isNumeric>{el.payment_id.cod_received}</Td>
                                     <Td isNumeric>{el.payment_id && el.payment_id.return_amount && el.payment_id.return_amount}</Td>
-                                    <Td isNumeric>{el.payment_id.balance_amount}</Td>
+
                                     <Td isNumeric>
                                         {el.payment_id.payment_status === "RECEIVED" ? (
                                             <Badge userSelect={"none"} p={1} variant="solid" colorScheme="green">
@@ -258,15 +339,19 @@ const AllPayments = ({ sidebarCollapse, userInfoReducer, tokenReducer }) => {
                                         )}
                                     </Td>
                                     <Td isNumeric className="flex items-center justify-end">
-                                        <BiSolidMessageSquareEdit
-                                            color="#e34b7b"
-                                            onClick={() => {
-                                                setIsModelOpen(true);
-                                                setSelectedRowData(el);
-                                            }}
-                                            size={30}
-                                            cursor={"pointer"}
-                                        />
+                                        {modelBtnIsDisabled(el.payment_id.order_status, el.payment_id.payment_status, el.payment_id.return_amount, el.payment_id.balance_amount) ? (
+                                            <BiSolidMessageSquareEdit color="#e9ecf0" size={30} />
+                                        ) : (
+                                            <BiSolidMessageSquareEdit
+                                                color="#e34b7b"
+                                                onClick={() => {
+                                                    setIsModelOpen(true);
+                                                    setSelectedRowData(el);
+                                                }}
+                                                size={30}
+                                                cursor={"pointer"}
+                                            />
+                                        )}
                                     </Td>
                                 </Tr>
                             ))
