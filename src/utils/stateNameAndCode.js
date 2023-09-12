@@ -1,4 +1,4 @@
-export default StateAndCode = {
+export const StateAndCode = {
     "Himachal Pradesh": "02",
     Punjab: "03",
     Chandigarh: "04",
@@ -24,7 +24,6 @@ export default StateAndCode = {
     Gujarat: "24",
     "Dadra And Nagar Haveli And Daman And  Diu": "26",
     Maharashtra: "27",
-    "Andhra Pradesh": "28",
     Karnataka: "29",
     Goa: "30",
     Lakshadweep: "31",

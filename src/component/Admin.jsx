@@ -1,184 +1,23 @@
-import React, { useEffect, Suspense, lazy } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import Dashboard from "./pages_admin/Dashboard";
-import Navbar from "./pages_admin/Layout/Navbar";
-import Footer from "./pages_admin/Layout/Footer";
-import Sidebar from "./pages_admin/Layout/Sidebar";
-import SpinnerOverlay from "./pages_admin/Layout/SpinnerOverlay";
-import { useDispatch, useSelector } from "react-redux";
-import LoginSignup from "./pages_admin/LoginSignup";
+import React from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
-// import SubAdmin from "./pages_admin/SubAdmin";
-import { authToken, userInfoAdd, userInfoClear } from "../Redux/ReducerAction";
-import Report from "./pages_admin/Report";
-import { couponEnumList, customerEnumList, isRoleExists, orderEnumList, productEnumList, reportEnumList, settingEnumList, subadminEnumList, vendorsEnumList } from "../utils/checkRole";
-import Profile from "./pages_admin/Layout/profile/Profile";
-import Finance from "./pages_admin/Finance";
+import Navbar from "./pages_admin/Layout/Navbar";
+import Sidebar from "./pages_admin/Layout/Sidebar";
 
 const Admin = () => {
-    const { spinnerOverlayReducer, sidebarCollapse, tokenReducer, userInfoReducer, darkModeReducer, productBrandDDindexReducer, productCategoryNewReducer, productCategoryDDindexReducer } =
-        useSelector((rState) => rState);
-    const SubAdmin = lazy(() => import("./pages_admin/SubAdmin"));
-    const Venders = lazy(() => import("./pages_admin/Venders"));
-    const Setting = lazy(() => import("./pages_admin/Setting"));
-    const Products = lazy(() => import("./pages_admin/Products"));
-    const Orders = lazy(() => import("./pages_admin/Orders"));
-    const Customers = lazy(() => import("./pages_admin/Customers"));
-    const Coupons = lazy(() => import("./pages_admin/Coupons"));
-    const dispatch = useDispatch();
-
-    const navigate = useNavigate();
-    let login = sessionStorage.getItem("token") !== null;
-    let userInfo = {};
-
-    useEffect(() => {
-        if (!login) {
-            navigate("/admin/login/");
-            dispatch(userInfoClear());
-        } else {
-            dispatch(authToken(sessionStorage.getItem("token")));
-            userInfo = JSON.parse(sessionStorage.userInfo);
-            dispatch(userInfoAdd(userInfo));
-        }
-    }, []);
-
+    const location = useLocation();
     return (
         <>
             <Helmet>
                 <title>FactoEz - Admin</title>
             </Helmet>
-
-            {spinnerOverlayReducer && <SpinnerOverlay />}
-            {login ? (
-                <div className="dark:bg-[#17191e] dark:text-white">
+            {location.pathname !== "/admin/login" && (
+                <>
                     <Navbar />
                     <Sidebar />
-                    <Routes>
-                        <Route path={"admin/dashboard"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, productEnumList) && (
-                            <Route
-                                path={"admin/products"}
-                                exact
-                                element={
-                                    <React.Suspense fallback={"Loading..."}>
-                                        <Products
-                                            sidebarCollapse={sidebarCollapse}
-                                            productBrandDDindexReducer={productBrandDDindexReducer}
-                                            darkModeReducer={darkModeReducer}
-                                            userInfoReducer={userInfoReducer}
-                                            productCategoryNewReducer={productCategoryNewReducer}
-                                            productCategoryDDindexReducer={productCategoryDDindexReducer}
-                                            tokenReducer={tokenReducer}
-                                        />
-                                    </React.Suspense>
-                                }
-                            />
-                        )}
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, settingEnumList) && (
-                            <Route
-                                path={"admin/setting"}
-                                exact
-                                element={
-                                    <React.Suspense fallback={"Loading..."}>
-                                        <Setting tokenReducer={tokenReducer} darkModeReducer={darkModeReducer} userInfoReducer={userInfoReducer} sidebarCollapse={sidebarCollapse} />
-                                    </React.Suspense>
-                                }
-                            />
-                        )}
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, vendorsEnumList) && (
-                            <Route
-                                path={"admin/vendors"}
-                                exact
-                                element={
-                                    <React.Suspense fallback={"Loading..."}>
-                                        <Venders sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} userInfoReducer={userInfoReducer} tokenReducer={tokenReducer} />
-                                    </React.Suspense>
-                                }
-                            />
-                        )}
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, subadminEnumList) && (
-                            <Route
-                                path={"admin/subadmin"}
-                                exact
-                                element={
-                                    <React.Suspense fallback={"Loading..."}>
-                                        <SubAdmin userInfoReducer={userInfoReducer} tokenReducer={tokenReducer} sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />
-                                    </React.Suspense>
-                                }
-                            />
-                        )}
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, orderEnumList) && (
-                            <Route
-                                path={"admin/orders"}
-                                exact
-                                element={
-                                    <React.Suspense fallback={"Loading..."}>
-                                        <Orders sidebarCollapse={sidebarCollapse} userInfoReducer={userInfoReducer} tokenReducer={tokenReducer} />
-                                    </React.Suspense>
-                                }
-                            />
-                        )}
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, couponEnumList) && (
-                            <Route
-                                path={"admin/coupon"}
-                                exact
-                                element={
-                                    <React.Suspense fallback={"Loading..."}>
-                                        <Coupons sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} userInfoReducer={userInfoReducer} tokenReducer={tokenReducer} />
-                                    </React.Suspense>
-                                }
-                            />
-                        )}
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, customerEnumList) && (
-                            <Route
-                                path={"admin/customers"}
-                                exact
-                                element={
-                                    <React.Suspense fallback={"Loading..."}>
-                                        <Customers sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} userInfoReducer={userInfoReducer} tokenReducer={tokenReducer} />
-                                    </React.Suspense>
-                                }
-                            />
-                        )}
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, reportEnumList) && (
-                            <>
-                                <Route
-                                    path={"admin/reports"}
-                                    exact
-                                    element={
-                                        <React.Suspense fallback={"Loading..."}>
-                                            <Report tokenReducer={tokenReducer} sidebarCollapse={sidebarCollapse} userInfoReducer={userInfoReducer} />
-                                        </React.Suspense>
-                                    }
-                                />
-                                <Route
-                                    path={"admin/finance"}
-                                    exact
-                                    element={
-                                        <React.Suspense fallback={"Loading..."}>
-                                            <Finance tokenReducer={tokenReducer} sidebarCollapse={sidebarCollapse} userInfoReducer={userInfoReducer} />
-                                        </React.Suspense>
-                                    }
-                                />
-                            </>
-                        )}
-                        <Route
-                            path={"admin/profile"}
-                            exact
-                            element={
-                                <React.Suspense fallback={"Loading..."}>
-                                    <Profile tokenReducer={tokenReducer} sidebarCollapse={sidebarCollapse} userInfoReducer={userInfoReducer} />
-                                </React.Suspense>
-                            }
-                        />
-                        {/* <Footer/> */}
-                    </Routes>
-                </div>
-            ) : (
-                <Routes>
-                    <Route path={"admin/login"} exact element={<LoginSignup />} />
-                </Routes>
+                </>
             )}
+            <Outlet />
         </>
     );
 };

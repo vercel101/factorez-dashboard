@@ -4,10 +4,7 @@ import { FiUserCheck, FiUser } from "react-icons/fi";
 import { HiOutlineDocument, HiOutlineDocumentText } from "react-icons/hi";
 const Dashboard = ({ sidebarCollapse, darkModeReducer }) => {
     return (
-        <div
-            className={`${
-                sidebarCollapse ? "ps-[50px]" : "ps-[250px]"
-            } pt-[45px] transition-all duration-300 dark:bg-[#17191e] dark:text-white w-full h-full min-h-screen`}>
+        <div className={`${sidebarCollapse ? "ps-[50px]" : "ps-[250px]"} pt-[45px] transition-all duration-300 dark:bg-[#17191e] dark:text-white w-full h-full min-h-screen`}>
             <div className="p-4">
                 <div className="grid grid-cols-4 gap-4">
                     <div className="h-[100px] rounded-md p-6 border">
@@ -34,7 +31,7 @@ const Dashboard = ({ sidebarCollapse, darkModeReducer }) => {
                                 <h1 className="font-extrabold text-2xl">100</h1>
                                 <h5>Customers</h5>
                             </div>
-                            <FiUser  size={50} />
+                            <FiUser size={50} />
                         </div>
                     </div>
                     <div className="h-[100px] rounded-md p-6 border">
