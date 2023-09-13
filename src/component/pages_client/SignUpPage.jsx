@@ -14,6 +14,7 @@ const SignUpPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [show, setShow] = React.useState(false);
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [signUpData, setSignUpData] = React.useState({
         name: "",
         gender: "",
@@ -56,7 +57,7 @@ const SignUpPage = () => {
             } else {
                 let customerId = localStorage.getItem("customerId");
                 if (customerId) {
-                    dispatch(spinnerOverlayOnFn());
+                    setIsSubmitting(true);
                     await signupCustomerApi(customerId, signUpData)
                         .then((res) => {
                             console.log(res.data);
@@ -68,12 +69,8 @@ const SignUpPage = () => {
                                 isClosable: true,
                                 description: res.data.message,
                             });
-                            dispatch(authToken(data.token));
-                            sessionStorage.setItem("token", data.token);
-                            sessionStorage.setItem("userInfo", JSON.stringify(data));
-                            dispatch(userInfoAdd(data));
-                            localStorage.removeItem('customerId');
-                            navigate("/");
+                            localStorage.removeItem("customerId");
+                            navigate("/login");
                         })
                         .catch((err) => {
                             console.log(err);
@@ -84,11 +81,8 @@ const SignUpPage = () => {
                                 isClosable: true,
                                 description: err.response.data.message,
                             });
-                            localStorage.removeItem('customerId');
-                            navigate("/login");
                         });
-                    dispatch(spinnerOverlayOffFn());
-                    console.log("Every thing is fine");
+                    setIsSubmitting(false);
                 } else {
                     toast({
                         status: "error",
@@ -96,7 +90,7 @@ const SignUpPage = () => {
                         isClosable: true,
                         position: "top",
                     });
-                    localStorage.removeItem('customerId');
+                    localStorage.removeItem("customerId");
                     navigate("/login");
                 }
             }
@@ -131,7 +125,7 @@ const SignUpPage = () => {
                         })
                     }
                 />
-                <div className="md:mt-4 md:flex md:items-center">
+                <div className="md:mt-4 md:flex md:items-center md:space-x-2">
                     <div className="w-full mt-2 md:mt-0">
                         <label htmlFor="gender" className="block text-xs mb-1 font-bold">
                             Gender <span className="text-red-600">*</span>
@@ -165,7 +159,7 @@ const SignUpPage = () => {
                         />
                     </div>
                 </div>
-                <div className="md:mt-4 md:flex md:items-center">
+                <div className="md:mt-4 md:flex md:items-center md:space-x-2">
                     <div className="w-full mt-2 md:mt-0">
                         <label htmlFor="emailId" className="block text-xs mb-1 font-bold">
                             Email ID <span className="text-red-600">*</span>
@@ -205,7 +199,7 @@ const SignUpPage = () => {
                         </InputGroup>
                     </div>
                 </div>
-                <div className="md:mt-4 md:flex md:items-center">
+                <div className="md:mt-4 md:flex md:items-center md:space-x-2">
                     <div className="w-full mt-2 md:mt-0">
                         <label htmlFor="mobile-no" className="block text-xs mb-1 font-bold">
                             Alternate Phone Number
@@ -239,11 +233,13 @@ const SignUpPage = () => {
                             id="stateSelect"
                             placeholder="Select State"
                         >
-                            {Object.keys(StateAndCode).map((el, idx) => (
-                                <option key={`${idx}-states`} value={el}>
-                                    {el}
-                                </option>
-                            ))}
+                            {Object.keys(StateAndCode)
+                                .sort()
+                                .map((el, idx) => (
+                                    <option key={`${idx}-states`} value={el}>
+                                        {el}
+                                    </option>
+                                ))}
                         </Select>
                     </div>
                 </div>
@@ -258,7 +254,7 @@ const SignUpPage = () => {
                     }
                     id="address"
                 />
-                <Button onClick={() => saveUserInformation()} colorScheme="whatsapp" className="mt-10">
+                <Button isLoading={isSubmitting} onClick={() => saveUserInformation()} colorScheme="whatsapp" className="mt-10">
                     Submit
                 </Button>
             </div>

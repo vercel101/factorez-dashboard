@@ -25,3 +25,11 @@ export const signupCustomerApi = (customerID, data) => {
         data: data,
     });
 };
+
+export const loginCustomerApi = (data) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/login-customer`,
+        data: data,
+    });
+};

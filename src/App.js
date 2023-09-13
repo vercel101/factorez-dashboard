@@ -28,6 +28,7 @@ function App() {
     let dispatch = useDispatch();
 
     React.useEffect(() => {
+        localStorage.removeItem("customerId")
         if (!login) {
             if(location.pathname.startsWith('/admin')){
                 navigate("/admin/login");
