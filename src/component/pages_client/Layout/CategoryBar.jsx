@@ -90,8 +90,8 @@ const catMenus = [
 const CategoryBar = () => {
     return catMenus.map((e1, i) => (
         <Menu key={i}>
-            <MenuButton className="whitespace-nowrap" fontSize={14} px={4} py={0} transition="all 0.2s" textColor={"white"} _hover={{ bg: "transparent" }} _expanded={{ bg: "transparent", textColor: "black" }}>
-                {e1.name} <ChevronDownIcon h={5} />
+            <MenuButton className="whitespace-nowrap" fontWeight={700} fontSize={16} px={4} py={0} transition="all 0.2s" textColor={"white"} _hover={{ bg: "transparent" }} _expanded={{ bg: "transparent", textColor: "black" }}>
+                {e1.name} <ChevronDownIcon h={6} w={6}/>
             </MenuButton>
             <MenuList>
                 {e1.menus.map((el1, i1) => (
