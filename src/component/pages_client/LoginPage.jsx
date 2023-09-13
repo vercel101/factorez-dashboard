@@ -6,7 +6,7 @@ import { IoCall } from "react-icons/io5";
 import { PiEyeClosedDuotone, PiEyeDuotone } from "react-icons/pi";
 import { generateOTPApi, loginCustomerApi, verifyOTPApi } from "../../apis/clientApis";
 import { useNavigate } from "react-router-dom";
-import { authToken, spinnerOverlayOffFn, spinnerOverlayOnFn, userInfoAdd } from "../../Redux/ReducerAction";
+import { authToken, userInfoAdd } from "../../Redux/ReducerAction";
 import { useDispatch } from "react-redux";
 
 const LoginPage = () => {
@@ -31,7 +31,7 @@ const LoginPage = () => {
             setIsOtpGenerating((old) => true);
             await generateOTPApi(mobileNumber)
                 .then((res) => {
-                    console.log(res.data);
+                    console.log(res);
                     toast({
                         title: "Success",
                         position: "top",
@@ -48,7 +48,7 @@ const LoginPage = () => {
                         position: "top",
                         status: "error",
                         isClosable: true,
-                        description: err.response.data.message,
+                        description: err.message,
                     });
                 });
             setIsOtpGenerating((old) => false);
@@ -148,6 +148,7 @@ const LoginPage = () => {
                             isClosable: true,
                             description: res.data.message,
                         });
+                        
                         dispatch(authToken(data.token));
                         sessionStorage.setItem("token", data.token);
                         sessionStorage.setItem("userInfo", JSON.stringify(data));
@@ -237,22 +238,22 @@ const LoginPage = () => {
                     </Button>
                 </div>
                 {!isUsingOtp ? (
-                    <Button onClick={() => loginWithPassword()} isLoading={isLogin} loadingText="Please waite" colorScheme="green" variant="solid">
+                    <Button onClick={() => loginWithPassword()} isLoading={isLogin} loadingText="Please wait" colorScheme="green" variant="solid">
                         Login
                     </Button>
                 ) : enterOtpIsVisible ? (
                     <>
-                        <Button onClick={() => verifyOTP()} isLoading={isOtpVerifying} loadingText="Please waite" colorScheme="green" variant="solid">
+                        <Button onClick={() => verifyOTP()} isLoading={isOtpVerifying} loadingText="Please wait" colorScheme="green" variant="solid">
                             Verify OTP
                         </Button>
                         {isOtpRegenerate && (
-                            <Button fontSize={"xs"} ms={2} variant="link" onClick={() => sendOtp()} isLoading={isOtpGenerating} loadingText="Please waite" colorScheme="whatsapp">
+                            <Button fontSize={"xs"} ms={2} variant="link" onClick={() => sendOtp()} isLoading={isOtpGenerating} loadingText="Please wait" colorScheme="whatsapp">
                                 Resend OTP
                             </Button>
                         )}
                     </>
                 ) : (
-                    <Button onClick={() => sendOtp()} isLoading={isOtpGenerating} loadingText="Please waite" colorScheme="whatsapp" variant="solid">
+                    <Button onClick={() => sendOtp()} isLoading={isOtpGenerating} loadingText="Please wait" colorScheme="whatsapp" variant="solid">
                         Generate OTP
                     </Button>
                 )}

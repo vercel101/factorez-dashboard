@@ -1,29 +1,42 @@
 import React from "react";
-
-const Footer = () => {
+import { BsFacebook, BsFillTelephoneFill, BsInstagram, BsLinkedin, BsTwitter, BsYoutube } from "react-icons/bs";
+import playBtn from "../../../assets/playbtn.png";
+import { PiPhoneCallThin } from "react-icons/pi";
+import { IoMailUnread } from "react-icons/io5";
+const Footer = ({ storeInfoReducer }) => {
+    const storeInfo = storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo;
+    console.log(storeInfoReducer);
     return (
         <footer className="bg-[#06038D] ">
             <div className="mx-auto w-full">
-                <div className="grid grid-cols-2 gap-8 sm:px-[100px] px-4 py-6 lg:py-8 md:grid-cols-4">
+                <div className="grid grid-cols-2 gap-8 sm:px-[100px] px-4 py-6 lg:py-8 md:grid-cols-4 lg:grid-cols-5">
+                    <div className="col-span-2">
+                        <div className="w-2/3">
+                            <img src={storeInfo && storeInfo.business_Logo} alt="factorez" width={"250px"} />
+                            <p className="text-teal-50 mt-2">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam, error similique inventore sequi ex quod. Quia quod facilis mollitia itaque perspiciatis quasi,
+                            </p>
+                        </div>
+                    </div>
                     <div>
-                        <h2 className="mb-6 text-sm font-semibold text-white uppercase ">Company</h2>
-                        <ul className="text-[#ff834f]  font-medium">
-                            <li className="mb-4">
+                        <h2 className="mb-4 md:mb-6 text-xl font-extrabold text-[#dadada] uppercase ">Company</h2>
+                        <ul className="text-white  font-medium">
+                            <li className="mb-3 md:mb-4">
                                 <a href="#" className=" hover:underline">
                                     About
                                 </a>
                             </li>
-                            <li className="mb-4">
+                            <li className="mb-3 md:mb-4">
                                 <a href="#" className="hover:underline">
                                     Careers
                                 </a>
                             </li>
-                            <li className="mb-4">
+                            <li className="mb-3 md:mb-4">
                                 <a href="#" className="hover:underline">
                                     Brand Center
                                 </a>
                             </li>
-                            <li className="mb-4">
+                            <li className="mb-3 md:mb-4">
                                 <a href="#" className="hover:underline">
                                     Blog
                                 </a>
@@ -31,131 +44,115 @@ const Footer = () => {
                         </ul>
                     </div>
                     <div>
-                        <h2 className="mb-6 text-sm font-semibold text-white uppercase ">Help center</h2>
-                        <ul className="text-[#ff834f]  font-medium">
-                            <li className="mb-4">
-                                <a href="#" className="hover:underline">
-                                    Discord Server
-                                </a>
-                            </li>
-                            <li className="mb-4">
-                                <a href="#" className="hover:underline">
-                                    Twitter
-                                </a>
-                            </li>
-                            <li className="mb-4">
-                                <a href="#" className="hover:underline">
-                                    Facebook
-                                </a>
-                            </li>
-                            <li className="mb-4">
-                                <a href="#" className="hover:underline">
-                                    Contact Us
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h2 className="mb-6 text-sm font-semibold text-white uppercase">Legal</h2>
-                        <ul className="text-[#ff834f]  font-medium">
-                            <li className="mb-4">
-                                <a href="#" className="hover:underline">
+                        <h2 className="mb-4 sm:mb-6 text-xl font-extrabold text-[#dadada] uppercase">Legal</h2>
+                        <ul className="text-white font-medium">
+                            <li className="mb-3 md:mb-4">
+                                <a
+                                    href={storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.privacyPolicy ? storeInfoReducer.storeInfo.privacyPolicy : "#"}
+                                    target="_blank"
+                                    className="hover:underline"
+                                >
                                     Privacy Policy
                                 </a>
                             </li>
-                            <li className="mb-4">
+                            <li className="mb-3 md:mb-4">
                                 <a href="#" className="hover:underline">
                                     Licensing
                                 </a>
                             </li>
-                            <li className="mb-4">
+                            <li className="mb-3 md:mb-4">
                                 <a href="#" className="hover:underline">
                                     Terms &amp; Conditions
                                 </a>
                             </li>
                         </ul>
                     </div>
-                    <div>
-                        <h2 className="mb-6 text-sm font-semibold text-white uppercase ">Download</h2>
-                        <ul className="text-[#ff834f]  font-medium">
-                            <li className="mb-4">
-                                <a href="#" className="hover:underline">
-                                    iOS
-                                </a>
-                            </li>
-                            <li className="mb-4">
-                                <a href="#" className="hover:underline">
-                                    Android
-                                </a>
-                            </li>
-                            <li className="mb-4">
-                                <a href="#" className="hover:underline">
-                                    Windows
-                                </a>
-                            </li>
-                            <li className="mb-4">
-                                <a href="#" className="hover:underline">
-                                    MacOS
-                                </a>
-                            </li>
-                        </ul>
+                    <div className="flex flex-col items-start justify-start md:col-span-2 lg:col-span-1">
+                        <img src={playBtn} alt="" className="w-[150px] lg:w-[200px] cursor-pointer" />
+                        <span className="hidden md:flex text-[18px] text-white  items-center ps-3 mt-2 whitespace-nowrap">
+                            <BsFillTelephoneFill className="me-2" /> +91-{storeInfo && storeInfo.contactNo}
+                        </span>
+                        <span className="hidden md:flex text-[18px] text-white items-center ps-3 mt-2 whitespace-nowrap">
+                            <IoMailUnread className="me-2" />
+                            {storeInfo && storeInfo.contactEmail}
+                        </span>
+                        <div className="md:hidden mt-4 ps-3 flex space-x-5 sm:justify-center md:mt-0">
+                            {storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.socialMedia && (
+                                <>
+                                    {storeInfoReducer.storeInfo.socialMedia.facebook && (
+                                        <a href={`https://www.facebook.com/${storeInfoReducer.storeInfo.socialMedia.facebook}`} target="_blank" className="text-white hover:text-white ">
+                                            <BsFacebook size={20} color="#322bff" />
+                                            <span className="sr-only">Facebook page</span>
+                                        </a>
+                                    )}
+                                    {storeInfoReducer.storeInfo.socialMedia.instagram && (
+                                        <a href={`https://www.instagram.com/${storeInfoReducer.storeInfo.socialMedia.instagram}`} target="_blank" className="text-white hover:text-white ">
+                                            <BsInstagram size={20} color="#cb7c6b" />
+                                            <span className="sr-only">Instagram</span>
+                                        </a>
+                                    )}
+                                    {storeInfoReducer.storeInfo.socialMedia.linkedin && (
+                                        <a href={`https://www.linkedin.com/${storeInfoReducer.storeInfo.socialMedia.linkedin}`} target="_blank" className="text-white hover:text-white ">
+                                            <BsLinkedin size={20} color="#452b8b" />
+                                            <span className="sr-only">LinkedIn</span>
+                                        </a>
+                                    )}
+                                    {storeInfoReducer.storeInfo.socialMedia.twitter && (
+                                        <a href={`https://twitter.com/${storeInfoReducer.storeInfo.socialMedia.twitter}`} target="_blank" className="text-white hover:text-white ">
+                                            <BsTwitter size={20} color="#3b49e1" />
+                                            <span className="sr-only">Twitter page</span>
+                                        </a>
+                                    )}
+                                    {storeInfoReducer.storeInfo.socialMedia.youtube && (
+                                        <a href={`https://www.youtube.com/${storeInfoReducer.storeInfo.socialMedia.youtube}`} target="_blank" className="text-white hover:text-white ">
+                                            <BsYoutube size={20} color="#9e2424" />
+                                            <span className="sr-only">Youtube</span>
+                                        </a>
+                                    )}
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
-                <div className="sm:px-[100px] px-4 py-6 bg-[#046a38]  md:flex md:items-center md:justify-between">
+                <div className="sm:px-[100px] px-4 py-6 bg-[#0c0c0c]  md:flex md:items-center md:justify-between">
                     <span className="text-sm text-white  sm:text-center">
                         © {new Date().getFullYear()} <a href="https://flowbite.com/">FactorEz</a>. All Rights Reserved.
                     </span>
-                    <div className="flex mt-4 space-x-5 sm:justify-center md:mt-0">
-                        <a href="#" className="text-white hover:text-white ">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="lucide lucide-facebook">
-                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                            </svg>
-                            <span className="sr-only">Facebook page</span>
-                        </a>
-                        <a href="#" className="text-white hover:text-white ">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="lucide lucide-instagram">
-                                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                            </svg>
-                            <span className="sr-only">Instagram</span>
-                        </a>
-                        <a href="#" className="text-white hover:text-white ">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="lucide lucide-twitter">
-                                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-                            </svg>
-                            <span className="sr-only">Twitter page</span>
-                        </a>
+                    <div className="md:flex mt-4 hidden space-x-5 sm:justify-center md:mt-0">
+                        {storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.socialMedia && (
+                            <>
+                                {storeInfoReducer.storeInfo.socialMedia.facebook && (
+                                    <a href={`https://www.facebook.com/${storeInfoReducer.storeInfo.socialMedia.facebook}`} target="_blank" className="text-white hover:text-white ">
+                                        <BsFacebook size={20} color="#322bff" />
+                                        <span className="sr-only">Facebook page</span>
+                                    </a>
+                                )}
+                                {storeInfoReducer.storeInfo.socialMedia.instagram && (
+                                    <a href={`https://www.instagram.com/${storeInfoReducer.storeInfo.socialMedia.instagram}`} target="_blank" className="text-white hover:text-white ">
+                                        <BsInstagram size={20} color="#cb7c6b" />
+                                        <span className="sr-only">Instagram</span>
+                                    </a>
+                                )}
+                                {storeInfoReducer.storeInfo.socialMedia.linkedin && (
+                                    <a href={`https://www.linkedin.com/${storeInfoReducer.storeInfo.socialMedia.linkedin}`} target="_blank" className="text-white hover:text-white ">
+                                        <BsLinkedin size={20} color="#452b8b" />
+                                        <span className="sr-only">LinkedIn</span>
+                                    </a>
+                                )}
+                                {storeInfoReducer.storeInfo.socialMedia.twitter && (
+                                    <a href={`https://twitter.com/${storeInfoReducer.storeInfo.socialMedia.twitter}`} target="_blank" className="text-white hover:text-white ">
+                                        <BsTwitter size={20} color="#3b49e1" />
+                                        <span className="sr-only">Twitter page</span>
+                                    </a>
+                                )}
+                                {storeInfoReducer.storeInfo.socialMedia.youtube && (
+                                    <a href={`https://www.youtube.com/${storeInfoReducer.storeInfo.socialMedia.youtube}`} target="_blank" className="text-white hover:text-white ">
+                                        <BsYoutube size={20} color="#9e2424" />
+                                        <span className="sr-only">Youtube</span>
+                                    </a>
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

@@ -33,3 +33,22 @@ export const loginCustomerApi = (data) => {
         data: data,
     });
 };
+
+export const allDashboardProductsApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/dashboardproduct`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+export const getStoreInfoApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/get-store-info`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};

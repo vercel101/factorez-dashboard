@@ -3,17 +3,24 @@ import SearchNav from "./SearchNav";
 import { IconButton } from "@chakra-ui/react";
 import { BsCart } from "react-icons/bs";
 import UserBtn from "./UserBtn";
-import Categorbar from "./Categorybar";
 import { Link, useNavigate } from "react-router-dom";
+import CategoryBar from "./CategoryBar";
 
-const Navbar = () => {
+const Navbar = ({ tokenReducer, userInfoReducer }) => {
     const navigate = useNavigate();
     let login = sessionStorage.getItem("token") !== null;
     return (
         <div className="fixed bg-white left-0 right-0 top-0 z-30">
             <div className="h-[53px] flex items-center justify-between lg:px-16 md:px-10">
                 <div className="h-full overflow-hidden flex items-center justify-start space-x-4">
-                    <img src="/factorlogo.png" alt="" className="h-full" onClick={() =>{ login ? navigate("/") : navigate('/login/')}} />
+                    <img
+                        src="/factorlogo.png"
+                        alt=""
+                        className="h-full"
+                        onClick={() => {
+                            login ? navigate("/") : navigate("/login/");
+                        }}
+                    />
                     {login && <SearchNav />}
                     <a
                         href="/admin/login/"
@@ -27,14 +34,14 @@ const Navbar = () => {
                     {login && (
                         <>
                             <IconButton _hover={{ bg: "#fff1f1" }} bgColor={"transparent"} aria-label="Search database" icon={<BsCart size={35} color="#A46A38" className="cursor-pointer p-2" />} />
-                            <UserBtn />
+                            <UserBtn tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />
                         </>
                     )}
                 </div>
             </div>
             {login && (
-                <div className="h-1/3 categorybar-scrollbar bg-[#FF834F] flex sm:px-16 overflow-x-auto">
-                    <Categorbar />
+                <div className="h-7 categoryBar-scrollbar bg-[#FF834F] flex sm:px-16 overflow-x-auto">
+                    <CategoryBar />
                 </div>
             )}
         </div>

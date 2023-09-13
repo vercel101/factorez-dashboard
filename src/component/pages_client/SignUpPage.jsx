@@ -254,7 +254,7 @@ const SignUpPage = () => {
                     }
                     id="address"
                 />
-                <Button isLoading={isSubmitting} onClick={() => saveUserInformation()} colorScheme="whatsapp" className="mt-10">
+                <Button isLoading={isSubmitting} loadingText="Please wait" onClick={() => saveUserInformation()} colorScheme="whatsapp" className="mt-10">
                     Submit
                 </Button>
             </div>

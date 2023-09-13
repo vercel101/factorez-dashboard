@@ -19,25 +19,41 @@ import Coupons from "./component/pages_admin/Coupons";
 import Orders from "./component/pages_admin/Orders";
 import SubAdmin from "./component/pages_admin/SubAdmin";
 import Venders from "./component/pages_admin/Venders";
-import { authToken, userInfoAdd, userInfoClear } from "./Redux/ReducerAction";
+import AllProductPage from "./component/pages_client/AllProductPage"
+import { authToken, storeInfoAddFn, userInfoAdd, userInfoClear } from "./Redux/ReducerAction";
+import { getStoreInfoApi } from "./apis/clientApis";
 function App() {
-    const { darkModeReducer, tokenReducer, sidebarCollapse, productBrandDDindexReducer, userInfoReducer, productCategoryNewReducer, productCategoryDDindexReducer } = useSelector((state) => state);
+    const { darkModeReducer, tokenReducer, sidebarCollapse, productBrandDDindexReducer, storeInfoReducer, userInfoReducer, productCategoryNewReducer, productCategoryDDindexReducer } = useSelector(
+        (state) => state
+    );
     let login = sessionStorage.getItem("token") !== null;
     let navigate = useNavigate();
     let location = useLocation();
     let dispatch = useDispatch();
+    const storeInformation = async () => {
+        await getStoreInfoApi(sessionStorage.getItem("token"))
+            .then((res) => {
+                console.log(res.data);
+                dispatch(storeInfoAddFn(res.data.data));
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
     React.useEffect(() => {
-        localStorage.removeItem("customerId")
+        localStorage.removeItem("customerId");
+        console.log(tokenReducer);
+        storeInformation();
         if (!login) {
-            if(location.pathname.startsWith('/admin')){
+            if (location.pathname.startsWith("/admin")) {
                 navigate("/admin/login");
-            }else if(localStorage.getItem('customerId')){
+            } else if (localStorage.getItem("customerId")) {
                 navigate("/signup");
-            }else{
+            } else {
                 navigate("/login");
             }
-            console.log('location',location);
+            console.log("location", location);
             console.log("navigate");
             dispatch(userInfoClear());
         } else {
@@ -50,17 +66,18 @@ function App() {
     return (
         <div className={`${darkModeReducer && "dark"}`}>
             <Routes>
-                <Route path={"/"} element={<Client />}>
-                    <Route path={"/"} element={<Home />} />
+                <Route path={"/"} element={<Client storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}>
+                    <Route path={"/"} element={<Home storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                     <Route path={"*"} element={<Navigate to={"/"} />} />
                     <Route path={"signup"} element={<SignUpPage />} />
                     <Route path={"login"} element={<LoginPage />} />
+                    <Route path={"products"} element={<AllProductPage storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                 </Route>
                 <Route path="/admin" element={<Admin />}>
                     <Route path={"/admin/*"} element={<Navigate to={"/admin"} />} />
                     <Route path={"/admin"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
-                    <Route path={"/admin/dashboard"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
-                    <Route path="login" element={<LoginSignup />} />
+                    <Route path={"/admin/dashboard"} exact element={<Dashboard  sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
+                    <Route path="login" element={<LoginSignup storeInfoReducer={storeInfoReducer}/>} />
                     {userInfoReducer.role && isRoleExists(userInfoReducer.role, productEnumList) && (
                         <Route
                             path={"products"}

@@ -2,24 +2,26 @@ import React from "react";
 import { IconButton, Divider, Button } from "@chakra-ui/react";
 import { BiChevronDown } from "react-icons/bi";
 import { Menu, MenuButton, MenuList, MenuItem, MenuItemOption, MenuGroup, MenuOptionGroup, MenuDivider } from "@chakra-ui/react";
-const SizeSetDropdown = () => {
+const SizeSetDropdown = ({ list }) => {
     return (
         <Menu>
             <MenuButton
-                className="text-[9px] sm:text-[12px]  h-3 min-h-5 max-h-5  sm:h-7 sm:min-h-7 sm:max-h-7"
-                px={"2"}
+                className="h-10"
+                color={"teal.700"}
+                px={"4"}
                 as={IconButton}
                 aria-label="Options"
-                rightIcon={<BiChevronDown className="h-3 sm:h-5 ms-4" />}
+                rightIcon={<BiChevronDown className="h-8 w-8 ms-7" />}
                 variant="outline"
-                fontSize={"2px sm:15px"}
-                rounded={0}>
+                fontSize={'18px'}
+                rounded={0}
+            >
                 Size
             </MenuButton>
-            <MenuList fontSize={10} w={'48'} minW={'48'} maxW={'48'} fontWeight={600}>
-                <MenuItem>MR. JOHN</MenuItem>
-                <MenuItem>New Window</MenuItem>
-                <MenuItem>Open Closed Tab</MenuItem>
+            <MenuList pointerEvents={"none"} color={"teal.700"} fontSize={16} w={"48"} minW={"60"} maxW={"60"} fontWeight={600}>
+                {list.map((el) => (
+                    <MenuItem pointerEvents={"none"}>{el}</MenuItem>
+                ))}
             </MenuList>
         </Menu>
     );
