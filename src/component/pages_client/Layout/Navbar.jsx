@@ -5,7 +5,6 @@ import { BsCart } from "react-icons/bs";
 import UserBtn from "./UserBtn";
 import { Link, useNavigate } from "react-router-dom";
 import CategoryBar from "./CategoryBar";
-
 const Navbar = ({ tokenReducer, userInfoReducer }) => {
     const navigate = useNavigate();
     let login = sessionStorage.getItem("token") !== null;
