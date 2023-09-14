@@ -3,6 +3,7 @@ import {useSelector} from "react-redux";
 import {Tab, Tabs, TabList, TabPanel} from "react-tabs";
 import {isRoleExists} from "../../utils/checkRole";
 import {roleEnums} from "../../utils/enums";
+import AddVendor from "./Layout/vendors/AddVendor";
 
 const Venders = ({sidebarCollapse, darkModeReducer, userInfoReducer, tokenReducer}) => {
     const AllVendors = lazy(() => import('./Layout/vendors/AllVendors'));
@@ -46,9 +47,7 @@ const Venders = ({sidebarCollapse, darkModeReducer, userInfoReducer, tokenReduce
                     )}
                     {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN', 'VENDOR_ADD_VENDOR']) && (
                         <TabPanel className="mt-5">
-                            <div className=" p-4 rounded-lg bg-[#F4F7F8] dark:bg-gray-800">
-                                Add New Vendor
-                            </div>
+                           <AddVendor userInfoReducer={userInfoReducer} tokenReducer={tokenReducer}/> 
                         </TabPanel>
                     )}
                 </Tabs>

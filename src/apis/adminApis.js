@@ -95,6 +95,17 @@ export const addVentorApi = (data, token) => {
         data: data,
     });
 };
+export const addVendorByAdminApi = (data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/create-vendor-by-admin`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+
 export const getAllVentorApi = (token) => {
     return axios({
         method: "GET",

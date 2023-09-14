@@ -22,7 +22,6 @@ let basicDetailInitial = {
     pickupPincode: "",
     invoiceAddress: "",
     pickupAddress: "",
-    gender:"",
     termsAndConditions: false,
 };
 let bankAccountInitial = {
@@ -80,13 +79,12 @@ const LoginSignup = () => {
                     setBankDetail(bankAccountInitial);
                     setBasicDetails(basicDetailInitial);
                     setDocumentFile(documentFileInitial);
-                    dispatch(spinnerOverlayOffFn());
-                    history('/');
+                    // history('/admin/login');
                 })
                 .catch((err) => {
                     console.log(err);
                     alert("Something went wrong!, Please try again...")
-                    dispatch(spinnerOverlayOffFn());
+                   
 
                 });
             dispatch(spinnerOverlayOffFn());
