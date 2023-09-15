@@ -31,34 +31,30 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     };
     useEffect(() => {
         getProductInfo();
+        window.scrollTo(0, 0);
     }, []);
     // console.log(productId);
     return (
-        <div className="pt-[100px] md:px-[20px] lg:px-[10%]">
+        <div className="pt-[90px] pb-2 md:px-[20px] lg:px-[10%]">
             <div className="">
-                <div className="flex items-start justify-center">
-                    <div className="w-[60%]">
-                        <div className="h-[600px] overflow-hidden">
-                            <img className="w-full h-full object-cover" src={imgUrl ? imgUrl : product && product.thumbnail_pic} alt="" />
+                <div className="flex px-2 sm:px-0 flex-col sm:flex-row items-start justify-center">
+                    <div className="w-full sm:w-[60%] ">
+                        <div className="h-[300px] sm:h-[600px] border overflow-hidden">
+                            <img className="w-full h-full object-cover " src={imgUrl ? imgUrl : product && product.thumbnail_pic} alt="" />
                         </div>
-                        <div className="flex space-x-2 mt-2 h-[100px] flex-wrap">
-                            <div className="h-28 w-28">
-                                <img
-                                    onClick={() => setImgUrl(product && product.thumbnail_pic)}
-                                    className="h-full w-full object-cover outline-dashed outline-slate-200"
-                                    src={product && product.thumbnail_pic}
-                                    alt=""
-                                />
+                        <div className="flex mt-2 flex-wrap">
+                            <div className="h-16 w-16 sm:h-28 sm:w-28 border me-1 mb-1">
+                                <img onClick={() => setImgUrl(product && product.thumbnail_pic)} className="h-full w-full object-cover" src={product && product.thumbnail_pic} alt="" />
                             </div>
                             {product &&
                                 product.multiple_pics.map((url) => (
-                                    <div className="h-28 w-28">
-                                        <img onClick={() => setImgUrl(url)} className="h-full w-full object-cover outline-dashed outline-slate-200" src={url} alt="" />
+                                    <div className="h-16 w-16 sm:h-28 sm:w-28 border me-1 mb-1">
+                                        <img onClick={() => setImgUrl(url)} className="h-full w-full object-cover" src={url} alt="" />
                                     </div>
                                 ))}
                         </div>
                     </div>
-                    <div className="w-[40%] ps-4">
+                    <div className="w-full sm:w-[40%] sm:ps-4">
                         <h1 className="text-4xl font-bold">{product && product.product_name}</h1>
                         <p className="my-2 text-sm">{product && product.description}</p>
                         {product && <p className="font-semibold my-3 text-lg text-red-500">₹ {priceCal(product.seller_price, product.margin, product.sellingGST)}</p>}
@@ -101,7 +97,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                             </div>
                         </div>
 
-                        <div className="my-10 pt-3 border px-3">
+                        <div className="pt-3 border px-3">
                             <h1 className="font-bold text-xl ">Specifications</h1>
                             <Table className="mt-2">
                                 <Tbody>

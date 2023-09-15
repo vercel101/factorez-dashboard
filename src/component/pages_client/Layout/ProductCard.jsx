@@ -2,16 +2,21 @@ import React from "react";
 import { Card, CardHeader, Image, CardBody, Stack, Divider, Text, Heading, Button, ButtonGroup, CardFooter, IconButton, HStack, VStack, Box } from "@chakra-ui/react";
 import { BsCart, BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
 import SizeSetDropdown from "./SizeSetDropdown";
+import { useNavigate } from "react-router-dom";
 let productPrice = (price, gst, margin) => {
     let marginAmt = Number(price) + (Number(price) * Number(margin)) / 100;
     let gstAmt = (Number(marginAmt) * Number(margin)) / 100;
     return (gstAmt + marginAmt).toFixed(2);
 };
 const ProductCard = ({ element }) => {
+    const navigate = useNavigate();
+    const productInfo = () => {
+        navigate(`/product/${element.slug}`)
+    }
     return (
         <Card maxW="md" borderRadius={0}>
             <CardBody padding={0}>
-                <Image src={element && element.thumbnail_pic} alt="Green double couch with wooden legs" borderRadius="xs" width={"100%"} objectFit={"cover"} className="h-[300px] lg:h-[200px]" />
+                <Image onClick={() => productInfo()} src={element && element.thumbnail_pic} alt="Green double couch with wooden legs" borderRadius="xs" width={"100%"} objectFit={"cover"} className="cursor-pointer h-[300px] lg:h-[200px]" />
                 <Stack mt="2" spacing="3" padding={1}>
                     <h1 className="text-2xl md:text-lg font-bold">{element && element.product_name}</h1>
                     <p className=" text-[16px] sm:text-md">{element && element.description}</p>

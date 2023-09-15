@@ -250,9 +250,6 @@ const Home = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                             <div className={`border w-full mb-5 p-2`}>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {recommendedProduct && recommendedProduct.bestSelling && recommendedProduct.bestSelling.map((el) => <ProductCard element={el} key={el._id} />)}
-                                    {recommendedProduct && recommendedProduct.bestSelling && recommendedProduct.bestSelling.map((el) => <ProductCard element={el} key={el._id} />)}
-                                    {recommendedProduct && recommendedProduct.bestSelling && recommendedProduct.bestSelling.map((el) => <ProductCard element={el} key={el._id} />)}
-                                    {recommendedProduct && recommendedProduct.bestSelling && recommendedProduct.bestSelling.map((el) => <ProductCard element={el} key={el._id} />)}
                                 </div>
                             </div>
                         </div>
@@ -268,10 +265,6 @@ const Home = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
 
                             <div className={`border w-full mb-5 p-2`}>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {recommendedProduct && recommendedProduct.newArrival && recommendedProduct.newArrival.map((el) => <ProductCard element={el} key={el._id} />)}
-                                    {recommendedProduct && recommendedProduct.newArrival && recommendedProduct.newArrival.map((el) => <ProductCard element={el} key={el._id} />)}
-                                    {recommendedProduct && recommendedProduct.newArrival && recommendedProduct.newArrival.map((el) => <ProductCard element={el} key={el._id} />)}
-                                    {recommendedProduct && recommendedProduct.newArrival && recommendedProduct.newArrival.map((el) => <ProductCard element={el} key={el._id} />)}
                                     {recommendedProduct && recommendedProduct.newArrival && recommendedProduct.newArrival.map((el) => <ProductCard element={el} key={el._id} />)}
                                 </div>
                             </div>
