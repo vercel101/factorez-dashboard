@@ -14,9 +14,9 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     let { productId } = useParams();
 
     const priceCal = (price, margin, gst) => {
-        let marginAmt = (price * margin) / 100;
-        let gstAmt = (price * gst) / 100;
-        return (price + marginAmt + gstAmt).toFixed(2);
+        let marginAmt = Number(price) + (Number(price) * Number(margin)) / 100;
+        let gstAmt = (Number(marginAmt) * Number(gst)) / 100;
+        return (gstAmt + marginAmt).toFixed(2);
     };
 
     const getProductInfo = async () => {

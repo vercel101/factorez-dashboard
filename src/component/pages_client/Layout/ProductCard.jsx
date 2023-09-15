@@ -5,7 +5,7 @@ import SizeSetDropdown from "./SizeSetDropdown";
 import { useNavigate } from "react-router-dom";
 let productPrice = (price, gst, margin) => {
     let marginAmt = Number(price) + (Number(price) * Number(margin)) / 100;
-    let gstAmt = (Number(marginAmt) * Number(margin)) / 100;
+    let gstAmt = (Number(marginAmt) * Number(gst)) / 100;
     return (gstAmt + marginAmt).toFixed(2);
 };
 const ProductCard = ({ element }) => {
