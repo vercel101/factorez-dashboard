@@ -22,6 +22,7 @@ import Venders from "./component/pages_admin/Venders";
 import AllProductPage from "./component/pages_client/AllProductPage";
 import { authToken, storeInfoAddFn, userInfoAdd, userInfoClear } from "./Redux/ReducerAction";
 import { getStoreInfoApi } from "./apis/clientApis";
+import ProductInfo from "./component/pages_client/ProductInfo";
 function App() {
     const { darkModeReducer, tokenReducer, sidebarCollapse, productBrandDDindexReducer, storeInfoReducer, userInfoReducer, productCategoryNewReducer, productCategoryDDindexReducer } = useSelector(
         (state) => state
@@ -33,7 +34,7 @@ function App() {
     const storeInformation = async () => {
         await getStoreInfoApi(sessionStorage.getItem("token"))
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 dispatch(storeInfoAddFn(res.data.data));
             })
             .catch((err) => {
@@ -43,7 +44,7 @@ function App() {
 
     React.useEffect(() => {
         localStorage.removeItem("customerId");
-        console.log(tokenReducer);
+        // console.log(tokenReducer);
         storeInformation();
         if (!login) {
             if (location.pathname.startsWith("/admin")) {
@@ -53,8 +54,8 @@ function App() {
             } else {
                 navigate("/login");
             }
-            console.log("location", location);
-            console.log("navigate");
+            // console.log("location", location);
+            // console.log("navigate");
             dispatch(userInfoClear());
         } else {
             let userInfo = JSON.parse(sessionStorage.userInfo);
@@ -68,8 +69,8 @@ function App() {
                 navigate("/login");
             } else {
                 dispatch(authToken(sessionStorage.getItem("token")));
-                console.log(location.pathname);
-                console.log(userInfo);
+                // console.log(location.pathname);
+                // console.log(userInfo);
                 dispatch(userInfoAdd(userInfo));
             }
         }
@@ -84,6 +85,7 @@ function App() {
                     <Route path={"signup"} element={<SignUpPage />} />
                     <Route path={"login"} element={<LoginPage />} />
                     <Route path={"products"} element={<AllProductPage storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
+                    <Route path={"product/:productId"} element={<ProductInfo storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                 </Route>
                 <Route path="/admin" element={<Admin />}>
                     <Route path={"/admin/*"} element={<Navigate to={"/admin"} />} />

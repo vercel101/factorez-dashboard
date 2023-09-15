@@ -5,7 +5,7 @@ import { PiPhoneCallThin } from "react-icons/pi";
 import { IoMailUnread } from "react-icons/io5";
 const Footer = ({ storeInfoReducer }) => {
     const storeInfo = storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo;
-    console.log(storeInfoReducer);
+    // console.log(storeInfoReducer);
     return (
         <footer className="bg-[#06038D] ">
             <div className="mx-auto w-full">
@@ -116,7 +116,7 @@ const Footer = ({ storeInfoReducer }) => {
                 </div>
                 <div className="sm:px-[100px] px-4 py-6 bg-[#0c0c0c]  md:flex md:items-center md:justify-between">
                     <span className="text-sm text-white  sm:text-center">
-                        © {new Date().getFullYear()} <a href="https://flowbite.com/">FactorEz</a>. All Rights Reserved.
+                        © {new Date().getFullYear()} <a href="https://factorez.in/">FactorEz</a>. All Rights Reserved.
                     </span>
                     <div className="md:flex mt-4 hidden space-x-5 sm:justify-center md:mt-0">
                         {storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.socialMedia && (

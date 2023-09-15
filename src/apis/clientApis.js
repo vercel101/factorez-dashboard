@@ -52,3 +52,12 @@ export const getStoreInfoApi = (token) => {
         },
     });
 };
+export const getProductInfoApi = (productId, token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/get-product-info-by-id/${productId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
