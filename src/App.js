@@ -19,7 +19,7 @@ import Coupons from "./component/pages_admin/Coupons";
 import Orders from "./component/pages_admin/Orders";
 import SubAdmin from "./component/pages_admin/SubAdmin";
 import Venders from "./component/pages_admin/Venders";
-import AllProductPage from "./component/pages_client/AllProductPage"
+import AllProductPage from "./component/pages_client/AllProductPage";
 import { authToken, storeInfoAddFn, userInfoAdd, userInfoClear } from "./Redux/ReducerAction";
 import { getStoreInfoApi } from "./apis/clientApis";
 function App() {
@@ -57,9 +57,21 @@ function App() {
             console.log("navigate");
             dispatch(userInfoClear());
         } else {
-            dispatch(authToken(sessionStorage.getItem("token")));
             let userInfo = JSON.parse(sessionStorage.userInfo);
-            dispatch(userInfoAdd(userInfo));
+            if (location.pathname === "/" && userInfo.userType !== "CUSTOMER") {
+                dispatch(userInfoClear());
+                sessionStorage.clear();
+                navigate("/admin");
+            } else if (location.pathname.startsWith("/admin") && userInfo.userType === "CUSTOMER") {
+                dispatch(userInfoClear());
+                sessionStorage.clear();
+                navigate("/login");
+            } else {
+                dispatch(authToken(sessionStorage.getItem("token")));
+                console.log(location.pathname);
+                console.log(userInfo);
+                dispatch(userInfoAdd(userInfo));
+            }
         }
     }, []);
 
@@ -76,8 +88,8 @@ function App() {
                 <Route path="/admin" element={<Admin />}>
                     <Route path={"/admin/*"} element={<Navigate to={"/admin"} />} />
                     <Route path={"/admin"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
-                    <Route path={"/admin/dashboard"} exact element={<Dashboard  sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
-                    <Route path="login" element={<LoginSignup storeInfoReducer={storeInfoReducer}/>} />
+                    <Route path={"/admin/dashboard"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
+                    <Route path="login" element={<LoginSignup storeInfoReducer={storeInfoReducer} />} />
                     {userInfoReducer.role && isRoleExists(userInfoReducer.role, productEnumList) && (
                         <Route
                             path={"products"}

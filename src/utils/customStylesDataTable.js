@@ -18,9 +18,8 @@ export const customStyles = {
         style: {
             color: "#4A5568",
             fontSize: "0.75rem",
-            fontWeight: 500,
             textTransform: "uppercase",
-            fontWeight: "700",
+            fontWeight: "800",
         },
     },
     subHeader: {

@@ -6,6 +6,7 @@ import {
     getAllQuestionByUserApi,
     getAllQuestions,
     getOrderedProductAPI,
+    orderReportDownloadApi,
     patchTrackingIDByOrderId,
     updateOrderByOrderId,
 } from "../../../../apis/adminApis";
@@ -19,6 +20,13 @@ import { isRoleExists } from "../../../../utils/checkRole";
 import { Button, useToast } from "@chakra-ui/react";
 import { dateToLocalDateTime } from "../../../../utils/dateUtils";
 import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
+import DataTable from "react-data-table-component";
+import { customStyles } from "../../../../utils/customStylesDataTable";
+import OrderFilter from "./OrderFilter";
+import { PiMicrosoftExcelLogoDuotone } from "react-icons/pi";
+import { convertOrderArrayOfObjectsToCSV } from "../../../../utils/convertArrayToCsv";
+import { localDate, localDateInIndiaTime } from "../../../../utils/stringToLocalDate";
+import { exportToExcel } from "../../../../utils/ExportToExcel";
 
 function AllOrders({ tokenReducer, userInfoReducer }) {
     const toast = useToast();
@@ -27,6 +35,8 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
     const [listOfQuestion, setListOfQuestion] = useState([]);
     const [orderModelFlag, setOrderModelFlag] = useState(false);
     const [statusListFlag, setStatusListFlag] = useState(false);
+    const [filterText, setFilterText] = React.useState("");
+    const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
     const [orderModelData, setOrderModelData] = useState({
         productInfo: "",
         orderInfo: "",
@@ -42,6 +52,291 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                 console.log(err);
             });
     };
+    const paginationComponentOptions = {
+        rowsPerPageText: "No of Rows",
+        rangeSeparatorText: "Total Records",
+    };
+
+    const filteredItems = orders.filter((item) => {
+        let record = null;
+        if (
+            item.orderId.toLowerCase().includes(filterText.toLowerCase())
+            // item.sku_code.includes(filterText.toLowerCase()) ||
+            // item.vendor_id.firmName.toLowerCase().includes(filterText.toLowerCase())
+        ) {
+            record = item;
+        }
+        return record;
+    });
+
+    async function downloadCSV(array) {
+        let arr = [];
+        for (let x of array) {
+            arr.push(x._id);
+        }
+        // let orderData = {};
+        // let commaStr = "";
+        // let arr = [];
+        // for (let x of array) {
+        //     orderData["orderId"] = x.orderId;
+        //     orderData["orderDate"] = localDateInIndiaTime(x.order_date);
+        //     orderData["invoiceNo"] = x.saleInvoice.invoiceNo;
+        //     orderData["invoiceDate"] = localDateInIndiaTime(x.saleInvoice.invoiceDate);
+        //     orderData["productsLength"] = x.ordered_products.products.length;
+        //     for (let x1 = 0; x1 < x.ordered_products.products.length; x1++) {
+        //         orderData[`sk_${x1 + 1}_code`] = x.ordered_products.products[x1].skuCode;
+        //         orderData[`sk_${x1 + 1}_gst`] = x.ordered_products.products[x1].selling_gst;
+        //     }
+        //     orderData["soldByGst"] = x.saleInvoice.soldBy.gst;
+        //     orderData["orderStatus"] = x.order_status_id.status;
+        //     orderData["customerName"] = x.customer_id.name;
+        //     commaStr += "Buyer details,";
+        //     orderData["customerPhone"] = x.customer_id.phone;
+        //     orderData["customerAddress"] = x.customer_id.defaultAddress.address;
+        //     orderData["customerCity"] = x.customer_id.defaultAddress.city;
+        //     orderData["customerState"] = x.customer_id.defaultAddress.state;
+        //     orderData["customerPincode"] = x.customer_id.defaultAddress.pincode;
+        //     orderData["customerGstNo"] = x.customer_id.gstNo;
+        //     orderData["customerAltPhone"] = x.customer_id.alternate_phone;
+        //     orderData["saleGrandTotal"] = x.grand_total;
+        //     orderData["saleDiscount"] = x.discounted_amount;
+        //     orderData["saleNetTotal"] = Number(x.grand_total) - Number(x.discounted_amount);
+        //     orderData["saleTaxableAmt"] = x.total;
+        //     orderData["saleGstType"] = x.saleInvoice.gstType;
+        //     orderData["saleGstAmt"] = x.GST_amount;
+        //     orderData["sellerName"] = x.vendorId.representativeName;
+        //     orderData["sellerPhone"] = x.vendorId.mobileNo;
+        //     orderData["sellerAddress"] = x.vendorId.pickupAddress;
+        //     orderData["sellerCity"] = x.vendorId.pickupCity;
+        //     orderData["sellerState"] = x.vendorId.pickupState;
+        //     orderData["sellerPincode"] = x.vendorId.pickupPincode;
+        //     orderData["sellerGstNo"] = x.vendorId.gstNo;
+        //     orderData["sellerAltNo"] = x.vendorId.altMobileNo;
+        //     orderData["purchaseGrandTotal"] = x.vendorAmtInfo.grandTotal;
+        //     orderData["purchaseNetTotal"] = x.vendorAmtInfo.grandTotal;
+        //     orderData["purchaseTaxableAmt"] = x.vendorAmtInfo.total;
+        //     orderData["purchaseGstType"] = x.purchaseInvoice.gstType;
+        //     orderData["purchaseGstAmt"] = x.vendorAmtInfo.gstAmt;
+        //     orderData["orderJourneyFinalStatus"] = x.order_status_id.status;
+        //     for(let x2 of x.order_status_id.statusList){
+        //         console.log(x2);
+        //     }
+        //     arr.push(orderData);
+        //     orderData = {};
+        // }
+        await orderReportDownloadApi(arr, tokenReducer)
+            .then((res) => {
+                console.log(res);
+                let blob = res.data;
+                const url = window.URL.createObjectURL(new Blob([blob]));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `OrderReport.xlsx`);
+
+                // Append to html link element page
+                document.body.appendChild(link);
+
+                // Start download
+                link.click();
+
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+    const Export = ({ onExport }) => (
+        <Button colorScheme="whatsapp" leftIcon={<PiMicrosoftExcelLogoDuotone size={25} />} onClick={(e) => onExport(e.target.value)}>
+            Export
+        </Button>
+    );
+    const subHeaderComponent = React.useMemo(() => {
+        const handleClear = () => {
+            if (filteredItems) {
+                setResetPaginationToggle(!resetPaginationToggle);
+                setFilterText("");
+            }
+        };
+        return (
+            <div className="flex items-center space-x-3">
+                <OrderFilter onFilter={(e) => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
+                <Export onExport={() => downloadCSV(filteredItems)} />
+            </div>
+        );
+    }, [filterText, filteredItems, resetPaginationToggle]);
+    const selectedRows = (e) => {
+        console.log(e);
+    };
+    const columnsAdmin = [
+        {
+            name: <span className="whitespace-normal">Order ID</span>,
+            selector: (row) => row.orderId,
+        },
+        {
+            name: <span className="whitespace-normal">Order Date</span>,
+            selector: (row) => <span className="whitespace-normal">{dateToLocalDateTime(row.order_date)}</span>,
+        },
+        {
+            name: <span className="whitespace-normal">Seller</span>,
+            selector: (row) => row.vendorId.firmName,
+        },
+        {
+            name: <span className="whitespace-normal">Buyer</span>,
+            selector: (row) => row.customer_id.name,
+        },
+        {
+            name: <span className="whitespace-normal">Buyer Phone</span>,
+            selector: (row) => row.customer_id.phone,
+            width: "120px",
+        },
+        {
+            name: <span className="whitespace-normal">Shipping Address</span>,
+            selector: (row) => <span className="whitespace-normal">{row.shipping_address.address}</span>,
+        },
+        {
+            name: <span className="whitespace-normal">Item Qty</span>,
+            selector: (row) => row.ordered_products && row.ordered_products.products.length,
+            width: "70px",
+        },
+        {
+            name: <span className="whitespace-normal">Amount</span>,
+            selector: (row) => row.grand_total,
+            width: "100px",
+        },
+        {
+            name: <span className="whitespace-normal">Action</span>,
+            selector: (row) => (
+                <button
+                    onClick={() => orderManageFn(row)}
+                    className={`border 
+                                                flex p-1 rounded 
+                                                justify-center 
+                                                items-center text-center
+                                                px-2
+                                                text-xs
+                                                ${
+                                                    row.order_status_id && row.order_status_id.status === "PENDING"
+                                                        ? "bg-gray-400 border-0 text-black"
+                                                        : row.order_status_id && row.order_status_id.status === "PARTIAL_CONFIRMED"
+                                                        ? "bg-blue-400 border-0 text-white"
+                                                        : row.order_status_id && row.order_status_id.status === "CANCELLED"
+                                                        ? "bg-red-600 text-white border-0"
+                                                        : "bg-green-500 border-0 text-white"
+                                                }
+                                                `}
+                >
+                    {row.order_status_id && row.order_status_id.status.replace("_", " ")}
+                </button>
+            ),
+        },
+        {
+            name: <span className="whitespace-normal">Invoice Download</span>,
+            selector: (row) => (
+                <div className="flex flex-col items-start justify-center">
+                    <button
+                        disabled={!row.saleInvoice}
+                        className="px-2 py-1 border disabled:text-white bg-green-300 border-green-300 text-blue-700 disabled:bg-gray-200 disabled:border-gray-200 rounded"
+                        onClick={() => downloadPdfFn(row.saleInvoice && row.saleInvoice.invoiceNo, "SALE")}
+                    >
+                        Sale
+                    </button>
+                    <button
+                        disabled={!row.purchaseInvoice}
+                        className="px-2 mt-1 bg-blue-300 text-white disabled:bg-gray-200 py-1 border border-blue-300 disabled:border-gray-200 rounded"
+                        onClick={() => downloadPdfFn(row.purchaseInvoice && row.purchaseInvoice.invoiceNo, "PURCHASE")}
+                    >
+                        Purchase
+                    </button>
+                </div>
+            ),
+        },
+        {
+            name: "Status",
+            selector: (row) => (
+                <div className="flex items-center justify-center">
+                    <FaListCheck size={30} onClick={() => setStatusListFlag(true)} className="hover:bg-teal-300 p-1 rounded cursor-pointer" />
+                </div>
+            ),
+            width: "100px",
+        },
+    ];
+    const columnVendor = [
+        {
+            name: <span className="whitespace-normal">Order ID</span>,
+            selector: (row) => row.orderId,
+        },
+        {
+            name: <span className="whitespace-normal">Order Date</span>,
+            selector: (row) => <span className="whitespace-normal">{dateToLocalDateTime(row.order_date)}</span>,
+        },
+        {
+            name: <span className="whitespace-normal">Item Qty</span>,
+            selector: (row) => row.ordered_products && row.ordered_products.products.length,
+            width: "70px",
+        },
+        {
+            name: <span className="whitespace-normal">Amount</span>,
+            selector: (row) => row.vendorAmtInfo.grandTotal,
+            width: "100px",
+        },
+        {
+            name: <span className="whitespace-normal">Action</span>,
+            selector: (row) => (
+                <button
+                    onClick={() => orderManageFn(row)}
+                    className={`border 
+                                flex p-1 rounded 
+                                justify-center 
+                                items-center text-center
+                                px-2
+                                text-xs
+                                ${
+                                    row.order_status_id && row.order_status_id.status === "PENDING"
+                                        ? "bg-gray-400 border-0 text-black"
+                                        : row.order_status_id && row.order_status_id.status === "PARTIAL_CONFIRMED"
+                                        ? "bg-blue-400 border-0 text-white"
+                                        : row.order_status_id && row.order_status_id.status === "CANCELLED"
+                                        ? "bg-red-600 text-white border-0"
+                                        : "bg-green-500 border-0 text-white"
+                                }
+                                `}
+                >
+                    {row.order_status_id && row.order_status_id.status.replace("_", " ")}
+                </button>
+            ),
+        },
+        {
+            name: <span className="whitespace-normal">Invoice Download</span>,
+            selector: (row) => (
+                <div className="flex flex-col items-start justify-center">
+                    <button
+                        disabled={!row.saleInvoice}
+                        className="px-2 py-1 border disabled:text-white bg-green-300 border-green-300 text-blue-700 disabled:bg-gray-200 disabled:border-gray-200 rounded"
+                        onClick={() => downloadPdfFn(row.saleInvoice && row.saleInvoice.invoiceNo, "SALE")}
+                    >
+                        Sale
+                    </button>
+                    <button
+                        disabled={!row.purchaseInvoice}
+                        className="px-2 mt-1 bg-blue-300 text-white disabled:bg-gray-200 py-1 border border-blue-300 disabled:border-gray-200 rounded"
+                        onClick={() => downloadPdfFn(row.purchaseInvoice && row.purchaseInvoice.invoiceNo, "PURCHASE")}
+                    >
+                        Purchase
+                    </button>
+                </div>
+            ),
+        },
+        {
+            name: "Status",
+            selector: (row) => (
+                <div className="flex items-center justify-center">
+                    <FaListCheck size={30} onClick={() => setStatusListFlag(true)} className="hover:bg-teal-300 p-1 rounded cursor-pointer" />
+                </div>
+            ),
+            width: "100px",
+        },
+    ];
     const orderedProduct = async (id) => {
         await getOrderedProductAPI(id, tokenReducer)
             .then((res) => {
@@ -192,7 +487,20 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                     changeOrderStatus={changeOrderStatus}
                 />
             )}
-            <table className={`w-full text-sm text-left text-gray-500 dark:text-gray-400`}>
+            <DataTable
+                columns={userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) ? columnsAdmin : columnVendor}
+                data={filteredItems}
+                selectableRows
+                pagination
+                paginationComponentOptions={paginationComponentOptions}
+                paginationResetDefaultPage={resetPaginationToggle}
+                subHeader
+                onSelectedRowsChange={selectedRows}
+                subHeaderComponent={subHeaderComponent}
+                customStyles={customStyles}
+                subHeaderAlign={"left"}
+            />
+            {/* <table className={`w-full text-sm text-left text-gray-500 dark:text-gray-400`}>
                 <thead className={`text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400`}>
                     <tr>
                         <th scope="col" className="px-6 py-3">
@@ -307,7 +615,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                         </tr>
                     ))}
                 </tbody>
-            </table>
+            </table> */}
 
             <div className={`bg-white pt-12 z-10 dark:bg-neutral-800 dark:border-gray-700 border-s transition-transform h-screen w-96 fixed top-0 right-0 ${!statusListFlag && "translate-x-full"}`}>
                 <div className="flex items-center justify-between p-2">

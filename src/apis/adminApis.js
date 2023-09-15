@@ -695,3 +695,16 @@ export const updatePaymentStatusApi = (paymentId, data, token) => {
         data: data,
     });
 };
+
+
+export const orderReportDownloadApi = (data,token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/order-report/`,
+        responseType: "blob",
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+}

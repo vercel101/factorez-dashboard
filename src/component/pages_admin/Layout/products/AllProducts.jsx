@@ -48,8 +48,6 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
     const paginationComponentOptions = {
         rowsPerPageText: "No of Rows",
         rangeSeparatorText: "Total Records",
-        selectAllRowsItem: true,
-        selectAllRowsItemText: "HSN code",
     };
 
     const columns = [
@@ -91,7 +89,11 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
         },
         {
             name: "Status",
-            selector: (row) => <Badge py={1} variant={'solid'}>{row.status}</Badge>,
+            selector: (row) => (
+                <Badge py={1} variant={"solid"}>
+                    {row.status}
+                </Badge>
+            ),
         },
         {
             name: "Action",
@@ -216,7 +218,7 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
         return (
             <div className="flex items-center space-x-3">
                 <FilterByProductName onFilter={(e) => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
-                {console.log(filteredItems)}
+                {/* {console.log(filteredItems)} */}
                 <Export onExport={() => downloadCSV(filteredItems)} />
             </div>
         );
