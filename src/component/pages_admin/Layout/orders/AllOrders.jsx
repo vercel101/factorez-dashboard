@@ -56,10 +56,10 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
 
     const filteredItems = orders.filter((item) => {
         let record = null;
+        console.log(item);
         if (
-            item.orderId.toLowerCase().includes(filterText.toLowerCase())
-            // item.sku_code.includes(filterText.toLowerCase()) ||
-            // item.vendor_id.firmName.toLowerCase().includes(filterText.toLowerCase())
+            item.orderId.toLowerCase().includes(filterText.toLowerCase()) ||
+            item.vendorId.firmName.toLowerCase().includes(filterText.toLowerCase())
         ) {
             record = item;
         }
@@ -113,6 +113,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
         {
             name: <span className="whitespace-normal">Order ID</span>,
             selector: (row) => row.orderId,
+            width: "130px",
         },
         {
             name: <span className="whitespace-normal">Order Date</span>,
@@ -441,122 +442,6 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                 customStyles={customStyles}
                 subHeaderAlign={"left"}
             />
-            {/* <table className={`w-full text-sm text-left text-gray-500 dark:text-gray-400`}>
-                <thead className={`text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400`}>
-                    <tr>
-                        <th scope="col" className="px-6 py-3">
-                            #
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Order ID
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Order Date
-                        </th>
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
-                            <>
-                                <th scope="col" className="px-6 py-3">
-                                    Seller
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Buyer
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Buyer Phone
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Shipping Address
-                                </th>
-                            </>
-                        )}
-                        <th scope="col" className="px-6 py-3">
-                            Item Qty
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Amount
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Action
-                        </th>
-                        <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                            Invoice Download
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Status
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map((el, i) => (
-                        <tr key={el._id} className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600`}>
-                            <td className={`px-6 py-1`}>{i + 1}</td>
-                            <th scope={`row`} className={`px-6 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white`}>
-                                {el.orderId}
-                            </th>
-                            <td className={`px-6 py-1`}>{dateToLocalDateTime(el.order_date)}</td>
-                            {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
-                                <>
-                                    <td className={`px-6 py-1`}>{el.vendorId.firmName}</td>
-                                    <td className={`px-6 py-1`}>{el.customer_id.name}</td>
-                                    <td className={`px-6 py-1`}>{el.customer_id.phone}</td>
-                                    <td className={`px-6 py-1`}>{el.shipping_address.address}</td>
-                                </>
-                            )}
-                            <td className={`px-6 py-1`}>{el.ordered_products && el.ordered_products.products.length}</td>
-                            <td className={`px-6 py-1`}>
-                                &#8377;
-                                {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) ? el.grand_total : el.vendorAmtInfo.grandTotal}
-                            </td>
-                            <td className={`px-6 py-1`}>
-                                <button
-                                    onClick={() => orderManageFn(el)}
-                                    className={`border 
-                                                flex p-1 rounded 
-                                                justify-center 
-                                                items-center text-center
-                                                px-2
-                                                text-xs
-                                                ${
-                                                    el.order_status_id && el.order_status_id.status === "PENDING"
-                                                        ? "bg-gray-400 border-0 text-black"
-                                                        : el.order_status_id && el.order_status_id.status === "PARTIAL_CONFIRMED"
-                                                        ? "bg-blue-400 border-0 text-white"
-                                                        : el.order_status_id && el.order_status_id.status === "CANCELLED"
-                                                        ? "bg-red-600 text-white border-0"
-                                                        : "bg-green-500 border-0 text-white"
-                                                }
-                                                `}
-                                >
-                                    {el.order_status_id && el.order_status_id.status.replace("_", " ")}
-                                </button>
-                            </td>
-                            <td className={`px-6 py-1`}>
-                                <div className="flex items-center justify-center space-x-2">
-                                    <button
-                                        disabled={!el.saleInvoice}
-                                        className="px-2 py-1 border disabled:text-white bg-green-300 border-green-300 text-blue-700 disabled:bg-gray-200 disabled:border-gray-200 rounded"
-                                        onClick={() => downloadPdfFn(el.saleInvoice && el.saleInvoice.invoiceNo, "SALE")}
-                                    >
-                                        Sale
-                                    </button>
-                                    <button
-                                        disabled={!el.purchaseInvoice}
-                                        className="px-2 bg-blue-300 text-white disabled:bg-gray-200 py-1 border border-blue-300 disabled:border-gray-200 rounded"
-                                        onClick={() => downloadPdfFn(el.purchaseInvoice && el.purchaseInvoice.invoiceNo, "PURCHASE")}
-                                    >
-                                        Purchase
-                                    </button>
-                                </div>
-                            </td>
-                            <td>
-                                <div className="flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-                                    <FaListCheck size={30} onClick={() => setStatusListFlag(true)} className="hover:bg-teal-300 p-1 rounded cursor-pointer" />
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table> */}
 
             <div className={`bg-white pt-12 z-10 dark:bg-neutral-800 dark:border-gray-700 border-s transition-transform h-screen w-96 fixed top-0 right-0 ${!statusListFlag && "translate-x-full"}`}>
                 <div className="flex items-center justify-between p-2">
