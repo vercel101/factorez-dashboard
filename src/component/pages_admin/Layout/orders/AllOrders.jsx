@@ -26,7 +26,6 @@ import OrderFilter from "./OrderFilter";
 import { PiMicrosoftExcelLogoDuotone } from "react-icons/pi";
 import { convertOrderArrayOfObjectsToCSV } from "../../../../utils/convertArrayToCsv";
 import { localDate, localDateInIndiaTime } from "../../../../utils/stringToLocalDate";
-import { exportToExcel } from "../../../../utils/ExportToExcel";
 
 function AllOrders({ tokenReducer, userInfoReducer }) {
     const toast = useToast();
@@ -74,56 +73,6 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
         for (let x of array) {
             arr.push(x._id);
         }
-        // let orderData = {};
-        // let commaStr = "";
-        // let arr = [];
-        // for (let x of array) {
-        //     orderData["orderId"] = x.orderId;
-        //     orderData["orderDate"] = localDateInIndiaTime(x.order_date);
-        //     orderData["invoiceNo"] = x.saleInvoice.invoiceNo;
-        //     orderData["invoiceDate"] = localDateInIndiaTime(x.saleInvoice.invoiceDate);
-        //     orderData["productsLength"] = x.ordered_products.products.length;
-        //     for (let x1 = 0; x1 < x.ordered_products.products.length; x1++) {
-        //         orderData[`sk_${x1 + 1}_code`] = x.ordered_products.products[x1].skuCode;
-        //         orderData[`sk_${x1 + 1}_gst`] = x.ordered_products.products[x1].selling_gst;
-        //     }
-        //     orderData["soldByGst"] = x.saleInvoice.soldBy.gst;
-        //     orderData["orderStatus"] = x.order_status_id.status;
-        //     orderData["customerName"] = x.customer_id.name;
-        //     commaStr += "Buyer details,";
-        //     orderData["customerPhone"] = x.customer_id.phone;
-        //     orderData["customerAddress"] = x.customer_id.defaultAddress.address;
-        //     orderData["customerCity"] = x.customer_id.defaultAddress.city;
-        //     orderData["customerState"] = x.customer_id.defaultAddress.state;
-        //     orderData["customerPincode"] = x.customer_id.defaultAddress.pincode;
-        //     orderData["customerGstNo"] = x.customer_id.gstNo;
-        //     orderData["customerAltPhone"] = x.customer_id.alternate_phone;
-        //     orderData["saleGrandTotal"] = x.grand_total;
-        //     orderData["saleDiscount"] = x.discounted_amount;
-        //     orderData["saleNetTotal"] = Number(x.grand_total) - Number(x.discounted_amount);
-        //     orderData["saleTaxableAmt"] = x.total;
-        //     orderData["saleGstType"] = x.saleInvoice.gstType;
-        //     orderData["saleGstAmt"] = x.GST_amount;
-        //     orderData["sellerName"] = x.vendorId.representativeName;
-        //     orderData["sellerPhone"] = x.vendorId.mobileNo;
-        //     orderData["sellerAddress"] = x.vendorId.pickupAddress;
-        //     orderData["sellerCity"] = x.vendorId.pickupCity;
-        //     orderData["sellerState"] = x.vendorId.pickupState;
-        //     orderData["sellerPincode"] = x.vendorId.pickupPincode;
-        //     orderData["sellerGstNo"] = x.vendorId.gstNo;
-        //     orderData["sellerAltNo"] = x.vendorId.altMobileNo;
-        //     orderData["purchaseGrandTotal"] = x.vendorAmtInfo.grandTotal;
-        //     orderData["purchaseNetTotal"] = x.vendorAmtInfo.grandTotal;
-        //     orderData["purchaseTaxableAmt"] = x.vendorAmtInfo.total;
-        //     orderData["purchaseGstType"] = x.purchaseInvoice.gstType;
-        //     orderData["purchaseGstAmt"] = x.vendorAmtInfo.gstAmt;
-        //     orderData["orderJourneyFinalStatus"] = x.order_status_id.status;
-        //     for(let x2 of x.order_status_id.statusList){
-        //         console.log(x2);
-        //     }
-        //     arr.push(orderData);
-        //     orderData = {};
-        // }
         await orderReportDownloadApi(arr, tokenReducer)
             .then((res) => {
                 console.log(res);
@@ -132,14 +81,8 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                 const link = document.createElement("a");
                 link.href = url;
                 link.setAttribute("download", `OrderReport.xlsx`);
-
-                // Append to html link element page
                 document.body.appendChild(link);
-
-                // Start download
                 link.click();
-
-                // Clean up and remove the link
                 link.parentNode.removeChild(link);
             })
             .catch((err) => {
