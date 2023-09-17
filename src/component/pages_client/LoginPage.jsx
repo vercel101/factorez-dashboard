@@ -4,7 +4,7 @@ import { Button, HStack, Input, InputGroup, InputLeftElement, InputRightElement,
 import { PinInput, PinInputField } from "@chakra-ui/react";
 import { IoCall } from "react-icons/io5";
 import { PiEyeClosedDuotone, PiEyeDuotone } from "react-icons/pi";
-import { generateOTPApi, loginCustomerApi, verifyOTPApi } from "../../apis/clientApis";
+import { forgetPasswordUsingOtpApi, generateOTPApi, loginCustomerApi, verifyOTPApi } from "../../apis/clientApis";
 import { useNavigate } from "react-router-dom";
 import { authToken, userInfoAdd } from "../../Redux/ReducerAction";
 import { useDispatch } from "react-redux";
@@ -17,7 +17,9 @@ const LoginPage = () => {
     const [isOtpGenerating, setIsOtpGenerating] = React.useState(false);
     const [isOtpRegenerate, setIsOtpRegenerate] = React.useState(false);
     const [isPasswordShow, setIsPasswordShow] = React.useState(false);
-    const [isUsingOtp, setIsUsingOtp] = React.useState(false);
+    const [isUsingPassword, setIsUsingPassword] = React.useState(true);
+    const [isForgetUsingOtp, setIsForgetUsingOtp] = React.useState(false);
+    const [isSignup, setIsSignup] = React.useState(false);
     const [isLogin, setIsLogin] = React.useState(false);
     const [enterOtpIsVisible, setEnterOtpIsVisible] = React.useState(false);
     const [mobileNumber, setMobileNumber] = React.useState("");
@@ -40,6 +42,9 @@ const LoginPage = () => {
                         description: res.data.message,
                     });
                     setEnterOtpIsVisible(true);
+                    if (!isSignup) {
+                        setIsForgetUsingOtp(true);
+                    }
                 })
                 .catch((err) => {
                     console.log(err);
@@ -69,29 +74,28 @@ const LoginPage = () => {
                 .then((res) => {
                     console.log(res.data);
                     let data = res.data.data;
-                    if (res.data.data.customerId) {
+                    if (isSignup && !res.data.data.isActivated) {
                         localStorage.setItem("customerId", data.customerId);
                         toast({
                             title: "Success",
                             position: "top",
                             status: "success",
                             isClosable: true,
-                            description: "OTP verified, You have to SignUp First",
+                            description: "OTP verified",
                         });
                         navigate("/signup");
                     } else {
                         toast({
-                            title: "Success",
+                            title: "Warning",
                             position: "top",
-                            status: "success",
+                            status: "warning",
                             isClosable: true,
-                            description: res.data.message,
+                            description: "Mobile number already exists, Please login",
                         });
-                        dispatch(authToken(data.token));
-                        sessionStorage.setItem("token", data.token);
-                        sessionStorage.setItem("userInfo", JSON.stringify(data));
-                        dispatch(userInfoAdd(data));
-                        navigate("/");
+                        setIsForgetUsingOtp(false);
+                        setEnterOtpIsVisible(false);
+                        setIsUsingPassword(true);
+                        setIsSignup(false);
                     }
                 })
                 .catch((err) => {
@@ -127,13 +131,13 @@ const LoginPage = () => {
                     isClosable: true,
                     description: "Invalid Mobile number",
                 });
-            } else if (!PasswordRegex.test(password)) {
+            } else if (password.length < 8 || password.length > 18) {
                 toast({
                     title: "Password",
                     position: "top",
                     status: "warning",
                     isClosable: true,
-                    description: "Invalid password",
+                    description: "Invalid password, Password length should be in between 8 to 18 character",
                 });
             } else {
                 setIsLogin((old) => true);
@@ -148,7 +152,7 @@ const LoginPage = () => {
                             isClosable: true,
                             description: res.data.message,
                         });
-                        
+
                         dispatch(authToken(data.token));
                         sessionStorage.setItem("token", data.token);
                         sessionStorage.setItem("userInfo", JSON.stringify(data));
@@ -177,11 +181,80 @@ const LoginPage = () => {
             });
         }
     };
+    const signUpBtn = () => {
+        console.log("first");
+        setIsUsingPassword(false);
+        setIsSignup(true);
+    };
+
+    const loginForgetHandler = () => {
+        if (isUsingPassword) {
+            setIsUsingPassword(false);
+        } else {
+            setIsForgetUsingOtp(false);
+            setEnterOtpIsVisible(false);
+            setIsUsingPassword(true);
+            setIsSignup(false);
+        }
+    };
+    const forgetPassword = async () => {
+        if (!password || !otpValue || !mobileNumber) {
+            toast({
+                title: "Phone, Password & OTP",
+                position: "top",
+                status: "warning",
+                isClosable: true,
+                description: "Phone number,Password and OTP are required",
+            });
+        } else if (!RegexMobile.test(mobileNumber)) {
+            toast({
+                title: "Phone",
+                position: "top",
+                status: "warning",
+                isClosable: true,
+                description: "Invalid Mobile number",
+            });
+        } else if (password.length < 8 || password.length > 18) {
+            toast({
+                title: "Password",
+                position: "top",
+                status: "warning",
+                isClosable: true,
+                description: "Invalid password, Password length should be in between 8 to 18 character",
+            });
+        } else {
+            setIsOtpVerifying((old) => true);
+            await forgetPasswordUsingOtpApi(mobileNumber, otpValue, { password })
+                .then((res) => {
+                    toast({
+                        title: res.data.message,
+                        position: "top",
+                        status: "success",
+                        isClosable: true,
+                    });
+                    setIsForgetUsingOtp(false);
+                    setEnterOtpIsVisible(false);
+                    setIsUsingPassword(true);
+                })
+                .catch((err) => {
+                    let message = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
+                    toast({
+                        title: "Error",
+                        position: "top",
+                        status: "error",
+                        isClosable: true,
+                        description: message,
+                    });
+                    setIsOtpRegenerate(true);
+                });
+            setIsOtpVerifying((old) => false);
+        }
+    };
 
     return (
         <div className="flex bg-cover bg-bottom bg-no-repeat items-center h-screen w-full" style={{ backgroundImage: `url(${img})` }}>
             <div className="w-full bg-white rounded shadow-lg p-8 m-4 md:max-w-sm md:mx-auto">
-                <span className="block w-full text-xl uppercase font-bold mb-4">Login</span>
+                <span className="block w-full text-xl uppercase font-bold mb-4">{!isUsingPassword && !isSignup ? "Forget Password" : isSignup ? "Signup using OTP" : "Login"}</span>
                 <div className="md:w-full">
                     <label htmlFor="mobile-no" className="block text-xs mb-1">
                         Mobile number
@@ -210,7 +283,31 @@ const LoginPage = () => {
                         </HStack>
                     </div>
                 )}
-                {!isUsingOtp && (
+
+                {isUsingPassword && (
+                    <div className="mt-4 md:w-full">
+                        <label htmlFor="password" className="block text-xs mb-1">
+                            Enter Password
+                        </label>
+                        <InputGroup mb={3} size="md">
+                            <Input
+                                onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="new-password"
+                                id="password"
+                                pr="4.5rem"
+                                type={isPasswordShow ? "text" : "password"}
+                                placeholder="Enter password"
+                            />
+                            <InputRightElement width="4.5rem">
+                                <Button title={isPasswordShow ? "Hide" : "Show"} h="1.75rem" size="sm" onClick={() => setIsPasswordShow(!isPasswordShow)}>
+                                    {isPasswordShow ? <PiEyeDuotone size={20} /> : <PiEyeClosedDuotone size={20} />}
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                    </div>
+                )}
+
+                {isForgetUsingOtp && (
                     <div className="mt-4 md:w-full">
                         <label htmlFor="password" className="block text-xs mb-1">
                             Enter Password
@@ -233,19 +330,31 @@ const LoginPage = () => {
                     </div>
                 )}
                 <div className="mb-4">
-                    <Button onClick={() => setIsUsingOtp(!isUsingOtp)} fontSize={"xs"} colorScheme="messenger" variant="link">
-                        {isUsingOtp ? "Login with Password" : "Login with OTP"}
+                    <Button onClick={() => loginForgetHandler()} fontSize={"xs"} colorScheme="messenger" variant="link">
+                        {!isUsingPassword ? "← Back to Login" : "Forget password"}
                     </Button>
                 </div>
-                {!isUsingOtp ? (
-                    <Button onClick={() => loginWithPassword()} isLoading={isLogin} loadingText="Please wait" colorScheme="green" variant="solid">
-                        Login
-                    </Button>
+
+                {isUsingPassword && !isForgetUsingOtp ? (
+                    <div className="flex items-center space-x-2">
+                        <Button onClick={() => loginWithPassword()} isLoading={isLogin} loadingText="Please wait" colorScheme="green" variant="solid">
+                            Login
+                        </Button>
+                        <Button onClick={() => signUpBtn()} isLoading={isLogin} loadingText="Please wait" colorScheme="yellow" variant="solid">
+                            Signup
+                        </Button>
+                    </div>
                 ) : enterOtpIsVisible ? (
                     <>
-                        <Button onClick={() => verifyOTP()} isLoading={isOtpVerifying} loadingText="Please wait" colorScheme="green" variant="solid">
-                            Verify OTP
-                        </Button>
+                        {isForgetUsingOtp ? (
+                            <Button onClick={() => forgetPassword()} isLoading={isOtpVerifying} loadingText="Please wait" colorScheme="green" variant="solid">
+                                Forget Password using OTP
+                            </Button>
+                        ) : (
+                            <Button onClick={() => verifyOTP()} isLoading={isOtpVerifying} loadingText="Please wait" colorScheme="green" variant="solid">
+                                Verify OTP
+                            </Button>
+                        )}
                         {isOtpRegenerate && (
                             <Button fontSize={"xs"} ms={2} variant="link" onClick={() => sendOtp()} isLoading={isOtpGenerating} loadingText="Please wait" colorScheme="whatsapp">
                                 Resend OTP

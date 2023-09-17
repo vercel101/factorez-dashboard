@@ -61,3 +61,35 @@ export const getProductInfoApi = (productId, token) => {
         },
     });
 };
+
+export const addToCartApi = (customerId, data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/addtocart/${customerId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+
+export const getCartsByCustomerApi = (customerId, token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/cart/${customerId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const forgetPasswordUsingOtpApi = (phone, otp, data) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/forget-password/${phone}/${otp}`,
+        // headers: {
+        //     Authorization: "Bearer " + token,
+        // },
+        data: data,
+    });
+};

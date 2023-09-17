@@ -23,6 +23,7 @@ import AllProductPage from "./component/pages_client/AllProductPage";
 import { authToken, storeInfoAddFn, userInfoAdd, userInfoClear } from "./Redux/ReducerAction";
 import { getStoreInfoApi } from "./apis/clientApis";
 import ProductInfo from "./component/pages_client/ProductInfo";
+import Cart from "./component/pages_client/Cart";
 function App() {
     const { darkModeReducer, tokenReducer, sidebarCollapse, productBrandDDindexReducer, storeInfoReducer, userInfoReducer, productCategoryNewReducer, productCategoryDDindexReducer } = useSelector(
         (state) => state
@@ -84,6 +85,7 @@ function App() {
                     <Route path={"*"} element={<Navigate to={"/"} />} />
                     <Route path={"signup"} element={<SignUpPage />} />
                     <Route path={"login"} element={<LoginPage />} />
+                    <Route path={"cart"} element={<Cart storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                     <Route path={"products"} element={<AllProductPage storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                     <Route path={"product/:productId"} element={<ProductInfo storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                 </Route>

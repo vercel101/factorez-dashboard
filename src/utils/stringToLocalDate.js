@@ -35,7 +35,6 @@ const localDateInIndiaTime = (dateString) => {
         "Nov",
         "Dec",
     ];
-    let dateFn = new Date(dateString).getTime(); //"2023-06-30T12:16:16.624Z"
    //  let dateWithIndiaTime = new Date(dateFn + 5 * 3600 * 1000 + 1800 * 1000);
     let dateWithIndiaTime = new Date(dateString);
     var year = dateWithIndiaTime.getFullYear();

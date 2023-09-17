@@ -32,7 +32,7 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
                 <div className=" inline-flex items-center space-x-3 pe-2">
                     {login && (
                         <>
-                            <IconButton _hover={{ bg: "#fff1f1" }} bgColor={"transparent"} aria-label="Search database" icon={<BsCart size={35} color="#A46A38" className="cursor-pointer p-2" />} />
+                            <IconButton onClick={() => navigate('/cart')} _hover={{ bg: "#fff1f1" }} bgColor={"transparent"} aria-label="Search database" icon={<BsCart size={35} color="#A46A38" className="cursor-pointer p-2" />} />
                             <UserBtn tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />
                         </>
                     )}

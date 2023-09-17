@@ -23,27 +23,28 @@ const SignUpPage = () => {
         password: "",
         alternate_phone: "",
         state: "",
+        city: "",
+        gstNo: "",
+        pincode: "",
         address: "",
     });
 
     const saveUserInformation = async () => {
         console.log(signUpData);
-        if (signUpData.name && signUpData.gender && signUpData.DOB && signUpData.email && signUpData.password && signUpData.state && signUpData.address) {
+        if (signUpData.name && signUpData.DOB && signUpData.password && signUpData.state && signUpData.address) {
             const EmailRegex = /^\w+([\.]?\w+)*@\w+([\.]?\w+)*(\.\w{2,5})+$/;
-            const PasswordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{10,20}$/;
             const MobileRegex = /^[6-9]\d{9}$/;
-            if (!EmailRegex.test(signUpData.email)) {
+            if (signUpData.email && !EmailRegex.test(signUpData.email)) {
                 toast({
                     status: "warning",
                     title: "Invalid EmailID",
                     isClosable: true,
                     position: "top",
                 });
-            } else if (!PasswordRegex.test(signUpData.password)) {
+            } else if (signUpData.password.length < 8 || signUpData.password.length > 18) {
                 toast({
                     status: "warning",
-                    title: "Weak password",
-                    description: "Password must contains at least One special character, One Uppercase, One Lowercase, One Number and length in between 10-20",
+                    title: "Password length should be in between 8 to 18",
                     isClosable: true,
                     position: "top",
                 });
@@ -127,22 +128,17 @@ const SignUpPage = () => {
                 />
                 <div className="md:mt-4 md:flex md:items-center md:space-x-2">
                     <div className="w-full mt-2 md:mt-0">
-                        <label htmlFor="gender" className="block text-xs mb-1 font-bold">
-                            Gender <span className="text-red-600">*</span>
+                        <label htmlFor="gstNo" className="block text-xs mb-1 font-bold">
+                            GST Number
                         </label>
-                        <Select
-                            id="gender"
-                            placeholder="Select Gender"
+                        <Input
+                            id="gstNo"
                             onChange={(e) =>
                                 setSignUpData((old) => {
-                                    return { ...old, gender: e.target.value };
+                                    return { ...old, gstNo: e.target.value };
                                 })
                             }
-                        >
-                            <option value="MALE">Male</option>
-                            <option value="FEMALE">Female</option>
-                            <option value="OTHER">Other</option>
-                        </Select>
+                        />
                     </div>
                     <div className="w-full mt-2 md:mt-0">
                         <label htmlFor="dob" className="block text-xs mb-1 font-bold">
@@ -162,7 +158,7 @@ const SignUpPage = () => {
                 <div className="md:mt-4 md:flex md:items-center md:space-x-2">
                     <div className="w-full mt-2 md:mt-0">
                         <label htmlFor="emailId" className="block text-xs mb-1 font-bold">
-                            Email ID <span className="text-red-600">*</span>
+                            Email ID
                         </label>
                         <Input
                             id="emailId"
@@ -241,6 +237,43 @@ const SignUpPage = () => {
                                     </option>
                                 ))}
                         </Select>
+                    </div>
+                </div>
+                <div className="md:mt-4 md:flex md:items-center md:space-x-2">
+                    <div className="w-full mt-2 md:mt-0">
+                        <label htmlFor="mobile-no" className="block text-xs mb-1 font-bold">
+                            City <span className="text-red-600">*</span>
+                        </label>
+                        <InputGroup>
+                            <InputLeftElement pointerEvents="none">
+                                <IoCall className="text-gray-300" />
+                            </InputLeftElement>
+                            <Input
+                                onChange={(e) =>
+                                    setSignUpData((old) => {
+                                        return { ...old, city: e.target.value };
+                                    })
+                                }
+                                id="city"
+                                type="text"
+                                placeholder="Enter your city"
+                            />
+                        </InputGroup>
+                    </div>
+                    <div className="w-full mt-2 md:mt-0">
+                        <label htmlFor="pincode" className="block text-xs mb-1 font-bold">
+                            Pincode <span className="text-red-600">*</span>
+                        </label>
+                        <Input
+                            onChange={(e) =>
+                                setSignUpData((old) => {
+                                    return { ...old, pincode: e.target.value };
+                                })
+                            }
+                            id="city"
+                            type="text"
+                            placeholder="Enter your city"
+                        />
                     </div>
                 </div>
                 <label htmlFor="address" className="block text-xs mb-1 mt-2 md:mt-4  font-bold">

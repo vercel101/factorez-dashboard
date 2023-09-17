@@ -23,7 +23,7 @@ import {
     Stack,
     Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useMemo } from "react";
 import { BsFillSquareFill } from "react-icons/bs";
 import { FcFilledFilter } from "react-icons/fc";
 import { allDashboardProductsApi } from "../../apis/clientApis";
@@ -48,6 +48,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
                 console.log(err);
             });
     };
+
     const rangSliderHandler = (e) => {
         setMinPrice((old) => e[0]);
         setMaxPrice((old) => e[1]);
@@ -154,7 +155,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
                     <div className="col-span-9 mb-16">
                         <div className="col-span-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4 mx-3 mt-5 sm:mx-0 sm:mt-0">
                             {products.map((el) => (
-                                <ProductCard key={el._id} element={el} />
+                                <ProductCard customerId={userInfoReducer.customerId} tokenReducer={tokenReducer} key={el._id} element={el} />
                             ))}
                         </div>
                     </div>

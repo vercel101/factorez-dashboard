@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getProductInfoApi } from "../../apis/clientApis";
-import { BsCart, BsSuitHeartFill, BsSuitHeart, BsTruck } from "react-icons/bs";
+import { addToCartApi, getProductInfoApi } from "../../apis/clientApis";
+import { BsCart, BsSuitHeartFill, BsSuitHeart, BsTruck, BsFillSquareFill } from "react-icons/bs";
 import { FcFlashOn } from "react-icons/fc";
 import { FaLocationDot } from "react-icons/fa6";
-import { Button, Table, Tbody, Td, Tr } from "@chakra-ui/react";
+import { Badge, Button, Checkbox, Radio, RadioGroup, Stack, Table, Tbody, Td, Tr, useToast } from "@chakra-ui/react";
 import { GrEdit } from "react-icons/gr";
 import { CiDeliveryTruck } from "react-icons/ci";
+import { Modal, Select, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
 
 const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
+    const toast = useToast();
+    const [isOpen, setIsOpen] = useState(false);
+    const [lotValue, setLotValue] = useState("");
+    const [colorValue, setColorValue] = useState("");
     const [product, setProduct] = useState(null);
+    const [selectPair, setSelectPair] = useState("");
     const [imgUrl, setImgUrl] = useState("");
     let { productId } = useParams();
 
@@ -17,6 +23,25 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
         let marginAmt = Number(price) + (Number(price) * Number(margin)) / 100;
         let gstAmt = (Number(marginAmt) * Number(gst)) / 100;
         return (gstAmt + marginAmt).toFixed(2);
+    };
+    const taxableAmtAntGstAmt = (price, margin, gst) => {
+        let marginAmt = Number(price) + (Number(price) * Number(margin)) / 100;
+        let gstAmt = (Number(marginAmt) * Number(gst)) / 100;
+        return `₹${marginAmt.toFixed(2)} + ₹${gstAmt.toFixed(2)} GST`;
+    };
+    const listOfPairs = (moq) => {
+        let arr = [];
+        for (let x = 1; x <= 20; x++) {
+            arr.push(moq * x);
+        }
+        return arr;
+    };
+
+    const totalPrice = (price, margin, gst) => {
+        let marginAmt = Number(price) + (Number(price) * Number(margin)) / 100;
+        let gstAmt = (Number(marginAmt) * Number(gst)) / 100;
+        let total = marginAmt + gstAmt;
+        return [total.toFixed(2), (total * selectPair).toFixed(2)];
     };
 
     const getProductInfo = async () => {
@@ -29,6 +54,32 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                 console.log(err);
             });
     };
+
+    const addToCart = async () => {
+        if (product && selectPair && lotValue && colorValue) {
+            let productObj = {
+                product_id: product._id,
+                qty: selectPair,
+                lotSize: lotValue,
+                colorId: colorValue,
+            };
+            console.log(selectPair, lotValue, colorValue);
+            await addToCartApi(JSON.parse(sessionStorage.getItem("userInfo")).customerId, productObj, sessionStorage.getItem("token"))
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } else {
+            toast({
+                status: "warning",
+                position: "top",
+                title: "All fields are required",
+                isClosable: true,
+            });
+        }
+    };
     useEffect(() => {
         getProductInfo();
         window.scrollTo(0, 0);
@@ -36,6 +87,82 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     // console.log(productId);
     return (
         <div className="pt-[90px] pb-2 md:px-[20px] lg:px-[10%]">
+            <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={() => setIsOpen(false)}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Add to cart</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text fontSize={"xl"} fontWeight={700}>
+                            Product Name and Details
+                        </Text>
+                        <div className="flex items-center justify-between">
+                            <Text fontWeight={700}>
+                                ₹ {product && priceCal(product.seller_price, product.margin, product.sellingGST)}{" "}
+                                <span className="text-xs px-2 py-1 rounded-full bg-red-600 text-white">MRP ₹{product && product.mrp}</span>
+                            </Text>
+                            <Text fontWeight={700}>MOQ:{product && product.min_order_qty} Pairs</Text>
+                        </div>
+                        <div>
+                            <span className="text-xs text-gray-500">{product && taxableAmtAntGstAmt(product.seller_price, product.margin, product.sellingGST)}</span>
+                        </div>
+                        <hr />
+                        <div className="flex mt-5">
+                            <div>
+                                <h1 className="font-bold">Set size & Pairs</h1>
+                                <RadioGroup onChange={setLotValue} value={lotValue}>
+                                    <Stack direction="column">{product && product.lotSizeQty.map((el) => <Radio value={el}>{el}</Radio>)}</Stack>
+                                </RadioGroup>
+                            </div>
+                            <div className="ms-10">
+                                <h1 className="font-bold">Color</h1>
+                                <RadioGroup onChange={setColorValue} value={colorValue}>
+                                    <Stack direction="column">
+                                        {product &&
+                                            product.color_id.map((el) => (
+                                                <Radio value={el._id}>
+                                                    <div className="flex items-center space-x-2">
+                                                        <BsFillSquareFill color={el.colorHex} />
+                                                        <span>{el.colorName}</span>
+                                                    </div>
+                                                </Radio>
+                                            ))}
+                                    </Stack>
+                                </RadioGroup>
+                            </div>
+                        </div>
+                        <div className="mt-5">
+                            <Select value={selectPair} placeholder="Select Pairs" onChange={(e) => setSelectPair(e.target.value)}>
+                                {product &&
+                                    listOfPairs(product.min_order_qty).map((el) => (
+                                        <option key={el} value={el}>
+                                            {el} Pairs
+                                        </option>
+                                    ))}
+                            </Select>
+                        </div>
+                        <div className="text-sm text-gray-500">
+                            {selectPair && (
+                                <>
+                                    <span className="text-sm">
+                                        ₹{totalPrice(product.seller_price, product.margin, product.sellingGST)[0]} x {selectPair} Pairs ={" "}
+                                    </span>
+                                    <span className="text-blue-600">₹{totalPrice(product.seller_price, product.margin, product.sellingGST)[1]}</span>
+                                </>
+                            )}
+                        </div>
+                    </ModalBody>
+
+                    <ModalFooter>
+                        <Button colorScheme="yellow" mr={3} onClick={() => addToCart()}>
+                            Add to cart
+                        </Button>
+                        <Button colorScheme="red" onClick={() => setIsOpen(false)}>
+                            Cancel
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
             <div className="">
                 <div className="flex px-2 sm:px-0 flex-col sm:flex-row items-start justify-center">
                     <div className="w-full sm:w-[60%] ">
@@ -58,19 +185,21 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         <h1 className="text-4xl font-bold">{product && product.product_name}</h1>
                         <p className="my-2 text-sm">{product && product.description}</p>
                         {product && <p className="font-semibold my-3 text-lg text-red-500">₹ {priceCal(product.seller_price, product.margin, product.sellingGST)}</p>}
-                        <div className="flex items-center space-x-2 mb-2">
-                            {product && (
-                                <>
-                                    <span>Color: {product.color_id.colorName}</span>
-                                    <div className="h-5 w-5" style={{ backgroundColor: product.color_id.colorHex }}></div>
-                                </>
-                            )}
+                        <div className="flex items-center space-x-2 mb-2 flex-wrap">
+                            <span className="font-bold">Color: </span>
+                            {product &&
+                                product.color_id.map((el) => (
+                                    <>
+                                        <span>{el.colorName}</span>
+                                        <div className="h-5 w-5" style={{ backgroundColor: el.colorHex }}></div>
+                                    </>
+                                ))}
                         </div>
                         <hr />
                         <h3 className="font-bold text-gray-600 mt-4">Available Set Sizes</h3>
                         <div className="space-x-3 mt-2">{product && product.lotSizeQty.map((el) => <span className="border rounded p-1 text-sm font-semibold text-gray-800">{el}</span>)}</div>
                         <div className="flex space-x-3 mt-3">
-                            <Button py={7} width={"full"} leftIcon={<BsCart />} colorScheme="messenger" fontSize={20}>
+                            <Button onClick={() => setIsOpen(true)} py={7} width={"full"} leftIcon={<BsCart />} colorScheme="messenger" fontSize={20}>
                                 Add to Cart
                             </Button>
                             <Button py={7} width={"full"} leftIcon={<FcFlashOn />} colorScheme="whatsapp" fontSize={20}>

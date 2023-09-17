@@ -31,6 +31,7 @@
     "react-tabs": "^6.0.2",
     "react-toggle-dark-mode": "^1.1.1",
     "redux": "^4.2.1",
+    "redux-persist": "^6.0.0",
     "tw-elements": "^1.0.0-rc.1",
     "web-vitals": "^2.1.4",
     "yarn": "^1.22.19"
