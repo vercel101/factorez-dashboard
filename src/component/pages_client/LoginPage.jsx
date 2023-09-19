@@ -182,7 +182,6 @@ const LoginPage = () => {
         }
     };
     const signUpBtn = () => {
-        console.log("first");
         setIsUsingPassword(false);
         setIsSignup(true);
     };
@@ -340,7 +339,7 @@ const LoginPage = () => {
                         <Button onClick={() => loginWithPassword()} isLoading={isLogin} loadingText="Please wait" colorScheme="green" variant="solid">
                             Login
                         </Button>
-                        <Button onClick={() => signUpBtn()} isLoading={isLogin} loadingText="Please wait" colorScheme="yellow" variant="solid">
+                        <Button onClick={() => signUpBtn()} loadingText="Please wait" colorScheme="yellow" variant="solid">
                             Signup
                         </Button>
                     </div>

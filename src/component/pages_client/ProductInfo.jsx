@@ -4,7 +4,7 @@ import { addToCartApi, getProductInfoApi } from "../../apis/clientApis";
 import { BsCart, BsSuitHeartFill, BsSuitHeart, BsTruck, BsFillSquareFill } from "react-icons/bs";
 import { FcFlashOn } from "react-icons/fc";
 import { FaLocationDot } from "react-icons/fa6";
-import { Badge, Button, Checkbox, Radio, RadioGroup, Stack, Table, Tbody, Td, Tr, useToast } from "@chakra-ui/react";
+import { Badge, Button, Checkbox, Radio, RadioGroup, Stack, Table, Tbody, Td, Tr, position, useToast } from "@chakra-ui/react";
 import { GrEdit } from "react-icons/gr";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { Modal, Select, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
@@ -15,6 +15,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const [lotValue, setLotValue] = useState("");
     const [colorValue, setColorValue] = useState("");
     const [product, setProduct] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [selectPair, setSelectPair] = useState("");
     const [imgUrl, setImgUrl] = useState("");
     let { productId } = useParams();
@@ -63,14 +64,31 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                 lotSize: lotValue,
                 colorId: colorValue,
             };
-            console.log(selectPair, lotValue, colorValue);
+            setIsLoading(true);
             await addToCartApi(JSON.parse(sessionStorage.getItem("userInfo")).customerId, productObj, sessionStorage.getItem("token"))
                 .then((res) => {
                     console.log(res.data);
+                    setIsOpen(false);
+                    setColorValue("");
+                    setLotValue("");
+                    setSelectPair("");
+                    toast({
+                        title: res.data.message,
+                        position: "top",
+                        isClosable: true,
+                        status: "success",
+                    });
                 })
                 .catch((err) => {
                     console.log(err);
+                    toast({
+                        title: err.message,
+                        position: "top",
+                        isClosable: true,
+                        status: "error",
+                    });
                 });
+            setIsLoading(false);
         } else {
             toast({
                 status: "warning",
@@ -154,7 +172,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button colorScheme="yellow" mr={3} onClick={() => addToCart()}>
+                        <Button isLoading={isLoading} loadingText="Please wait" colorScheme="yellow" mr={3} onClick={() => addToCart()}>
                             Add to cart
                         </Button>
                         <Button colorScheme="red" onClick={() => setIsOpen(false)}>

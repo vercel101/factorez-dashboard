@@ -135,7 +135,7 @@ const LoginSignup = () => {
                         {!isLoginPage ? 'Seller Registration Form' : 'Login for Dashboard'}
                     </p>
                     <button className={`absolute py-1 px-2 rounded-sm bg-violet-500 text-white bottom-2 right-2`}
-                            onClick={() => setIsLoginPage(!isLoginPage)}>{!isLoginPage ? 'Login Page' : 'Signup Page'}
+                            onClick={() => setIsLoginPage(!isLoginPage)}>{!isLoginPage ? 'Login Page' : 'SignUp Page'}
                     </button>
                 </div>
                 <div className="flex justify-between items-center bg-teal-200 px-3 mb-3">
@@ -157,7 +157,7 @@ const LoginSignup = () => {
                                     selectedClassName="bg-teal-100 dark:bg-teal-800 bg-teal-100 border-x-teal-100 border-t-teal-100 border-b-4 border-blue-500"
                                     className="cursor-pointer p-3 w-full  outline-none border"
                                 >
-                                    Besic Details
+                                    Basic Details
                                 </Tab>
                                 <Tab
                                     selectedClassName="bg-teal-100 dark:bg-teal-800 bg-teal-100 border-x-teal-100 border-t-teal-100 border-b-4 border-blue-500"
@@ -571,13 +571,13 @@ const LoginSignup = () => {
                                         <div
                                             className="border rounded-md flex   w-full dark:bg-[#424242] dark:border-[#424242]">
                                             <label
-                                                htmlFor="cancelledcheque"
+                                                htmlFor="cancelledCheque"
                                                 className="outline-none flex justify-start items-center"
                                             >
                                                 <input
                                                     type="file"
                                                     placeholder="cheque document"
-                                                    id="cancelledcheque"
+                                                    id="cancelledCheque"
                                                     accept={"image/jpeg,image/jpg,image/png,application/pdf"}
                                                     onChange={(e) => setDocumentFile((preData) => {
                                                         return {
