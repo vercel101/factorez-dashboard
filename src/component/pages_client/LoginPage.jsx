@@ -161,12 +161,13 @@ const LoginPage = () => {
                     })
                     .catch((err) => {
                         console.log(err);
+                        let message = err.response && err.response.data ? err.response.data.message : err.message;
                         toast({
                             title: "Error",
                             position: "top",
                             status: "error",
                             isClosable: true,
-                            description: err.response.data.message,
+                            description: message,
                         });
                     });
                 setIsLogin((old) => false);
