@@ -172,7 +172,7 @@ const Profile = ({ tokenReducer, userInfoReducer }) => {
     }, []);
 
     return (
-        <div className="pt-[80px] px-2 md:px-[20px] lg:px-[10%] bg-white pb-10">
+        <div className="pt-[100px] md:pt-[80px] px-2 md:px-[20px] lg:px-[10%] bg-white pb-10">
             <div className="pt-5">
                 <Heading>My Profile</Heading>
             </div>

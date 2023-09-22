@@ -145,7 +145,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
         fetchCartValue();
     }, []);
     return (
-        <div className="pt-[80px] md:px-[20px] lg:px-[10%] bg-gray-100">
+        <div className="pt-[100px] md:pt-[80px] md:px-[20px] lg:px-[10%] bg-gray-100">
             <div className="container mx-auto mt-10 pb-20">
                 <div className="flex flex-col sm:flex-row shadow-md px-2 sm:px-0">
                     <div className="w-full sm:w-3/4 bg-white px-10 py-10">

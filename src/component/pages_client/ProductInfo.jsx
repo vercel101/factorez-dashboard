@@ -65,7 +65,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                 colorId: colorValue,
             };
             setIsLoading(true);
-            await addToCartApi(JSON.parse(sessionStorage.getItem("userInfo")).customerId, productObj, sessionStorage.getItem("token"))
+            await addToCartApi(userInfoReducer.customerId, productObj, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
                     setIsOpen(false);
@@ -104,7 +104,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     }, []);
     // console.log(productId);
     return (
-        <div className="pt-[90px] pb-2 md:px-[20px] lg:px-[10%]">
+        <div className="pt-[110px] md:pt-[90px] pb-2 md:px-[20px] lg:px-[10%]">
             <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={() => setIsOpen(false)}>
                 <ModalOverlay />
                 <ModalContent>

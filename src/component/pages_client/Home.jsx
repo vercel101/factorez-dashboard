@@ -39,7 +39,7 @@ const Home = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const color = storeInfoReducer && storeInfoReducer.color && storeInfoReducer.color;
 
     const allProducts = async () => {
-        await allDashboardProductsApi(sessionStorage.getItem("token"))
+        await allDashboardProductsApi(tokenReducer)
             .then((res) => {
                 console.log(res.data);
             })
@@ -64,7 +64,7 @@ const Home = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
 
     return (
         <div>
-            <div className="pt-[80px] md:px-[20px] lg:px-[10%]">
+            <div className="pt-[100px] md:pt-[80px] md:px-[20px] lg:px-[10%]">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-0 sm:gap-4 md:h-[300px] lg:h-[400px] md:mt-4">
                     <div className="md:col-span-8 lg:col-span-9">
                         <Slider />

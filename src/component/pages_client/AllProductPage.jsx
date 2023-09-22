@@ -49,7 +49,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
 
     return (
         <div>
-            <div className="pt-[80px] md:px-[20px] lg:px-[10%]">
+            <div className="pt-[100px] md:pt-[80px] md:px-[20px] lg:px-[10%]">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-2 sm:px-0 md:mt-4">
                     <div className="col-span-3 hidden md:block">
                         <div className="border">
