@@ -124,3 +124,55 @@ export const applyPromoCodeApi = (customerId, data, token) => {
         data: data,
     });
 };
+
+export const addAddressApi = (customerId, data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/addaddress/${customerId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+
+export const getAllAddressApi = (customerId, token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/getalladdress/${customerId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const updateUserInfoApi = (customerId, data, token) => {
+    return axios({
+        method: "PUT",
+        url: `${process.env.REACT_APP_API_ADDRESS}/updatecustomer/${customerId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+
+export const setDefaultAddressApi = (customerId, addressId, token) => {
+    return axios({
+        method: "PUT",
+        url: `${process.env.REACT_APP_API_ADDRESS}/setdefaultaddress/${customerId}/${addressId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const deleteAddressApi = (customerId, addressId, token) => {
+    return axios({
+        method: "DELETE",
+        url: `${process.env.REACT_APP_API_ADDRESS}/address/${customerId}/${addressId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};

@@ -12,6 +12,7 @@ import Products from "./component/pages_admin/Products";
 import { couponEnumList, customerEnumList, isRoleExists, orderEnumList, productEnumList, reportEnumList, settingEnumList, subadminEnumList, vendorsEnumList } from "./utils/checkRole";
 import Setting from "./component/pages_admin/Setting";
 import Profile from "./component/pages_admin/Layout/profile/Profile";
+import ProfileClient from "./component/pages_client/Profile";
 import Finance from "./component/pages_admin/Finance";
 import Customers from "./component/pages_admin/Customers";
 import Report from "./component/pages_admin/Report";
@@ -24,6 +25,7 @@ import { authToken, storeInfoAddFn, userInfoAdd, userInfoClear } from "./Redux/R
 import { getStoreInfoApi } from "./apis/clientApis";
 import ProductInfo from "./component/pages_client/ProductInfo";
 import Cart from "./component/pages_client/Cart";
+import Order from "./component/pages_client/Orders";
 function App() {
     const { darkModeReducer, tokenReducer, sidebarCollapse, productBrandDDindexReducer, storeInfoReducer, userInfoReducer, productCategoryNewReducer, productCategoryDDindexReducer } = useSelector(
         (state) => state
@@ -88,6 +90,8 @@ function App() {
                     <Route path={"cart"} element={<Cart storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                     <Route path={"products"} element={<AllProductPage storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                     <Route path={"product/:productId"} element={<ProductInfo storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
+                    <Route path={"profile"} element={<ProfileClient storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
+                    <Route path={"orders"} element={<Order storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                 </Route>
                 <Route path="/admin" element={<Admin />}>
                     <Route path={"/admin/*"} element={<Navigate to={"/admin"} />} />
