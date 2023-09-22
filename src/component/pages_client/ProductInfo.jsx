@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { addToCartApi, getProductInfoApi } from "../../apis/clientApis";
-import { BsCart, BsSuitHeartFill, BsSuitHeart, BsTruck, BsFillSquareFill } from "react-icons/bs";
+import { BsCart, BsTruck, BsFillSquareFill } from "react-icons/bs";
 import { FcFlashOn } from "react-icons/fc";
 import { FaLocationDot } from "react-icons/fa6";
-import { Badge, Button, Checkbox, Radio, RadioGroup, Stack, Table, Tbody, Td, Tr, position, useToast } from "@chakra-ui/react";
+import {  Button,  Radio, RadioGroup, Stack, Table, Tbody, Td, Tr, useToast } from "@chakra-ui/react";
 import { GrEdit } from "react-icons/gr";
-import { CiDeliveryTruck } from "react-icons/ci";
-import { Modal, Select, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
+import { Modal, Select, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
 
 const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const toast = useToast();

@@ -21,7 +21,7 @@ import Orders from "./component/pages_admin/Orders";
 import SubAdmin from "./component/pages_admin/SubAdmin";
 import Venders from "./component/pages_admin/Venders";
 import AllProductPage from "./component/pages_client/AllProductPage";
-import { authToken, storeInfoAddFn, userInfoAdd, userInfoClear } from "./Redux/ReducerAction";
+import { authToken, authTokenClear, storeInfoAddFn, userInfoAdd, userInfoClear } from "./Redux/ReducerAction";
 import { getStoreInfoApi } from "./apis/clientApis";
 import ProductInfo from "./component/pages_client/ProductInfo";
 import Cart from "./component/pages_client/Cart";
@@ -30,12 +30,11 @@ function App() {
     const { darkModeReducer, tokenReducer, sidebarCollapse, productBrandDDindexReducer, storeInfoReducer, userInfoReducer, productCategoryNewReducer, productCategoryDDindexReducer } = useSelector(
         (state) => state
     );
-    let login = sessionStorage.getItem("token") !== null;
     let navigate = useNavigate();
     let location = useLocation();
     let dispatch = useDispatch();
     const storeInformation = async () => {
-        await getStoreInfoApi(sessionStorage.getItem("token"))
+        await getStoreInfoApi(tokenReducer)
             .then((res) => {
                 // console.log(res.data);
                 dispatch(storeInfoAddFn(res.data.data));
@@ -47,34 +46,33 @@ function App() {
 
     React.useEffect(() => {
         localStorage.removeItem("customerId");
-        // console.log(tokenReducer);
+        console.log("userInfoReducer", userInfoReducer);
+        console.log("tokenReducer", tokenReducer);
+        console.log("location", location);
         storeInformation();
-        if (!login) {
+        if (!tokenReducer) {
             if (location.pathname.startsWith("/admin")) {
                 navigate("/admin/login");
-            } else if (localStorage.getItem("customerId")) {
-                navigate("/signup");
             } else {
                 navigate("/login");
             }
-            // console.log("location", location);
-            // console.log("navigate");
             dispatch(userInfoClear());
+            dispatch(authTokenClear());
         } else {
-            let userInfo = JSON.parse(sessionStorage.userInfo);
-            if (location.pathname === "/" && userInfo.userType !== "CUSTOMER") {
+            if (location.pathname === "/login" && tokenReducer) {
+                if (userInfoReducer.userType !== "CUSTOMER") {
+                    navigate("/admin");
+                } else {
+                    navigate("/");
+                }
+            } else if (location.pathname === "/" && userInfoReducer.userType !== "CUSTOMER") {
                 dispatch(userInfoClear());
-                sessionStorage.clear();
-                navigate("/admin");
-            } else if (location.pathname.startsWith("/admin") && userInfo.userType === "CUSTOMER") {
+                dispatch(authTokenClear());
+                navigate("/admin/login");
+            } else if (location.pathname.startsWith("/admin") && userInfoReducer.userType === "CUSTOMER") {
                 dispatch(userInfoClear());
-                sessionStorage.clear();
+                dispatch(authTokenClear());
                 navigate("/login");
-            } else {
-                dispatch(authToken(sessionStorage.getItem("token")));
-                // console.log(location.pathname);
-                // console.log(userInfo);
-                dispatch(userInfoAdd(userInfo));
             }
         }
     }, []);
@@ -93,7 +91,7 @@ function App() {
                     <Route path={"profile"} element={<ProfileClient storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                     <Route path={"orders"} element={<Order storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                 </Route>
-                <Route path="/admin" element={<Admin />}>
+                <Route path="/admin" element={<Admin storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer}/>}>
                     <Route path={"/admin/*"} element={<Navigate to={"/admin"} />} />
                     <Route path={"/admin"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
                     <Route path={"/admin/dashboard"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />

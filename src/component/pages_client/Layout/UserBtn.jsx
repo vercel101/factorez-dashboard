@@ -4,7 +4,7 @@ import { Avatar } from "@chakra-ui/react";
 import { RxExit } from "react-icons/rx";
 import { Menu, MenuButton, MenuList, MenuItem, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
-import { authTokenClear } from "../../../Redux/ReducerAction";
+import { authTokenClear, userInfoClear } from "../../../Redux/ReducerAction";
 import { useNavigate } from "react-router-dom";
 
 const UserBtn = ({ size, tokenReducer, userInfoReducer }) => {
@@ -14,6 +14,7 @@ const UserBtn = ({ size, tokenReducer, userInfoReducer }) => {
     const logoutBtn = () => {
         setIsLogOutDialogOpen(false);
         dispatch(authTokenClear());
+        dispatch(userInfoClear());
         navigate("/login");
     };
     return (

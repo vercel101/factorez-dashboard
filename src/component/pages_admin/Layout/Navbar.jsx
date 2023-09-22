@@ -6,7 +6,7 @@ import { AiOutlineSetting } from "react-icons/ai";
 import { MdOutlineDarkMode, MdOutlineMenuOpen } from "react-icons/md";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { authTokenClear, darkModeFn, lightModeFn, sidebarCloseFn, sidebarOpenFn } from "../../../Redux/ReducerAction";
+import { authTokenClear, darkModeFn, lightModeFn, sidebarCloseFn, sidebarOpenFn, userInfoClear } from "../../../Redux/ReducerAction";
 import { CiLight, CiSearch } from "react-icons/ci";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ const Navbar = () => {
     const logoutBtn = () => {
         setIsLogOutDialogOpen(false);
         dispatch(authTokenClear());
-        sessionStorage.clear();
+        dispatch(userInfoClear());
         navigate("/admin/login");
     };
 

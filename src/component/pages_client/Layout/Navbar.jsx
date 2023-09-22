@@ -1,14 +1,48 @@
 import React from "react";
 import SearchNav from "./SearchNav";
-import { IconButton, Input } from "@chakra-ui/react";
+import { Button, IconButton, Input, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay } from "@chakra-ui/react";
 import { BsCart } from "react-icons/bs";
 import UserBtn from "./UserBtn";
 import { useNavigate } from "react-router-dom";
 import CategoryBar from "./CategoryBar";
+import { useDispatch } from "react-redux";
+import { authTokenClear, userInfoClear } from "../../../Redux/ReducerAction";
 const Navbar = ({ tokenReducer, userInfoReducer }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [isLogOutDialogOpen, setIsLogOutDialogOpen] = React.useState(false);
+    const goToAdminLogin = () => {
+        if (tokenReducer) {
+            setIsLogOutDialogOpen(true);
+        } else {
+            navigate("/admin/login/");
+        }
+    };
+    const logoutBtn = () => {
+        setIsLogOutDialogOpen(false);
+        dispatch(authTokenClear());
+        dispatch(userInfoClear());
+        navigate("/admin/login/");
+    };
+
     return (
         <div className="fixed bg-white left-0 right-0 top-0 z-30">
+            <AlertDialog isOpen={isLogOutDialogOpen} onClose={() => setIsLogOutDialogOpen(false)}>
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Log out
+                        </AlertDialogHeader>
+                        <AlertDialogBody>Log out and go to the Seller page</AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button onClick={() => setIsLogOutDialogOpen(false)}>Cancel</Button>
+                            <Button colorScheme="red" onClick={() => logoutBtn()} ml={3}>
+                                Confirm
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
             <div className="h-[53px] flex items-center justify-between lg:px-16 md:px-10">
                 <div className="h-full overflow-hidden flex items-center justify-start space-x-4">
                     <img
@@ -20,13 +54,9 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
                         }}
                     />
                     {tokenReducer && <SearchNav />}
-                    <a
-                        href="/admin/login/"
-                        target="_blank"
-                        className="border cursor-pointer rounded-full px-3 text-sm py-1 whitespace-nowrap transition-all duration-200 hover:bg-[#ff834f] hover:text-white text-[#A46A38] font-semibold bg-white border-[#A46A38]"
-                    >
+                    <Button onClick={() => goToAdminLogin()} rounded={"full"} size={"sm"} colorScheme="orange" variant={"outline"}>
                         Become a seller
-                    </a>
+                    </Button>
                 </div>
                 <div className=" hidden  md:inline-flex items-center space-x-3 pe-2">
                     {tokenReducer && (

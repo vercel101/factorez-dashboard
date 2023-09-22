@@ -7,10 +7,6 @@ import { getStoreInfoApi } from "../apis/clientApis";
 
 const Client = ({ userInfoReducer, tokenReducer,storeInfoReducer }) => {
     const location = useLocation();
-    
-    useEffect(() => {
-        // storeInformation();storeInfoReducer={storeInfoReducer}
-    },[])
     return (
         <>
             <Helmet>
