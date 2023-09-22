@@ -144,7 +144,7 @@ const LoginPage = () => {
                 await loginCustomerApi({ phone: mobileNumber, password: password })
                     .then((res) => {
                         console.log(res.data);
-                        let data = res.data.data;
+                        // let data = res.data.data;
                         toast({
                             title: "Success",
                             position: "top",
@@ -152,9 +152,9 @@ const LoginPage = () => {
                             isClosable: true,
                             description: res.data.message,
                         });
-                        dispatch(authToken(data.token));
-                        dispatch(userInfoAdd(data));
-                        navigate("/");
+                        // dispatch(authToken(data.token));
+                        // dispatch(userInfoAdd(data));
+                        // navigate("/");
                     })
                     .catch((err) => {
                         console.log(err);
