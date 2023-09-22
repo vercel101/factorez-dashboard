@@ -152,10 +152,7 @@ const LoginPage = () => {
                             isClosable: true,
                             description: res.data.message,
                         });
-
                         dispatch(authToken(data.token));
-                        sessionStorage.setItem("token", data.token);
-                        sessionStorage.setItem("userInfo", JSON.stringify(data));
                         dispatch(userInfoAdd(data));
                         navigate("/");
                     })
