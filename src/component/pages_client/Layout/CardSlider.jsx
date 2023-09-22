@@ -19,7 +19,7 @@ const CardSlider = React.forwardRef(({ slides, className }, ref) => {
     });
 
     const leftClick = () => {
-        let y = childRef.current.offsetWidth - myRef.current.offsetWidth;
+        // let y = childRef.current.offsetWidth - myRef.current.offsetWidth;
         if (childRefW <= 0) {
             setChildRefW((old) => 0);
         } else {

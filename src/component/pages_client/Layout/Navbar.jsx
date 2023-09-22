@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import SearchNav from "./SearchNav";
 import { IconButton, Input } from "@chakra-ui/react";
 import { BsCart } from "react-icons/bs";
 import UserBtn from "./UserBtn";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CategoryBar from "./CategoryBar";
 const Navbar = ({ tokenReducer, userInfoReducer }) => {
     const navigate = useNavigate();
-    let login = sessionStorage.getItem("token") !== null;
     return (
         <div className="fixed bg-white left-0 right-0 top-0 z-30">
             <div className="h-[53px] flex items-center justify-between lg:px-16 md:px-10">
@@ -17,10 +16,10 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
                         alt=""
                         className="h-full"
                         onClick={() => {
-                            login ? navigate("/") : navigate("/login/");
+                            tokenReducer ? navigate("/") : navigate("/login/");
                         }}
                     />
-                    {login && <SearchNav />}
+                    {tokenReducer && <SearchNav />}
                     <a
                         href="/admin/login/"
                         target="_blank"
@@ -30,7 +29,7 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
                     </a>
                 </div>
                 <div className=" hidden  md:inline-flex items-center space-x-3 pe-2">
-                    {login && (
+                    {tokenReducer && (
                         <>
                             <IconButton
                                 onClick={() => navigate("/cart")}
@@ -44,7 +43,7 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
                     )}
                 </div>
             </div>
-            {login && (
+            {tokenReducer && (
                 <div className="categoryBar-scrollbar bg-[#FF834F] md:hidden flex items-center sm:px-16 overflow-x-auto px-1 py-2 space-x-1">
                     <Input rounded={"md"} size={"sm"} placeholder="Search..." backgroundColor={"white"} />
                     <IconButton
@@ -58,7 +57,7 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
                     <UserBtn size={"sm"} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />
                 </div>
             )}
-            {login && (
+            {tokenReducer && (
                 <div className="hidden h-7 categoryBar-scrollbar bg-[#FF834F] md:flex sm:px-16 overflow-x-auto">
                     <CategoryBar />
                 </div>

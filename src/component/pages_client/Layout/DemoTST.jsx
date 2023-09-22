@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ProductCard from "./ProductCard";
 
 const slide = [
@@ -74,7 +74,7 @@ const DemoTST = (props) => {
         setCardWidth(childRef.current.offsetWidth / slide.length);
     }, []);
     const leftClick = () => {
-        let y = childRef.current.offsetWidth - myRef.current.offsetWidth;
+        // let y = childRef.current.offsetWidth - myRef.current.offsetWidth;
         if (childRefW <= 0) {
             setChildRefW((old) => 0);
         } else {

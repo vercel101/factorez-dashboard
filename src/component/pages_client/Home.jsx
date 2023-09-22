@@ -7,17 +7,13 @@ import {
     AccordionIcon,
     AccordionItem,
     AccordionPanel,
-    AvatarBadge,
     Box,
     Button,
     Card,
     CardBody,
-    CardFooter,
     Checkbox,
     Heading,
-    IconButton,
     Image,
-    MenuDivider,
     Stack,
     RangeSlider,
     RangeSliderTrack,
@@ -26,11 +22,8 @@ import {
     Text,
     Input,
 } from "@chakra-ui/react";
-import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { MdEmail, MdFilterAlt } from "react-icons/md";
-import CardSlider from "./Layout/CardSlider";
-import DemoTST from "./Layout/DemoTST";
-import { allDashboardProductsApi, getStoreInfoApi } from "../../apis/clientApis";
+import { MdEmail } from "react-icons/md";
+import { allDashboardProductsApi } from "../../apis/clientApis";
 import { BsFillSquareFill } from "react-icons/bs";
 import { FcFilledFilter } from "react-icons/fc";
 import { PiPhoneCallThin } from "react-icons/pi";
@@ -54,12 +47,12 @@ const Home = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                 console.log(err);
             });
     };
-    const newArrivalFn = () => {
-        let arr = storeInfoReducer && storeInfoReducer.recommendedProduct && storeInfoReducer.recommendedProduct.newArrival ? storeInfoReducer.recommendedProduct.newArrival : [];
-        console.log("arr", arr);
-        let x = arr.map((el) => <ProductCard key={el._id} url={el.thumbnail_pic} cardwidth={"200px"} />);
-        return x;
-    };
+    // const newArrivalFn = () => {
+    //     let arr = storeInfoReducer && storeInfoReducer.recommendedProduct && storeInfoReducer.recommendedProduct.newArrival ? storeInfoReducer.recommendedProduct.newArrival : [];
+    //     console.log("arr", arr);
+    //     let x = arr.map((el) => <ProductCard key={el._id} url={el.thumbnail_pic} cardwidth={"200px"} />);
+    //     return x;
+    // };
 
     const rangSliderHandler = (e) => {
         setMinPrice((old) => e[0]);

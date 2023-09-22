@@ -1,9 +1,8 @@
 import React from "react";
-import { Card, CardHeader, Image, CardBody, Stack, Divider, Text, Heading, Button, ButtonGroup, CardFooter, IconButton, HStack, VStack, Box } from "@chakra-ui/react";
-import { BsCart, BsSuitHeartFill, BsSuitHeart } from "react-icons/bs";
+import { Card, Image, CardBody, Stack, CardFooter, HStack } from "@chakra-ui/react";
+import { BsSuitHeart } from "react-icons/bs";
 import SizeSetDropdown from "./SizeSetDropdown";
 import { useNavigate } from "react-router-dom";
-import { addToCartApi } from "../../../apis/clientApis";
 let productPrice = (price, gst, margin) => {
     let marginAmt = Number(price) + (Number(price) * Number(margin)) / 100;
     let gstAmt = (Number(marginAmt) * Number(gst)) / 100;
@@ -14,20 +13,6 @@ const ProductCard = ({ element, customerId, tokenReducer }) => {
     const productInfo = () => {
         navigate(`/product/${element.slug}`);
     };
-
-    // const addToCart = async () => {
-    //     let custId = JSON.parse(sessionStorage.getItem("userInfo")).customerId;
-    //     let token = sessionStorage.getItem("token");
-
-    //     await addToCartApi(custId, null, token)
-    //         .then((res) => {
-    //             console.log(res.data);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    //     console.log(customerId, tokenReducer);
-    // };
 
     return (
         <Card maxW="md" borderRadius={0}>
@@ -51,7 +36,7 @@ const ProductCard = ({ element, customerId, tokenReducer }) => {
             <CardFooter padding={1}>
                 <HStack w="full" gap={1}>
                     <SizeSetDropdown list={element ? element.lotSizeQty : []} />
-                    <button  className="border  w-full flex justify-evenly items-center h-10 hover:bg-[#e2e8f0] transition-all duration-200">
+                    <button className="border  w-full flex justify-evenly items-center h-10 hover:bg-[#e2e8f0] transition-all duration-200">
                         <BsSuitHeart className="h-6 w-6" color="#275E61" />
                         <span className="text-[18px] font-semibold text-[#275E61]">Add to wishlist</span>
                     </button>

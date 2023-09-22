@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { applyPromoCodeApi, getCartsByCustomerApi, qtyIncreaseDecreaseApi, removeFromCartApi } from "../../apis/clientApis";
-import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useDisclosure, useToast } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 
 const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
     const [cartData, setCartData] = useState();
-    const [qty, setQty] = useState(1);
     const [promoCode, setPromoCode] = useState({
         code: "",
         amount: 0,
@@ -26,11 +24,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
         return totalPrice.toFixed(2);
     };
     const fetchCartValue = async () => {
-        let custId = JSON.parse(sessionStorage.getItem("userInfo")).customerId;
-        let token = sessionStorage.getItem("token");
-        // console.log(custId);
-        // console.log(token);
-        await getCartsByCustomerApi(custId, token)
+        await getCartsByCustomerApi(userInfoReducer.customerId, tokenReducer)
             .then((res) => {
                 console.log(res.data);
                 setCartData(res.data.data);
@@ -46,11 +40,9 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
             });
     };
     const removeFromCart = async (index) => {
-        let custId = JSON.parse(sessionStorage.getItem("userInfo")).customerId;
-        let token = sessionStorage.getItem("token");
         console.log(index);
         setIsRemoveLogin(true);
-        await removeFromCartApi(custId, index, token)
+        await removeFromCartApi(userInfoReducer.customerId, index, tokenReducer)
             .then((res) => {
                 console.log(res);
                 toast({
@@ -75,14 +67,12 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
 
     const applyPromoCode = async () => {
         let totalPrice = totalPriceCalc(cartData.products);
-        let custId = JSON.parse(sessionStorage.getItem("userInfo")).customerId;
-        let token = sessionStorage.getItem("token");
         let data = {
             couponCode: promoCode.code,
             orderAmount: totalPrice,
         };
         if (totalPrice && promoCode.code) {
-            await applyPromoCodeApi(custId, data, token)
+            await applyPromoCodeApi(userInfoReducer.customerId, data, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
                     if (res.data.status) {
@@ -116,20 +106,12 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
         }
     };
     const qtyHandler = async (type, index, moq, qty) => {
-        let custId = JSON.parse(sessionStorage.getItem("userInfo")).customerId;
-        let token = sessionStorage.getItem("token");
         let qty1 = qty;
         if (type === "DEC" && moq !== qty) {
             qty1 = qty - moq;
-            await qtyIncreaseDecreaseApi(custId, index, qty1, token)
+            await qtyIncreaseDecreaseApi(userInfoReducer.customerId, index, qty1, tokenReducer)
                 .then((res) => {
                     console.log(res);
-                    // toast({
-                    //     status: "success",
-                    //     position: "top",
-                    //     title: res.data.message,
-                    //     isClosable: true,
-                    // });
                     fetchCartValue();
                 })
                 .catch((err) => {
@@ -143,15 +125,9 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                 });
         } else if (type === "INC") {
             qty1 = qty + moq;
-            await qtyIncreaseDecreaseApi(custId, index, qty1, token)
+            await qtyIncreaseDecreaseApi(userInfoReducer.customerId, index, qty1, tokenReducer)
                 .then((res) => {
                     console.log(res);
-                    // toast({
-                    //     status: "success",
-                    //     position: "top",
-                    //     title: res.data.message,
-                    //     isClosable: true,
-                    // });
                     fetchCartValue();
                 })
                 .catch((err) => {

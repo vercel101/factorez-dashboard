@@ -1,7 +1,6 @@
 import React from "react";
 import { BsFacebook, BsFillTelephoneFill, BsInstagram, BsLinkedin, BsTwitter, BsYoutube } from "react-icons/bs";
 import playBtn from "../../../assets/playbtn.png";
-import { PiPhoneCallThin } from "react-icons/pi";
 import { IoMailUnread } from "react-icons/io5";
 const Footer = ({ storeInfoReducer }) => {
     const storeInfo = storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo;

@@ -4,26 +4,15 @@ import {
     AccordionIcon,
     AccordionItem,
     AccordionPanel,
-    AvatarBadge,
     Box,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
     Checkbox,
-    Heading,
-    IconButton,
-    Image,
     Input,
-    MenuDivider,
     RangeSlider,
     RangeSliderFilledTrack,
     RangeSliderThumb,
     RangeSliderTrack,
-    Stack,
-    Text,
 } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import React from "react";
 import { BsFillSquareFill } from "react-icons/bs";
 import { FcFilledFilter } from "react-icons/fc";
 import { allDashboardProductsApi } from "../../apis/clientApis";
@@ -33,13 +22,13 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
     const [products, setProducts] = React.useState([]);
     const [minPrice, setMinPrice] = React.useState(100);
     const [maxPrice, setMaxPrice] = React.useState(5000);
-    const recommendedProduct = storeInfoReducer && storeInfoReducer.recommendedProduct && storeInfoReducer.recommendedProduct;
+    // const recommendedProduct = storeInfoReducer && storeInfoReducer.recommendedProduct && storeInfoReducer.recommendedProduct;
     const category = storeInfoReducer && storeInfoReducer.category && storeInfoReducer.category;
-    const storeInfo = storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo;
+    // const storeInfo = storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo;
     const color = storeInfoReducer && storeInfoReducer.color && storeInfoReducer.color;
 
     const allProducts = async () => {
-        await allDashboardProductsApi(sessionStorage.getItem("token"))
+        await allDashboardProductsApi(tokenReducer)
             .then((res) => {
                 console.log(res.data);
                 setProducts(res.data.data);

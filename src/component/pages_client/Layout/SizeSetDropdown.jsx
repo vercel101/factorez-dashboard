@@ -1,7 +1,7 @@
 import React from "react";
-import { IconButton, Divider, Button } from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
 import { BiChevronDown } from "react-icons/bi";
-import { Menu, MenuButton, MenuList, MenuItem, MenuItemOption, MenuGroup, MenuOptionGroup, MenuDivider } from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/react";
 const SizeSetDropdown = ({ list }) => {
     return (
         <Menu>
