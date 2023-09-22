@@ -27,7 +27,7 @@ const LoginPage = () => {
     const [otpValue, setOtpValue] = React.useState("");
 
     const RegexMobile = /^[6-9]\d{9}$/;
-    const PasswordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{10,20}$/;
+    // const PasswordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{10,20}$/;
     const sendOtp = async () => {
         if (mobileNumber !== "" && RegexMobile.test(mobileNumber)) {
             setIsOtpGenerating((old) => true);

@@ -1,17 +1,13 @@
 import React from "react";
 import img from "../../assets/143.jpg";
-import logo from "../../assets/factorlogo.png";
-import { Button, HStack, Input, InputGroup, InputLeftElement, InputRightElement, Select, Textarea, useToast } from "@chakra-ui/react";
+import { Button, Input, InputGroup, InputLeftElement, InputRightElement, Select, Textarea, useToast } from "@chakra-ui/react";
 import { PiEyeClosedDuotone, PiEyeDuotone } from "react-icons/pi";
 import { IoCall } from "react-icons/io5";
 import { StateAndCode } from "../../utils/stateNameAndCode";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { authToken, spinnerOverlayOffFn, spinnerOverlayOnFn, userInfoAdd } from "../../Redux/ReducerAction";
 import { signupCustomerApi } from "../../apis/clientApis";
 const SignUpPage = () => {
     const toast = useToast();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [show, setShow] = React.useState(false);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -32,7 +28,7 @@ const SignUpPage = () => {
     const saveUserInformation = async () => {
         console.log(signUpData);
         if (signUpData.name && signUpData.DOB && signUpData.password && signUpData.state && signUpData.address) {
-            const EmailRegex = /^\w+([\.]?\w+)*@\w+([\.]?\w+)*(\.\w{2,5})+$/;
+            const EmailRegex = /^\w+([.]?\w+)*@\w+([.]?\w+)*(\.\w{2,5})+$/;
             const MobileRegex = /^[6-9]\d{9}$/;
             if (signUpData.email && !EmailRegex.test(signUpData.email)) {
                 toast({
@@ -62,7 +58,6 @@ const SignUpPage = () => {
                     await signupCustomerApi(customerId, signUpData)
                         .then((res) => {
                             console.log(res.data);
-                            let data = res.data.data;
                             toast({
                                 title: "Success",
                                 position: "top",
