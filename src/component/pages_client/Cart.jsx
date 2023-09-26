@@ -159,7 +159,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const paymentModeHandler = (mode) => {
         let amtOld = cartData ? totalPriceCalc(cartData.products) - promoCode.amount : 0;
         if (mode === "TWENTY_ADV") {
-            let amt = amtOld - (amtOld * 20) / 100;
+            let amt = (amtOld * 20) / 100;
             setPaymentField((old) => {
                 return { ...old, paymentMode: mode, paymentAmt: amt.toFixed(2) };
             });
