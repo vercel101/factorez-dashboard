@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { applyPromoCodeApi, getCartsByCustomerApi, qtyIncreaseDecreaseApi, removeFromCartApi } from "../../apis/clientApis";
-import { Button, useToast } from "@chakra-ui/react";
+import { applyPromoCodeApi, createOrderApi, getAllAddressApi, getCartsByCustomerApi, qtyIncreaseDecreaseApi, removeFromCartApi } from "../../apis/clientApis";
+import { Button, useToast, useDisclosure, Select } from "@chakra-ui/react";
 
 const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const toast = useToast();
@@ -9,7 +9,14 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
         code: "",
         amount: 0,
     });
+    const [addresses, setAddresses] = useState([]);
+    const [checkoutLoadingFlag, setCheckoutLoadingFlag] = useState(false);
     const [isRemoveLoading, setIsRemoveLogin] = useState(false);
+    const [paymentField, setPaymentField] = useState({
+        addressId: "",
+        paymentMode: "",
+        paymentAmt: "",
+    });
     const priceCal = (price, margin, gst) => {
         let marginAmt = Number(price) + (Number(price) * Number(margin)) / 100;
         let gstAmt = (Number(marginAmt) * Number(gst)) / 100;
@@ -28,12 +35,6 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
             .then((res) => {
                 console.log(res.data);
                 setCartData(res.data.data);
-                if (res.data.data.currentCoupon) {
-                    let cpcData = res.data.data.currentCoupon;
-                    setPromoCode({ code: cpcData.couponCode, amount: cpcData.discountAmt });
-                } else {
-                    setPromoCode({ code: "", amount: 0 });
-                }
             })
             .catch((err) => {
                 console.log(err);
@@ -71,7 +72,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
             couponCode: promoCode.code,
             orderAmount: totalPrice,
         };
-        if (totalPrice && promoCode.code) {
+        if (cartData && cartData.products.length > 0 && totalPrice && promoCode.code) {
             await applyPromoCodeApi(userInfoReducer.customerId, data, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
@@ -79,6 +80,8 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         setPromoCode((old) => {
                             return { ...old, amount: res.data.data };
                         });
+                    }else{
+                        setPromoCode({ code: "", amount: 0 });
                     }
                     toast({
                         status: "success",
@@ -89,10 +92,12 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                 })
                 .catch((err) => {
                     console.log(err);
+                    setPromoCode({ code: "", amount: 0 });
+                    let message = err.response ? err.response.data.message : err.message;
                     toast({
                         status: "error",
                         position: "top",
-                        title: err.message,
+                        title: message,
                         isClosable: true,
                     });
                 });
@@ -141,8 +146,99 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                 });
         }
     };
+    const getAllAddress = async () => {
+        await getAllAddressApi(userInfoReducer.customerId, tokenReducer)
+            .then((res) => {
+                console.log(res);
+                setAddresses(res.data.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+    const paymentModeHandler = (mode) => {
+        let amtOld = cartData ? totalPriceCalc(cartData.products) - promoCode.amount : 0;
+        if (mode === "TWENTY_ADV") {
+            let amt = amtOld - (amtOld * 20) / 100;
+            setPaymentField((old) => {
+                return { ...old, paymentMode: mode, paymentAmt: amt.toFixed(2) };
+            });
+        } else if (mode === "PREPAID" || mode === "COD") {
+            setPaymentField((old) => {
+                return { ...old, paymentMode: mode, paymentAmt: amtOld.toFixed(2) };
+            });
+        } else {
+            setPaymentField((old) => {
+                return { ...old, paymentMode: mode, paymentAmt: "" };
+            });
+        }
+    };
+    const checkoutMethod = async () => {
+        let data = {
+            address_id: "",
+            payment_mode: "",
+            paymentAmt: "",
+            transaction_id: "demo transaction id",
+        };
+        if (cartData && cartData.products.length > 0 && paymentField.paymentAmt && paymentField.paymentMode) {
+            data.payment_mode = paymentField.paymentMode;
+            data.paymentAmt = paymentField.paymentAmt;
+            if (!paymentField.addressId) {
+                data.address_id = userInfoReducer.defaultAddressId;
+            } else {
+                data.address_id = paymentField.addressId;
+            }
+            if (promoCode.code) data.couponCode = promoCode.code;
+            setCheckoutLoadingFlag(true);
+            await createOrderApi(data, userInfoReducer.customerId, tokenReducer)
+                .then((res) => {
+                    console.log(res.data);
+                    toast({
+                        status: "success",
+                        position: "top",
+                        title: res.data.message,
+                        isClosable: true,
+                    });
+                    setPromoCode({ code: "", amount: 0 });
+                    setPaymentField({
+                        addressId: "",
+                        paymentMode: "",
+                        paymentAmt: "",
+                    });
+                    fetchCartValue();
+                })
+                .catch((err) => {
+                    let message = err.response ? err.response.data.message : err.message;
+                    toast({
+                        status: "error",
+                        position: "top",
+                        title: message,
+                        isClosable: true,
+                    });
+                });
+            setCheckoutLoadingFlag(false);
+        } else {
+            if (cartData && cartData.products.length === 0) {
+                toast({
+                    status: "warning",
+                    position: "top",
+                    title: "Your Cart is Empty!",
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    status: "warning",
+                    position: "top",
+                    title: "All fields required",
+                    isClosable: true,
+                });
+            }
+        }
+        console.log(paymentField);
+    };
     React.useEffect(() => {
         fetchCartValue();
+        getAllAddress();
     }, []);
     return (
         <div className="pt-[100px] md:pt-[80px] md:px-[20px] lg:px-[10%] bg-gray-100">
@@ -220,7 +316,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         </a>
                     </div>
 
-                    <div id="summary" className="w-full sm:w-1/4 px-2 sm:px-8 py-10">
+                    <div id="summary" className="w-full sm:w-1/3 px-2 sm:px-8 py-10">
                         <h1 className="font-semibold text-2xl border-b pb-8">Order Summary</h1>
                         <div className="flex justify-between mt-10 mb-5">
                             <span className="font-semibold text-sm uppercase">Items {cartData && cartData.products.length}</span>
@@ -252,7 +348,67 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                 <span>Total cost</span>
                                 <span>₹{cartData && (totalPriceCalc(cartData.products) - promoCode.amount).toFixed(2)}</span>
                             </div>
-                            <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
+                            {cartData && cartData.products.length > 0 && (
+                                <>
+                                    <div>
+                                        <label className="text-xs font-semibold" htmlFor="address">
+                                            Select Address
+                                        </label>
+                                        <Select
+                                            backgroundColor={"white"}
+                                            onChange={(e) =>
+                                                setPaymentField((old) => {
+                                                    return { ...old, addressId: e.target.value };
+                                                })
+                                            }
+                                            value={userInfoReducer.defaultAddressId}
+                                            size={"sm"}
+                                            id="address"
+                                            placeholder="Select Address"
+                                        >
+                                            {addresses.map((el) => (
+                                                <option key={el._id} value={el._id}>
+                                                    {el.pincode}, {el.city}
+                                                </option>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                    <div className="mt-2">
+                                        <label className="text-xs font-semibold" htmlFor="paymentmode">
+                                            Payment Mode
+                                        </label>
+                                        <Select value={paymentField.paymentMode} backgroundColor={"white"} onChange={(e) => paymentModeHandler(e.target.value)} size={"sm"} id="paymentmode" placeholder="Select Mode">
+                                            <option value={"CUSTOM"}>Custom Amount</option>
+                                            <option value={"TWENTY_ADV"}>20 % of Total Amount</option>
+                                            <option value={"PREPAID"}>Prepaid</option>
+                                            <option value={"COD"}>Cash on Delivery</option>
+                                        </Select>
+                                    </div>
+                                    {paymentField.paymentMode && (paymentField.paymentMode === "CUSTOM" || paymentField.paymentMode === "TWENTY_ADV") && (
+                                        <div className="mt-2">
+                                            <label className="text-xs font-semibold" htmlFor="paymentamt">
+                                                Payment Amount
+                                            </label>
+                                            <input
+                                                onChange={(e) =>
+                                                    setPaymentField((old) => {
+                                                        return { ...old, paymentAmt: e.target.value };
+                                                    })
+                                                }
+                                                disabled={paymentField.paymentMode === "TWENTY_ADV"}
+                                                value={paymentField.paymentAmt}
+                                                type="text"
+                                                id="paymentamt"
+                                                placeholder="Enter amount"
+                                                className="p-2 text-sm w-full bg-white disabled:text-gray-400"
+                                            />
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                            <Button isLoading={checkoutLoadingFlag} loadingText="Please wait" borderRadius={0} colorScheme="messenger" onClick={() => checkoutMethod()} width={"full"} mt={5}>
+                                Checkout
+                            </Button>
                         </div>
                     </div>
                 </div>

@@ -176,3 +176,34 @@ export const deleteAddressApi = (customerId, addressId, token) => {
         },
     });
 };
+
+export const createOrderApi = (data, customerId, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/createorder/${customerId}s`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+
+export const getAllOrderApi = (customerId, token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/orders/${customerId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const getOrderByOrderIdApi = (customerId,orderId, token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/order/${customerId}/${orderId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};

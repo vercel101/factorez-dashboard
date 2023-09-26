@@ -6,6 +6,7 @@ import { addVentorApi, adminLogin } from "../../apis/adminApis";
 import { useDispatch } from "react-redux";
 import { authToken, authTokenClear, spinnerOverlayOffFn, spinnerOverlayOnFn, userInfoAdd, userInfoClear } from "../../Redux/ReducerAction";
 import { useNavigate } from "react-router-dom";
+import { Button, Input, InputGroup, InputRightElement, Text } from "@chakra-ui/react";
 
 let basicDetailInitial = {
     firmName: "",
@@ -42,6 +43,7 @@ let loginField = {
 };
 
 const LoginSignup = () => {
+    const [show, setShow] = React.useState(false);
     const [basicDetails, setBasicDetails] = useState(basicDetailInitial);
     const [bankDetail, setBankDetail] = useState(bankAccountInitial);
     const [documentFile, setDocumentFile] = useState(documentFileInitial);
@@ -49,7 +51,9 @@ const LoginSignup = () => {
     const history = useNavigate();
 
     const [isLoginPage, setIsLoginPage] = useState(false);
+    const [isSignupPage, setIsSignupPage] = useState(false);
     const [passwordHide, setPasswordHide] = useState(true);
+    const handleClick = () => setShow(!show);
     const [loginDetail, setLoginDetail] = useState(loginField);
 
     const submitFn = async () => {
@@ -129,9 +133,90 @@ const LoginSignup = () => {
     };
 
     return (
-        <div className="bg-[url(https://images.unsplash.com/photo-1561955147-098dd3ef9ae5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1134&q=80)] h-screen bg-cover bg-bottom bg-no-repeat">
-            <div className="bg-[#00000088] h-full flex justify-center items-start pt-10">
-                <div className="min-h-[30%] w-[40%] min-w-[40%] max-h-[90%] bg-white rounded-md relative overflow-hidden">
+        <div className=" bg-[url(https://images.unsplash.com/photo-1561955147-098dd3ef9ae5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1134&q=80)] h-screen bg-cover bg-bottom bg-no-repeat">
+            <div className="bg-[#00000088] h-full flex justify-center items-start pt-32">
+                {/* <div className="bg-white w-96 overflow-hidden">
+                    <div className={`${isSignupPage && "-translate-x-96"} transition-all duration-300 w-[48rem] flex justify-center`}>
+                        <div className="w-full p-6">
+                            <Text fontWeight={700} fontSize={"2xl"}>
+                                Login
+                            </Text>
+                            <Text fontSize={12}>welcome back, Seller!</Text>
+                            <div className="mt-3">
+                                <label className="text-xs text-gray-600 font-semibold" htmlFor="username">
+                                    Mobile Number/Email
+                                </label>
+                                <Input borderRadius={0} id="username" placeholder="Enter your mobile number or email" />
+                            </div>
+                            <div className="mt-2">
+                                <label className="text-xs text-gray-600 font-semibold" htmlFor="password">
+                                    Password
+                                </label>
+                                <InputGroup size="md">
+                                    <Input borderRadius={0} id="password" pr="4.5rem" type={show ? "text" : "password"} placeholder="Enter password" />
+                                    <InputRightElement width="4.5rem">
+                                        <Button h="1.75rem" size="sm" onClick={handleClick}>
+                                            {show ? <HiOutlineEyeOff /> : <HiOutlineEye />}
+                                        </Button>
+                                    </InputRightElement>
+                                </InputGroup>
+                            </div>
+                            <div className="flex justify-end">
+                                <Button fontSize={14} variant={"unstyled"}>
+                                    Reset Password?
+                                </Button>
+                            </div>
+                            <Button colorScheme="blue" borderRadius={0} width={"full"}>
+                                Login
+                            </Button>
+                            <div className="flex justify-center mt-5">
+                                <Button onClick={() => setIsSignupPage(true)} fontSize={14} textColor={"red.700"} variant={"link"}>
+                                    Become FactorEz seller | Signup Now
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="w-full p-6">
+                            <Text fontWeight={700} fontSize={"2xl"}>
+                                Sign up
+                            </Text>
+                            <Text fontSize={12}>Become a seller</Text>
+                            <div className="mt-3">
+                                <label className="text-xs text-gray-600 font-semibold" htmlFor="username">
+                                    Mobile Number/Email
+                                </label>
+                                <Input borderRadius={0} id="username" placeholder="Enter your mobile number or email" />
+                            </div>
+                            <div className="mt-2">
+                                <label className="text-xs text-gray-600 font-semibold" htmlFor="password">
+                                    Password
+                                </label>
+                                <InputGroup size="md">
+                                    <Input borderRadius={0} id="password" pr="4.5rem" type={show ? "text" : "password"} placeholder="Enter password" />
+                                    <InputRightElement width="4.5rem">
+                                        <Button h="1.75rem" size="sm" onClick={handleClick}>
+                                            {show ? <HiOutlineEyeOff /> : <HiOutlineEye />}
+                                        </Button>
+                                    </InputRightElement>
+                                </InputGroup>
+                            </div>
+                            <div className="flex justify-end">
+                                <Button fontSize={14} variant={"unstyled"}>
+                                    Reset Password?
+                                </Button>
+                            </div>
+                            <Button colorScheme="blue" borderRadius={0} width={"full"}>
+                                Login
+                            </Button>
+                            <div className="flex justify-center mt-5">
+                                <Button onClick={() => setIsSignupPage(false)} fontSize={14} textColor={"red.700"} variant={"link"}>
+                                    Become FactorEz seller | Signup Now
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div> */}
+
+                 <div className="min-h-[30%] w-[40%] min-w-[40%] max-h-[90%] bg-white rounded-md relative overflow-hidden">
                     <div className="bg-teal-100 py-3 relative">
                         <h1 className="font-[Pacifico] text-center text-4xl text-blue-500">{!isLoginPage ? "Register" : "ShoesHouse Welcomes you!!"}</h1>
                         <p className="font-[Montserrat] text-teal-700 text-center mt-3 pb-4 text-xl font-semibold">{!isLoginPage ? "Seller Registration Form" : "Login for Dashboard"}</p>

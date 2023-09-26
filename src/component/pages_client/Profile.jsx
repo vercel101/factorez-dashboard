@@ -12,9 +12,10 @@ const Profile = ({ tokenReducer, userInfoReducer }) => {
     const [isLoading, setIsLoading] = useState({
         saveUserInfoFlag: false,
         saveAddressFlag: false,
-        changeDefaultAddressFlag: false,
+        changeDefaultAddressFlag: [false, null],
     });
     const [addresses, setAddresses] = useState([]);
+   
     const [addressField, setAddressField] = useState({
         address: "",
         state: "",
@@ -88,7 +89,7 @@ const Profile = ({ tokenReducer, userInfoReducer }) => {
                     });
                 });
             setIsLoading((old) => {
-                return { ...old, saveAddressFlag: true };
+                return { ...old, saveAddressFlag: false };
             });
         } else {
             toast({
@@ -110,9 +111,9 @@ const Profile = ({ tokenReducer, userInfoReducer }) => {
             });
     };
 
-    const defaultAddress = async (addressId) => {
+    const defaultAddress = async (addressId, index) => {
         setIsLoading((old) => {
-            return { ...old, changeDefaultAddressFlag: true };
+            return { ...old, changeDefaultAddressFlag: [true, index] };
         });
         await setDefaultAddressApi(userInfoReducer.customerId, addressId, tokenReducer)
             .then((res) => {
@@ -137,7 +138,7 @@ const Profile = ({ tokenReducer, userInfoReducer }) => {
                 });
             });
         setIsLoading((old) => {
-            return { ...old, changeDefaultAddressFlag: false };
+            return { ...old, changeDefaultAddressFlag: [false, null] };
         });
     };
 
@@ -393,7 +394,7 @@ const Profile = ({ tokenReducer, userInfoReducer }) => {
                 <Heading size={"md"} className="mb-2">
                     All Address
                 </Heading>
-                {addresses.map((el) => (
+                {addresses.map((el, idx) => (
                     <div key={el._id} className="border rounded-md p-1 mb-3 relative">
                         {el._id === userInfoReducer.defaultAddressId && <Badge colorScheme="blue">Default Address</Badge>}
                         <div className="absolute right-1 top-1 flex items-center">
@@ -401,9 +402,9 @@ const Profile = ({ tokenReducer, userInfoReducer }) => {
                                 variant={"outline"}
                                 size={"xs"}
                                 borderRadius={"full"}
-                                isLoading={isLoading.changeDefaultAddressFlag}
+                                isLoading={isLoading.changeDefaultAddressFlag[1] !== null && isLoading.changeDefaultAddressFlag[0] && isLoading.changeDefaultAddressFlag[1] === idx}
                                 loadingText={"Please wait"}
-                                onClick={() => defaultAddress(el._id)}
+                                onClick={() => defaultAddress(el._id, idx)}
                             >
                                 Set as default
                             </Button>

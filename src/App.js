@@ -26,6 +26,7 @@ import { getStoreInfoApi } from "./apis/clientApis";
 import ProductInfo from "./component/pages_client/ProductInfo";
 import Cart from "./component/pages_client/Cart";
 import Order from "./component/pages_client/Orders";
+import OrderInfo from "./component/pages_client/OrderInfo";
 function App() {
     const { darkModeReducer, tokenReducer, sidebarCollapse, productBrandDDindexReducer, storeInfoReducer, userInfoReducer, productCategoryNewReducer, productCategoryDDindexReducer } = useSelector(
         (state) => state
@@ -90,8 +91,9 @@ function App() {
                     <Route path={"product/:productId"} element={<ProductInfo storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                     <Route path={"profile"} element={<ProfileClient storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                     <Route path={"orders"} element={<Order storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
+                    <Route path={"order/:orderId"} element={<OrderInfo storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
                 </Route>
-                <Route path="/admin" element={<Admin storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer}/>}>
+                <Route path="/admin" element={<Admin storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}>
                     <Route path={"/admin/*"} element={<Navigate to={"/admin"} />} />
                     <Route path={"/admin"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
                     <Route path={"/admin/dashboard"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />

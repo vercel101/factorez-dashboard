@@ -54,7 +54,7 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
                         }}
                     />
                     {tokenReducer && <SearchNav />}
-                    <Button onClick={() => goToAdminLogin()} rounded={"full"} size={"sm"} colorScheme="orange" variant={"outline"}>
+                    <Button onClick={() => goToAdminLogin()} rounded={"full"} size={"sm"} width={'full'} colorScheme="orange" variant={"outline"}>
                         Become a seller
                     </Button>
                 </div>
