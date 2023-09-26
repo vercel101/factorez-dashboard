@@ -12,7 +12,7 @@ import {
     RangeSliderThumb,
     RangeSliderTrack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { BsFillSquareFill } from "react-icons/bs";
 import { FcFilledFilter } from "react-icons/fc";
 import { allDashboardProductsApi } from "../../apis/clientApis";
@@ -20,11 +20,12 @@ import ProductCard from "./Layout/ProductCard";
 
 const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const [products, setProducts] = React.useState([]);
+    const [filteredProduct, setFilteredProduct] = React.useState([]);
     const [minPrice, setMinPrice] = React.useState(100);
     const [maxPrice, setMaxPrice] = React.useState(5000);
-    // const recommendedProduct = storeInfoReducer && storeInfoReducer.recommendedProduct && storeInfoReducer.recommendedProduct;
+    const [colorChecked, setColorChecked] = useState([]);
+    const [categoryChecked, setCategoryChecked] = useState([]);
     const category = storeInfoReducer && storeInfoReducer.category && storeInfoReducer.category;
-    // const storeInfo = storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo;
     const color = storeInfoReducer && storeInfoReducer.color && storeInfoReducer.color;
 
     const allProducts = async () => {
@@ -32,6 +33,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
             .then((res) => {
                 console.log(res.data);
                 setProducts(res.data.data);
+                setFilteredProduct(res.data.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -41,6 +43,61 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
     const rangSliderHandler = (e) => {
         setMinPrice((old) => e[0]);
         setMaxPrice((old) => e[1]);
+    };
+    const colorFilter = (isChecked, colorID) => {
+        console.log(isChecked, colorID);
+        let arr = [];
+        setColorChecked((old) => {
+            arr = [...old];
+            if (isChecked) {
+                arr.push(colorID);
+            } else {
+                let x = arr.findIndex((o) => o === colorID);
+                if (x >= 0) {
+                    arr.splice(x, 1);
+                }
+            }
+            return arr;
+        });
+        let x = products.filter((o) => {
+            for (let m of o.color_id) {
+                if (arr.includes(m._id)) {
+                    return o;
+                }
+            }
+        });
+        if (x.length > 0) {
+            setFilteredProduct((old) => x);
+        } else {
+            setFilteredProduct((old) => products);
+        }
+        console.log(colorChecked);
+    };
+    const categoryFilter = (isChecked, categoryID) => {
+        console.log(isChecked, categoryID);
+        let arr = [];
+        setCategoryChecked((old) => {
+            arr = [...old];
+            if (isChecked) {
+                arr.push(categoryID);
+            } else {
+                let x = arr.findIndex((o) => o === categoryID);
+                if (x >= 0) {
+                    arr.splice(x, 1);
+                }
+            }
+            return arr;
+        });
+        let x = products.filter((o) => {
+            if (arr.includes(o.categoryId._id)) {
+                return o;
+            }
+        });
+        if (x.length > 0) {
+            setFilteredProduct((old) => x);
+        } else {
+            setFilteredProduct((old) => products);
+        }
     };
 
     React.useEffect(() => {
@@ -71,7 +128,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
                                         <div className="flex flex-col space-y-2">
                                             {color &&
                                                 color.map((el) => (
-                                                    <Checkbox size={"lg"} key={el._id}>
+                                                    <Checkbox size={"lg"} key={el._id} onChange={(e) => colorFilter(e.target.checked, el._id)}>
                                                         {" "}
                                                         <span className="flex items-center">
                                                             {" "}
@@ -97,8 +154,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
                                         <div className="flex flex-col space-y-2">
                                             {category &&
                                                 category.map((el) => (
-                                                    <Checkbox size={"lg"} key={el._id}>
-                                                        {" "}
+                                                    <Checkbox onChange={(e) => categoryFilter(e.target.checked, el._id)} size={"lg"} key={el._id}>
                                                         {el.category_name}
                                                     </Checkbox>
                                                 ))}
@@ -143,7 +199,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
                     </div>
                     <div className="col-span-9 mb-16">
                         <div className="col-span-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4 mx-3 mt-5 sm:mx-0 sm:mt-0">
-                            {products.map((el) => (
+                            {filteredProduct.map((el) => (
                                 <ProductCard customerId={userInfoReducer.customerId} tokenReducer={tokenReducer} key={el._id} element={el} />
                             ))}
                         </div>
