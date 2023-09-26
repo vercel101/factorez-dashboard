@@ -148,6 +148,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
         },
         {
             name: <span className="whitespace-normal">Action</span>,
+            width: '210px',
             selector: (row) => (
                 <button
                     onClick={() => orderManageFn(row)}
@@ -253,18 +254,11 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
             selector: (row) => (
                 <div className="flex flex-col items-start justify-center">
                     <button
-                        disabled={!row.saleInvoice}
-                        className="px-2 py-1 border disabled:text-white bg-green-300 border-green-300 text-blue-700 disabled:bg-gray-200 disabled:border-gray-200 rounded"
-                        onClick={() => downloadPdfFn(row.saleInvoice && row.saleInvoice.invoiceNo, "SALE")}
-                    >
-                        Sale
-                    </button>
-                    <button
                         disabled={!row.purchaseInvoice}
-                        className="px-2 mt-1 bg-blue-300 text-white disabled:bg-gray-200 py-1 border border-blue-300 disabled:border-gray-200 rounded"
+                        className="px-2 py-1 border disabled:text-white bg-green-300 border-green-300 text-blue-700 disabled:bg-gray-200 disabled:border-gray-200 rounded"
                         onClick={() => downloadPdfFn(row.purchaseInvoice && row.purchaseInvoice.invoiceNo, "PURCHASE")}
                     >
-                        Purchase
+                        Sale Invoice
                     </button>
                 </div>
             ),
