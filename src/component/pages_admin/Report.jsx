@@ -18,7 +18,7 @@ const Report = ({ sidebarCollapse, tokenReducer, userInfoReducer }) => {
                                 Payment Report
                             </Tab>
                         )}
-                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN",'VENDOR']) && (
+                        {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
                             <Tab selectedClassName="bg-teal-100 dark:bg-teal-800 bg-teal-100 border-b-2 border-blue-500" className="cursor-pointer px-4 py-2 rounded-t-lg outline-none">
                                 Download Reports
                             </Tab>
@@ -39,7 +39,7 @@ const Report = ({ sidebarCollapse, tokenReducer, userInfoReducer }) => {
                             <PaymentReport userInfoReducer={userInfoReducer} tokenReducer={tokenReducer} />
                         </TabPanel>
                     )}
-                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN","VENDOR"]) && (
+                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
                         <TabPanel className="mt-5">
                             <DownloadReport userInfoReducer={userInfoReducer} tokenReducer={tokenReducer} />
                         </TabPanel>

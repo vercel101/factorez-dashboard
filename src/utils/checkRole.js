@@ -57,6 +57,7 @@ export const settingEnumList = [
     "SETTING_HOMEPAGE_SETTING",
 ];
 export const reportEnumList = ["ADMIN","VENDOR", "REPORT_VIEW", "REPORT_DOWNLOAD"];
+export const financeEnumList = ["ADMIN", "REPORT_VIEW", "REPORT_DOWNLOAD"];
 export const subadminEnumList = [
     "ADMIN",
     "SUBADMIN_VIEW",

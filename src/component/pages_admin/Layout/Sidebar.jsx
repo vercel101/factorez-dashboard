@@ -10,7 +10,7 @@ import { RiAdminLine } from "react-icons/ri";
 import { PiBagSimpleDuotone } from "react-icons/pi";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { FcSettings } from "react-icons/fc";
-import { couponEnumList, customerEnumList, isRoleExists, orderEnumList, productEnumList, reportEnumList, settingEnumList, subadminEnumList, vendorsEnumList } from "../../../utils/checkRole";
+import { couponEnumList, customerEnumList, financeEnumList, isRoleExists, orderEnumList, productEnumList, reportEnumList, settingEnumList, subadminEnumList, vendorsEnumList } from "../../../utils/checkRole";
 
 const Sidebar = () => {
     const { sidebarCollapse, userInfoReducer } = useSelector((state) => state);
@@ -165,7 +165,7 @@ const Sidebar = () => {
                             </NavLink>
                         </li>
                     )}
-                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["VENDOR", "ADMIN"]) && (
+                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, financeEnumList) && (
                         <li className="mb-2">
                             <NavLink
                                 to={"finance"}

@@ -9,7 +9,7 @@ import Home from "./component/pages_client/Home";
 import LoginSignup from "./component/pages_admin/LoginSignup";
 import Dashboard from "./component/pages_admin/Dashboard";
 import Products from "./component/pages_admin/Products";
-import { couponEnumList, customerEnumList, isRoleExists, orderEnumList, productEnumList, reportEnumList, settingEnumList, subadminEnumList, vendorsEnumList } from "./utils/checkRole";
+import { couponEnumList, customerEnumList, financeEnumList, isRoleExists, orderEnumList, productEnumList, reportEnumList, settingEnumList, subadminEnumList, vendorsEnumList } from "./utils/checkRole";
 import Setting from "./component/pages_admin/Setting";
 import Profile from "./component/pages_admin/Layout/profile/Profile";
 import ProfileClient from "./component/pages_client/Profile";
@@ -185,26 +185,26 @@ function App() {
                         />
                     )}
                     {userInfoReducer.role && isRoleExists(userInfoReducer.role, reportEnumList) && (
-                        <>
-                            <Route
-                                path={"reports"}
-                                exact
-                                element={
-                                    <React.Suspense fallback={"Loading..."}>
-                                        <Report tokenReducer={tokenReducer} sidebarCollapse={sidebarCollapse} userInfoReducer={userInfoReducer} />
-                                    </React.Suspense>
-                                }
-                            />
-                            <Route
-                                path={"finance"}
-                                exact
-                                element={
-                                    <React.Suspense fallback={"Loading..."}>
-                                        <Finance tokenReducer={tokenReducer} sidebarCollapse={sidebarCollapse} userInfoReducer={userInfoReducer} />
-                                    </React.Suspense>
-                                }
-                            />
-                        </>
+                        <Route
+                            path={"reports"}
+                            exact
+                            element={
+                                <React.Suspense fallback={"Loading..."}>
+                                    <Report tokenReducer={tokenReducer} sidebarCollapse={sidebarCollapse} userInfoReducer={userInfoReducer} />
+                                </React.Suspense>
+                            }
+                        />
+                    )}
+                    {userInfoReducer.role && isRoleExists(userInfoReducer.role, financeEnumList) && (
+                        <Route
+                            path={"finance"}
+                            exact
+                            element={
+                                <React.Suspense fallback={"Loading..."}>
+                                    <Finance tokenReducer={tokenReducer} sidebarCollapse={sidebarCollapse} userInfoReducer={userInfoReducer} />
+                                </React.Suspense>
+                            }
+                        />
                     )}
                     <Route
                         path={"profile"}
