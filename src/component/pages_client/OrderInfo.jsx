@@ -25,11 +25,11 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const calcAmtPerProduct = (price, margin, gst, qty) => {
         let priceWithMargin = price + (price * margin) / 100;
         let priceWithTax = priceWithMargin + (priceWithMargin * gst) / 100;
-        return priceWithTax * qty;
+        return (priceWithTax * qty).toFixed(2);
     };
 
     const downloadPdfFn = async (invoiceNumber, invType) => {
-        setIsDownloadingInv(old => true);
+        setIsDownloadingInv((old) => true);
         await downloadCustomerInvoiceByInvoiceNumberApi(invoiceNumber, invType, tokenReducer)
             .then((res) => {
                 let blob = res.data;
@@ -62,7 +62,7 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                     isClosable: true,
                 });
             });
-            setIsDownloadingInv(old => false);
+        setIsDownloadingInv((old) => false);
     };
 
     useEffect(() => {
@@ -77,7 +77,15 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         <div className="flex items-start justify-between">
                             <h1 className="font-bold text-md md:text-lg">Order ID: {order.orderId}</h1>
                             {order.saleInvoice && (
-                                <Button isLoading={isDownloadingInv} loadingText={'Downloading...'} onClick={() => downloadPdfFn(order.saleInvoice.invoiceNo, "SALE")} variant={"outline"} colorScheme="green" leftIcon={<BsFiletypePdf />} size={"xs"}>
+                                <Button
+                                    isLoading={isDownloadingInv}
+                                    loadingText={"Downloading..."}
+                                    onClick={() => downloadPdfFn(order.saleInvoice.invoiceNo, "SALE")}
+                                    variant={"outline"}
+                                    colorScheme="green"
+                                    leftIcon={<BsFiletypePdf />}
+                                    size={"xs"}
+                                >
                                     Invoice
                                 </Button>
                             )}
@@ -129,19 +137,23 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                             <div>
                                 <h1 className="font-semibold mb-2">Payment</h1>
                                 <div>
-                                    Payment Mode: <Badge>{order.payment_id.payment_mode}</Badge>
-                                    {order.payment_id.payment_mode === "CUSTOM" ||
-                                        (order.payment_id.payment_mode === "TWENTY_ADV" && (
-                                            <>
-                                                <div className="text-xs mb-1">
-                                                    Payment Amount: ₹<span>{order.payment_id.partial_payment.payment_amount}</span>
-                                                </div>
-                                                Payment Mode: <Badge>COD</Badge>
-                                                <div className="text-xs">
-                                                    Cash on delivery Amount: ₹<span className="font-bold text-blue-700">{order.payment_id.balance_amount}</span>
-                                                </div>
-                                            </>
-                                        ))}
+                                    Payment Mode: <Badge colorScheme="whatsapp">{order.payment_id.payment_mode === "TWENTY_ADV" ? "20% Advance" : order.payment_id.payment_mode}</Badge>
+                                    {(order.payment_id.payment_mode === "CUSTOM" || order.payment_id.payment_mode === "TWENTY_ADV") && (
+                                        <>
+                                            <div className="text-xs mb-1">
+                                                Payment Amount: ₹<span>{order.payment_id.partial_payment.payment_amount}</span>
+                                            </div>
+                                            Payment Mode: <Badge colorScheme="messenger">COD</Badge>
+                                            <div className="text-xs">
+                                                Cash on delivery Amount: ₹<span className="font-bold text-blue-700">{order.payment_id.balance_amount}</span>
+                                            </div>
+                                        </>
+                                    )}
+                                    {order.payment_id.payment_mode === "COD" && (
+                                        <div className="text-xs">
+                                            Cash on delivery Amount: ₹<span className="font-bold text-blue-700">{order.payment_id.balance_amount}</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                             <div>
@@ -202,25 +214,39 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                                     Total
                                                 </Td>
                                                 <Td pe={0} py={3} borderBlock={0} isNumeric>
-                                                    ₹{order.grand_total}
+                                                    ₹{order.grand_total.toFixed(2)}
                                                 </Td>
                                             </Tr>
-                                            <Tr>
-                                                <Td ps={0} py={1} borderBlock={0} className="text-neutral-400 text-sm">
-                                                    Advance
-                                                </Td>
-                                                <Td pe={0} py={1} borderBlock={0} isNumeric className="text-neutral-400 text-sm">
-                                                    - ₹{order.payment_id.partial_payment.payment_amount}
-                                                </Td>
-                                            </Tr>
-                                            <Tr className="font-bold">
-                                                <Td ps={0} py={3} borderBlock={0}>
-                                                    COD Pay
-                                                </Td>
-                                                <Td pe={0} py={3} borderBlock={0} isNumeric>
-                                                    ₹{order.payment_id.balance_amount}
-                                                </Td>
-                                            </Tr>
+                                            {(order.payment_id.payment_mode === "CUSTOM" || order.payment_id.payment_mode === "TWENTY_ADV") && (
+                                                <>
+                                                    <Tr>
+                                                        <Td ps={0} py={1} borderBlock={0} className="text-neutral-400 text-sm">
+                                                            Advance
+                                                        </Td>
+                                                        <Td pe={0} py={1} borderBlock={0} isNumeric className="text-neutral-400 text-sm">
+                                                            - ₹{order.payment_id.partial_payment.payment_amount}
+                                                        </Td>
+                                                    </Tr>
+                                                    <Tr className="font-bold">
+                                                        <Td ps={0} py={3} borderBlock={0}>
+                                                            COD Pay
+                                                        </Td>
+                                                        <Td pe={0} py={3} borderBlock={0} isNumeric>
+                                                            ₹{order.payment_id.balance_amount}
+                                                        </Td>
+                                                    </Tr>
+                                                </>
+                                            )}
+                                            {(order.payment_id.payment_mode === "COD" || order.payment_id.payment_mode === "PREPAID") && (
+                                                <Tr className="font-bold">
+                                                    <Td ps={0} py={3} borderBlock={0}>
+                                                        COD Pay
+                                                    </Td>
+                                                    <Td pe={0} py={3} borderBlock={0} isNumeric>
+                                                        ₹{order.payment_id.balance_amount}
+                                                    </Td>
+                                                </Tr>
+                                            )}
                                         </Tbody>
                                     </Table>
                                 </div>
