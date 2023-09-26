@@ -47,7 +47,7 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                             </span>
                             <span className="text-teal-600 hidden md:block">|</span>
                             <span className="text-orange-600">
-                                Estimated Delivery: <span>22 Feb 2023</span>
+                                Estimated Delivery: <span>----</span>
                             </span>
                         </div>
                         <hr className="my-5" />
