@@ -198,10 +198,21 @@ export const getAllOrderApi = (customerId, token) => {
     });
 };
 
-export const getOrderByOrderIdApi = (customerId,orderId, token) => {
+export const getOrderByOrderIdApi = (customerId, orderId, token) => {
     return axios({
         method: "GET",
         url: `${process.env.REACT_APP_API_ADDRESS}/order/${customerId}/${orderId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const downloadCustomerInvoiceByInvoiceNumberApi = (invoiceNumber, invoiceType, token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/customer-downloadpdf/${invoiceNumber}/${invoiceType}`,
+        responseType: "blob",
         headers: {
             Authorization: "Bearer " + token,
         },

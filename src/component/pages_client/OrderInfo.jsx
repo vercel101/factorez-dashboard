@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Image, Table, Tbody, Td, Tr } from "@chakra-ui/react";
+import { Badge, Button, Image, Table, Tbody, Td, Tr, useToast } from "@chakra-ui/react";
 import { BiSolidCheckbox } from "react-icons/bi";
 import { BsFiletypePdf } from "react-icons/bs";
 import { useParams } from "react-router-dom";
-import { getOrderByOrderIdApi } from "../../apis/clientApis";
+import { downloadCustomerInvoiceByInvoiceNumberApi, getOrderByOrderIdApi } from "../../apis/clientApis";
 import { localDateInIndiaTime } from "../../utils/stringToLocalDate";
 
 const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
+    const toast = useToast();
     const [order, setOrder] = useState(null);
+    const [isDownloadingInv, setIsDownloadingInv] = useState(false);
     let { orderId } = useParams();
     const fetchOrder = async () => {
         await getOrderByOrderIdApi(userInfoReducer.customerId, orderId, tokenReducer)
@@ -26,6 +28,43 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
         return priceWithTax * qty;
     };
 
+    const downloadPdfFn = async (invoiceNumber, invType) => {
+        setIsDownloadingInv(old => true);
+        await downloadCustomerInvoiceByInvoiceNumberApi(invoiceNumber, invType, tokenReducer)
+            .then((res) => {
+                let blob = res.data;
+                const url = window.URL.createObjectURL(new Blob([blob], { type: "application/pdf" }));
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `${invoiceNumber}.pdf`);
+
+                // Append to html link element page
+                document.body.appendChild(link);
+
+                // Start download
+                link.click();
+
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+                toast({
+                    title: "Invoice Downloaded",
+                    status: "success",
+                    position: "top",
+                    isClosable: true,
+                });
+            })
+            .catch((err) => {
+                console.log(err.message);
+                toast({
+                    title: "Error in downloading",
+                    status: "error",
+                    position: "top",
+                    isClosable: true,
+                });
+            });
+            setIsDownloadingInv(old => false);
+    };
+
     useEffect(() => {
         fetchOrder();
     }, []);
@@ -37,9 +76,11 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                     <div>
                         <div className="flex items-start justify-between">
                             <h1 className="font-bold text-md md:text-lg">Order ID: {order.orderId}</h1>
-                            <Button variant={"outline"} colorScheme="green" leftIcon={<BsFiletypePdf />} size={"xs"}>
-                                Invoice
-                            </Button>
+                            {order.saleInvoice && (
+                                <Button isLoading={isDownloadingInv} loadingText={'Downloading...'} onClick={() => downloadPdfFn(order.saleInvoice.invoiceNo, "SALE")} variant={"outline"} colorScheme="green" leftIcon={<BsFiletypePdf />} size={"xs"}>
+                                    Invoice
+                                </Button>
+                            )}
                         </div>
                         <div className="md:space-x-3 text-xs md:text-sm flex flex-col md:flex-row">
                             <span className="text-gray-600 ">
