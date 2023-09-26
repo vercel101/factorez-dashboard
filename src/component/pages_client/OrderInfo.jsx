@@ -20,6 +20,12 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
             });
     };
 
+    const calcAmtPerProduct = (price, margin, gst, qty) => {
+        let priceWithMargin = price + (price * margin) / 100;
+        let priceWithTax = priceWithMargin + (priceWithMargin * gst) / 100;
+        return priceWithTax * qty;
+    };
+
     useEffect(() => {
         fetchOrder();
     }, []);
@@ -47,7 +53,7 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         <hr className="my-5" />
                         <div>
                             {order.ordered_products.products.map((el) => (
-                                <div className="flex mt-2">
+                                <div key={el._id} className="flex mt-2">
                                     <div className="p-3 border w-fit h-fit rounded-lg bg-gray-50">
                                         <Image className="h-16 w-16" src={el.product_id.thumbnail_pic} />
                                     </div>
@@ -59,18 +65,18 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                             <div>
                                                 <div>
                                                     <span>
-                                                        <Badge>5/2 6/2 7/3 8/3</Badge>
+                                                        <Badge>{el.lotSize}</Badge>
                                                     </span>
                                                 </div>
                                                 <div className="flex flex-col items-start">
                                                     <div className="flex items-center">
-                                                        <BiSolidCheckbox color="#ff0000" size={25} /> <span>Red</span>
+                                                        <BiSolidCheckbox color={el.color.colorHex} size={25} /> <span>{el.color.colorName}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="text-end">
-                                                <div className="font-semibold">₹15867.98</div>
-                                                <div className="text-sm text-neutral-400">Qty:1</div>
+                                                <div className="font-semibold">₹{calcAmtPerProduct(el.seller_price, el.margin, el.selling_gst, el.qty)}</div>
+                                                <div className="text-sm text-neutral-400">Qty:{el.qty}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -82,14 +88,26 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                             <div>
                                 <h1 className="font-semibold mb-2">Payment</h1>
                                 <div>
-                                    Payment Mode: <Badge>COD</Badge>
+                                    Payment Mode: <Badge>{order.payment_id.payment_mode}</Badge>
+                                    {order.payment_id.payment_mode === "CUSTOM" ||
+                                        (order.payment_id.payment_mode === "TWENTY_ADV" && (
+                                            <>
+                                                <div className="text-xs mb-1">
+                                                    Payment Amount: ₹<span>{order.payment_id.partial_payment.payment_amount}</span>
+                                                </div>
+                                                Payment Mode: <Badge>COD</Badge>
+                                                <div className="text-xs">
+                                                    Cash on delivery Amount: ₹<span className="font-bold text-blue-700">{order.payment_id.balance_amount}</span>
+                                                </div>
+                                            </>
+                                        ))}
                                 </div>
                             </div>
                             <div>
                                 <h1 className="font-semibold mb-2">Delivery</h1>
                                 <div>
                                     <span className="text-sm text-neutral-400">Address</span>
-                                    <div className="pe-5">847 chauhan gali, near mata dairy, vasundhara enclave, New Ashok nagar, New Delhi 110041</div>
+                                    <div className="pe-5">{order.shipping_address.address}</div>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +126,7 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                                     Subtotal
                                                 </Td>
                                                 <Td pe={0} py={1} borderBlock={0} isNumeric>
-                                                    ₹15867.98
+                                                    ₹{order.total.toFixed(2)}
                                                 </Td>
                                             </Tr>
                                             <Tr>
@@ -116,7 +134,7 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                                     Discount
                                                 </Td>
                                                 <Td pe={0} py={1} borderBlock={0} isNumeric className="text-neutral-400 text-sm">
-                                                    (20%) - ₹1250
+                                                    - ₹{order.discounted_amount}
                                                 </Td>
                                             </Tr>
                                             <Tr>
@@ -132,7 +150,7 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                                     Tax
                                                 </Td>
                                                 <Td pe={0} py={1} borderBlock={0} isNumeric className="text-neutral-400 text-sm">
-                                                    + ₹15867.98
+                                                    + ₹{order.GST_amount}
                                                 </Td>
                                             </Tr>
                                             <Tr>
@@ -143,7 +161,23 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                                     Total
                                                 </Td>
                                                 <Td pe={0} py={3} borderBlock={0} isNumeric>
-                                                    ₹15867.98
+                                                    ₹{order.grand_total}
+                                                </Td>
+                                            </Tr>
+                                            <Tr>
+                                                <Td ps={0} py={1} borderBlock={0} className="text-neutral-400 text-sm">
+                                                    Advance
+                                                </Td>
+                                                <Td pe={0} py={1} borderBlock={0} isNumeric className="text-neutral-400 text-sm">
+                                                    - ₹{order.payment_id.partial_payment.payment_amount}
+                                                </Td>
+                                            </Tr>
+                                            <Tr className="font-bold">
+                                                <Td ps={0} py={3} borderBlock={0}>
+                                                    COD Pay
+                                                </Td>
+                                                <Td pe={0} py={3} borderBlock={0} isNumeric>
+                                                    ₹{order.payment_id.balance_amount}
                                                 </Td>
                                             </Tr>
                                         </Tbody>

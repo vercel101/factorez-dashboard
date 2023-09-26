@@ -361,7 +361,8 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                                     return { ...old, addressId: e.target.value };
                                                 })
                                             }
-                                            value={userInfoReducer.defaultAddressId}
+                                            value={paymentField.addressId}
+                                            defaultValue={userInfoReducer.defaultAddressId}
                                             size={"sm"}
                                             id="address"
                                             placeholder="Select Address"

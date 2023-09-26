@@ -180,7 +180,7 @@ export const deleteAddressApi = (customerId, addressId, token) => {
 export const createOrderApi = (data, customerId, token) => {
     return axios({
         method: "POST",
-        url: `${process.env.REACT_APP_API_ADDRESS}/createorder/${customerId}s`,
+        url: `${process.env.REACT_APP_API_ADDRESS}/createorder/${customerId}`,
         headers: {
             Authorization: "Bearer " + token,
         },
