@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdSquare } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { LiaRupeeSignSolid } from "react-icons/lia";
 import percentage, { calculateMarginAndSelling } from "../../../utils/percentage";
@@ -22,6 +22,7 @@ const TableProductModel = ({ details, actionClose, save, changeStatusHandler, ve
             }
         }
     };
+    console.log(details);
 
     const saveFn = () => {
         if (details.status !== newStatus && window.confirm("Are you sure to change the product status?")) {
@@ -34,11 +35,10 @@ const TableProductModel = ({ details, actionClose, save, changeStatusHandler, ve
             } else {
                 save({ productId: details._id });
             }
-        }else if(details.margin !== marginGst.margin || details.sellingGST !== marginGst.sellingGst ){
+        } else if (details.margin !== marginGst.margin || details.sellingGST !== marginGst.sellingGst) {
             console.log("margin and selling gst change");
             save({ productId: details._id, newStatus: newStatus, marginGst: marginGst });
-        }
-        else {
+        } else {
             actionClose();
         }
     };
@@ -86,7 +86,13 @@ const TableProductModel = ({ details, actionClose, save, changeStatusHandler, ve
                                     </tr>
                                     <tr className={`border-b`}>
                                         <th className={`border-r dark:border-neutral-500  text-start w-[140px] min-w-[140px] ps-2 py-1`}>Color</th>
-                                        <td className={`text-start ps-2`}>{details.color_id.colorName}</td>
+                                        <td className={`text-start ps-2`}>
+                                            {details.color_id.map((colorEl) => (
+                                                <span className="flex items-center justify-start">
+                                                    <MdSquare size={20} color={colorEl.colorHex} /> {colorEl.colorName}
+                                                </span>
+                                            ))}
+                                        </td>
                                     </tr>
                                     <tr className={`border-b`}>
                                         <th className={`border-r dark:border-neutral-500  text-start w-[140px] min-w-[140px] ps-2 py-1`}>Mrp</th>
