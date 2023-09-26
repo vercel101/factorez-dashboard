@@ -67,6 +67,7 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
 
     useEffect(() => {
         fetchOrder();
+        window.scrollTo(0, 0);
     }, []);
 
     return (

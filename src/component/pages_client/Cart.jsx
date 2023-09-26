@@ -239,6 +239,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     React.useEffect(() => {
         fetchCartValue();
         getAllAddress();
+        window.scrollTo(0, 0);
     }, []);
     return (
         <div className="pt-[100px] md:pt-[80px] md:px-[20px] lg:px-[10%] bg-gray-100">

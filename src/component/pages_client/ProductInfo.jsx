@@ -1,15 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { addToCartApi, getProductInfoApi } from "../../apis/clientApis";
+import { addToCartApi, getAllAddressApi, getProductInfoApi, setDefaultAddressApi } from "../../apis/clientApis";
 import { BsCart, BsTruck, BsFillSquareFill } from "react-icons/bs";
 import { FcFlashOn } from "react-icons/fc";
 import { FaLocationDot } from "react-icons/fa6";
-import {  Button,  Radio, RadioGroup, Stack, Table, Tbody, Td, Tr, useToast } from "@chakra-ui/react";
+import {
+    Button,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    PopoverHeader,
+    PopoverTrigger,
+    Radio,
+    RadioGroup,
+    Stack,
+    Table,
+    Tbody,
+    Td,
+    Tr,
+    useToast,
+} from "@chakra-ui/react";
 import { GrEdit } from "react-icons/gr";
 import { Modal, Select, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { useDispatch } from "react-redux";
+import { userInfoAdd } from "../../Redux/ReducerAction";
 
 const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const toast = useToast();
+    const dispatch = useDispatch();
+    const [addresses, setAddresses] = useState([]);
+    const [defaultAddIsLoading, setDefaultAddIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [lotValue, setLotValue] = useState("");
     const [colorValue, setColorValue] = useState("");
@@ -97,9 +119,58 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
             });
         }
     };
+    const defaultAddress = async (addressId, index) => {
+        setDefaultAddIsLoading(true);
+        await setDefaultAddressApi(userInfoReducer.customerId, addressId, tokenReducer)
+            .then((res) => {
+                console.log(res.data);
+                let data = res.data.data;
+                toast({
+                    position: "top",
+                    status: "success",
+                    isClosable: true,
+                    title: "Pincode Changed",
+                });
+                dispatch(userInfoAdd(data));
+            })
+            .catch((err) => {
+                console.log(err);
+                let message = err.response && err.response.data.message ? err.response.data.message : err.message;
+                toast({
+                    position: "top",
+                    title: message,
+                    isClosable: true,
+                    status: "error",
+                });
+            });
+        setDefaultAddIsLoading(false);
+    };
+    const getAllAddress = async () => {
+        await getAllAddressApi(userInfoReducer.customerId, tokenReducer)
+            .then((res) => {
+                console.log(res);
+                setAddresses(res.data.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+    const getPincode = () => {
+        let idx = addresses.findIndex((o) => {
+            if (o._id === userInfoReducer.defaultAddressId) {
+                return o;
+            }
+        });
+        if (idx >= 0) {
+            return addresses[idx].pincode;
+        } else {
+            return "Select";
+        }
+    };
     useEffect(() => {
         getProductInfo();
         window.scrollTo(0, 0);
+        getAllAddress();
     }, []);
     // console.log(productId);
     return (
@@ -230,12 +301,31 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                 <div className="flex items-center mt-3 space-x-2">
                                     <FaLocationDot size={30} color="#f1f" />
                                     <h4 className="font-semibold">
-                                        Deliver to: <span className="text-blue-500 border px-1">201301</span>
+                                        Deliver to: <span className="text-blue-500 border px-1">{getPincode()}</span>
                                     </h4>
                                 </div>
-                                <Button size={"sm"} leftIcon={<GrEdit color="white" />} colorScheme="twitter">
-                                    Change
-                                </Button>
+                                <Popover>
+                                    <PopoverTrigger>
+                                        <Button size={"sm"} leftIcon={<GrEdit color="white" />} colorScheme="twitter">
+                                            Change
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent bg={'#ffd'}>
+                                        <PopoverArrow />
+                                        <PopoverCloseButton />
+                                        <PopoverHeader>Change Pincode</PopoverHeader>
+                                        <PopoverBody>
+                                            <ul>
+                                                {addresses &&
+                                                    addresses.map((el, idx) => (
+                                                        <li key={el._id} onClick={() => defaultAddress(el._id, idx)} className="hover:bg-teal-50 py-1 cursor-pointer border-b last:border-b-0">
+                                                            {el.pincode}, {el.city}, {el.state}
+                                                        </li>
+                                                    ))}
+                                            </ul>
+                                        </PopoverBody>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                             <div className="flex items-center mt-3 space-x-2">
                                 <BsTruck size={40} color="blue" />
