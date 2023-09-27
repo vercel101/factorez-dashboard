@@ -696,8 +696,7 @@ export const updatePaymentStatusApi = (paymentId, data, token) => {
     });
 };
 
-
-export const orderReportDownloadApi = (data,token) => {
+export const orderReportDownloadApi = (data, token) => {
     return axios({
         method: "POST",
         url: `${process.env.REACT_APP_API_ADDRESS}/order-report/`,
@@ -707,4 +706,25 @@ export const orderReportDownloadApi = (data,token) => {
         },
         data: data,
     });
-}
+};
+
+export const updateVendorApi = (data, vendorOdjId, token) => {
+    return axios({
+        method: "PUT",
+        url: `${process.env.REACT_APP_API_ADDRESS}/update-vendor-by-admin/${vendorOdjId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+export const updateProductApi = (data, productId, token) => {
+    return axios({
+        method: "PUT",
+        url: `${process.env.REACT_APP_API_ADDRESS}/updateproduct/${productId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};

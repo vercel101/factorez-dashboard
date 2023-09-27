@@ -99,10 +99,11 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         isClosable: true,
                         status: "success",
                     });
+                    dispatch(userInfoAdd(res.data.data));
                 })
                 .catch((err) => {
                     console.log(err);
-                    let message = err.response ? err.response.data.message :err.message
+                    let message = err.response ? err.response.data.message : err.message;
                     toast({
                         title: message,
                         position: "top",
@@ -311,7 +312,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                             Change
                                         </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent bg={'#ffd'}>
+                                    <PopoverContent bg={"#ffd"}>
                                         <PopoverArrow />
                                         <PopoverCloseButton />
                                         <PopoverHeader>Change Pincode</PopoverHeader>

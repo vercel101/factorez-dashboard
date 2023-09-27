@@ -23,10 +23,10 @@ const ProductCreate = ({ userInfoReducer, tokenReducer }) => {
         singleImageUrl: "",
     });
     const [catData, setCatData] = useState([]);
+    const [colorData, setColorData] = useState([]);
     const [categoryIdx, setCategoryIdx] = useState(null);
     const [brandData, setBrandData] = useState([]);
     const [filteredBrandData, setFilteredBrandData] = useState([]);
-    const [colorData, setColorData] = useState([]);
     const [vendorData, setVendorData] = useState([]);
     const [productMargin, setProductMargin] = useState(0);
     const [sellingGst, setSellingGst] = useState(0);

@@ -47,13 +47,6 @@ const Home = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                 console.log(err);
             });
     };
-    // const newArrivalFn = () => {
-    //     let arr = storeInfoReducer && storeInfoReducer.recommendedProduct && storeInfoReducer.recommendedProduct.newArrival ? storeInfoReducer.recommendedProduct.newArrival : [];
-    //     console.log("arr", arr);
-    //     let x = arr.map((el) => <ProductCard key={el._id} url={el.thumbnail_pic} cardwidth={"200px"} />);
-    //     return x;
-    // };
-
     const rangSliderHandler = (e) => {
         setMinPrice((old) => e[0]);
         setMaxPrice((old) => e[1]);

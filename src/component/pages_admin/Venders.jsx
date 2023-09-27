@@ -41,7 +41,7 @@ const Venders = ({sidebarCollapse, darkModeReducer, userInfoReducer, tokenReduce
                     {userInfoReducer.role && isRoleExists(userInfoReducer.role, ['ADMIN', 'VENDOR_ALL_VENDOR']) && (
                         <TabPanel className="mt-5">
                             <Suspense fallback={"Loading..."}>
-                                <AllVendors tokenReducer={tokenReducer}/>
+                                <AllVendors userInfoReducer={userInfoReducer} tokenReducer={tokenReducer}/>
                             </Suspense>
                         </TabPanel>
                     )}

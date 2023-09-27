@@ -6,18 +6,15 @@ import { verifyVendorApi } from "../../../apis/adminApis";
 import { Button, Select, Input, Stack, Tooltip } from "@chakra-ui/react";
 import { FcInfo } from "react-icons/fc";
 
-const TableActionModel = ({ details, actionClose, save, changeHandler, vendorHandler }) => {
+const TableActionModel = ({ details, actionClose, save, changeHandler, vendorHandler, isViewSaveLoading }) => {
     const [vendorStatus, setVendorStatus] = useState(null);
     const [marginValue, setMarginValue] = useState(null);
-    const [isActive, setIsActive] = useState(null);
-    console.log(details);
     const saveFn = () => {
         let data = {
             vendorStatus: vendorStatus,
             vendorMargin: marginValue,
-            isActive: isActive,
         };
-        if (marginValue !== null || isActive !== null || vendorStatus !== null) {
+        if (marginValue !== null || vendorStatus !== null) {
             save(data, details._id);
         }
     };
@@ -36,17 +33,20 @@ const TableActionModel = ({ details, actionClose, save, changeHandler, vendorHan
                         <TabList className="flex text-base font-medium text-center w-full select-none">
                             <Tab
                                 selectedClassName="bg-teal-100 dark:bg-teal-800 bg-teal-100 border-x-teal-100 border-t-teal-100 border-b-4 border-blue-500"
-                                className="cursor-pointer p-3 w-full  outline-none border">
+                                className="cursor-pointer p-3 w-full  outline-none border"
+                            >
                                 Besic Details
                             </Tab>
                             <Tab
                                 selectedClassName="bg-teal-100 dark:bg-teal-800 bg-teal-100 border-x-teal-100 border-t-teal-100 border-b-4 border-blue-500"
-                                className="cursor-pointer p-3 w-full border border-x-0 outline-none">
+                                className="cursor-pointer p-3 w-full border border-x-0 outline-none"
+                            >
                                 Document Details
                             </Tab>
                             <Tab
                                 selectedClassName="bg-teal-100 dark:bg-teal-800 bg-teal-100 border-x-teal-100 border-t-teal-100 border-b-4 border-blue-500"
-                                className="cursor-pointer p-3 w-full border  outline-none">
+                                className="cursor-pointer p-3 w-full border  outline-none"
+                            >
                                 Bank Account
                             </Tab>
                         </TabList>
@@ -110,7 +110,8 @@ const TableActionModel = ({ details, actionClose, save, changeHandler, vendorHan
                                         <a
                                             href={details.brand_id && details.brand_id.length > 0 ? details.brand_id[0].brandLogo : ""}
                                             target={"_blank"}
-                                            className={`bg-blue-500 border border-blue-500 cursor-pointer text-white p-2 inline-flex items-center`}>
+                                            className={`bg-blue-500 border border-blue-500 cursor-pointer text-white p-2 inline-flex items-center`}
+                                        >
                                             <BsFiletypeDoc className={`me-2`} size={20} /> Preview
                                         </a>
                                     </div>
@@ -124,7 +125,8 @@ const TableActionModel = ({ details, actionClose, save, changeHandler, vendorHan
                                     <a
                                         href={details.document_id ? details.document_id.brandRegDoc : ""}
                                         target={"_blank"}
-                                        className={`bg-blue-500 border border-blue-500 text-white p-2 inline-flex items-center`}>
+                                        className={`bg-blue-500 border border-blue-500 text-white p-2 inline-flex items-center`}
+                                    >
                                         <BsFiletypeDoc className={`me-2`} size={20} /> Preview
                                     </a>
                                 </div>
@@ -133,7 +135,8 @@ const TableActionModel = ({ details, actionClose, save, changeHandler, vendorHan
                                     <a
                                         href={details.document_id ? details.document_id.gstRegDoc : ""}
                                         target={"_blank"}
-                                        className={`bg-blue-500 border border-blue-500 text-white p-2 inline-flex items-center`}>
+                                        className={`bg-blue-500 border border-blue-500 text-white p-2 inline-flex items-center`}
+                                    >
                                         <BsFiletypeDoc className={`me-2`} size={20} /> Preview
                                     </a>
                                 </div>
@@ -172,7 +175,8 @@ const TableActionModel = ({ details, actionClose, save, changeHandler, vendorHan
                                     <a
                                         href={details.bank_id ? details.bank_id.cancelledCheque : ""}
                                         target={"_blank"}
-                                        className={`bg-blue-500 border border-blue-500 text-white p-2 inline-flex items-center`}>
+                                        className={`bg-blue-500 border border-blue-500 text-white p-2 inline-flex items-center`}
+                                    >
                                         <BsFiletypeDoc className={`me-2`} size={20} /> Preview
                                     </a>
                                 </div>
@@ -180,26 +184,25 @@ const TableActionModel = ({ details, actionClose, save, changeHandler, vendorHan
                         </TabPanel>
                     </Tabs>
                     <div className=" flex items-center justify-start space-x-1 border-t-2 pt-2">
-                        <Input defaultValue={details.marginInPercentage && details.marginInPercentage} onChange={(e) => setMarginValue(e.target.value)} type="number" placeholder="Margin value %" size="sm" width="150px" />
-                        <Select
-                            width="200px"
-                            onChange={(e) => setVendorStatus(e.target.value)}
-                            defaultValue={vendorStatus}
-                            value={vendorStatus === null ? details.status : vendorStatus}
-                            placeholder="Approval Status"
-                            size="sm">
-                            <option value={"Pending"}>Pending</option>
+                        <Input
+                            defaultValue={details.marginInPercentage && details.marginInPercentage}
+                            onChange={(e) => setMarginValue(e.target.value)}
+                            type="number"
+                            placeholder="Margin value %"
+                            size="sm"
+                            width="150px"
+                        />
+                        <Select width="200px" onChange={(e) => setVendorStatus(e.target.value)} defaultValue={vendorStatus} value={vendorStatus === null ? details.status : vendorStatus} size="sm">
+                            <option disabled={vendorStatus !== "Pending" && true} value={"Pending"}>
+                                Pending
+                            </option>
                             <option value={"Rejected"}>Rejected</option>
                             <option value={"Approved"}>Approved</option>
                         </Select>
-                        <Select width="150px" onChange={(e) => setIsActive(e.target.value)} defaultValue={details.isActive} value={isActive} placeholder="Account Status" size="sm">
-                            <option value={"Active"}>Active</option>
-                            <option value={"Blocked"}>Block</option>
-                        </Select>
-                        <Button size={"sm"} onClick={() => saveFn()} colorScheme="messenger">
+                        <Button isLoading={isViewSaveLoading} loadingTex={"Please wait"} borderRadius={0} size={"sm"} onClick={() => saveFn()} colorScheme="messenger">
                             Save Changes
                         </Button>
-                        <Button size={"sm"} onClick={() => actionClose()} colorScheme="red">
+                        <Button borderRadius={0} size={"sm"} onClick={() => actionClose()} colorScheme="red">
                             Cancel
                         </Button>
                     </div>

@@ -6,7 +6,7 @@ import { addVentorApi, adminLogin } from "../../apis/adminApis";
 import { useDispatch } from "react-redux";
 import { authToken, authTokenClear, spinnerOverlayOffFn, spinnerOverlayOnFn, userInfoAdd, userInfoClear } from "../../Redux/ReducerAction";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, InputGroup, InputRightElement, Text } from "@chakra-ui/react";
+import { Button, Input, InputGroup, InputRightElement, Text, useToast } from "@chakra-ui/react";
 
 let basicDetailInitial = {
     firmName: "",
@@ -43,6 +43,7 @@ let loginField = {
 };
 
 const LoginSignup = () => {
+    const toast = useToast();
     const [show, setShow] = React.useState(false);
     const [basicDetails, setBasicDetails] = useState(basicDetailInitial);
     const [bankDetail, setBankDetail] = useState(bankAccountInitial);
@@ -119,12 +120,25 @@ const LoginSignup = () => {
                     sessionStorage.setItem("token", data.token);
                     sessionStorage.setItem("userInfo", JSON.stringify(data));
                     dispatch(userInfoAdd(data));
-                    alert(res.data.message);
+                    toast({
+                        title:"Success",
+                        description: res.data.message,
+                        isClosable: true,
+                        status: "success",
+                        position: "top",
+                    });
                     history("/admin/dashboard");
                 })
                 .catch((err) => {
-                    err.response && err.response.data && alert(err.response.data.message);
+                    let message = err.response ? err.response.data.message : err.message;
                     console.log(err);
+                    toast({
+                        title:"Error",
+                        description: message,
+                        isClosable: true,
+                        status: "error",
+                        position: "top",
+                    });
                 });
             dispatch(spinnerOverlayOffFn());
         } else {
@@ -216,7 +230,7 @@ const LoginSignup = () => {
                     </div>
                 </div> */}
 
-                 <div className="min-h-[30%] w-[40%] min-w-[40%] max-h-[90%] bg-white rounded-md relative overflow-hidden">
+                <div className="min-h-[30%] w-[40%] min-w-[40%] max-h-[90%] bg-white rounded-md relative overflow-hidden">
                     <div className="bg-teal-100 py-3 relative">
                         <h1 className="font-[Pacifico] text-center text-4xl text-blue-500">{!isLoginPage ? "Register" : "ShoesHouse Welcomes you!!"}</h1>
                         <p className="font-[Montserrat] text-teal-700 text-center mt-3 pb-4 text-xl font-semibold">{!isLoginPage ? "Seller Registration Form" : "Login for Dashboard"}</p>

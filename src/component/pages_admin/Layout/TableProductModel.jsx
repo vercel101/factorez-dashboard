@@ -3,7 +3,8 @@ import { MdClose, MdSquare } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { LiaRupeeSignSolid } from "react-icons/lia";
 import percentage, { calculateMarginAndSelling } from "../../../utils/percentage";
-const TableProductModel = ({ details, actionClose, save, changeStatusHandler, vendorHandler }) => {
+import { Button, Select } from "@chakra-ui/react";
+const TableProductModel = ({ details, actionClose, save, changeStatusHandler, vendorHandler, isTableProductModelSaveLoading }) => {
     const { userInfoReducer } = useSelector((state) => state);
     const [newStatus, setNewStatus] = useState(details.status);
     const [marginGst, setMarginGst] = useState({
@@ -33,7 +34,7 @@ const TableProductModel = ({ details, actionClose, save, changeStatusHandler, ve
                     alert("Product can only be Approved if Margin and Selling GST is provided");
                 }
             } else {
-                save({ productId: details._id });
+                save({ productId: details._id, newStatus });
             }
         } else if (details.margin !== marginGst.margin || details.sellingGST !== marginGst.sellingGst) {
             console.log("margin and selling gst change");
@@ -222,24 +223,23 @@ const TableProductModel = ({ details, actionClose, save, changeStatusHandler, ve
                             </div>
                         </div>
                     </div>
-                    <div className="flex justify-start items-center mt-5">
+                    <div className="flex justify-start items-center mt-5 space-x-1">
                         {userInfoReducer.userType !== "Seller" && (
                             <>
-                                <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} className="border border-green-500 outline-none py-1 ">
-                                    <option value="">Status Change</option>
+                                <Select size={"sm"} width={'fit-content'} value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
                                     <option value="Pending">Pending</option>
                                     <option value="Rejected">Rejected</option>
                                     <option value="Approved">Approved</option>
-                                </select>
+                                </Select>
 
-                                <button className={`bg-blue-500 text-white px-3 py-1 mx-2`} onClick={() => saveFn()}>
+                                <Button borderRadius={2} size={"sm"} colorScheme="messenger" isLoading={isTableProductModelSaveLoading} loadingText="Please wait" onClick={() => saveFn()}>
                                     Save Changes
-                                </button>
+                                </Button>
                             </>
                         )}
-                        <button className={`bg-red-500 text-white px-3 py-1`} onClick={() => actionClose()}>
+                        <Button borderRadius={2} size={"sm"} colorScheme="red" onClick={() => actionClose()}>
                             Cancel
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
