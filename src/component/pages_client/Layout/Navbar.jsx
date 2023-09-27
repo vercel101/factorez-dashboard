@@ -43,8 +43,8 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
                     </AlertDialogContent>
                 </AlertDialogOverlay>
             </AlertDialog>
-            <div className="h-[53px] flex items-center justify-between lg:px-16 md:px-10">
-                <div className="h-full overflow-hidden flex items-center justify-start space-x-4">
+            <div className="h-[53px] flex items-center justify-between lg:px-16 md:px-10 ">
+                <div className="h-full w-full overflow-hidden flex items-center justify-start space-x-4">
                     <img
                         src="/factorlogo.png"
                         alt=""
@@ -54,7 +54,7 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
                         }}
                     />
                     {tokenReducer && <SearchNav />}
-                    <Button onClick={() => goToAdminLogin()} rounded={"full"} size={"sm"} width={'full'} colorScheme="orange" variant={"outline"}>
+                    <Button px={5} onClick={() => goToAdminLogin()} rounded={"full"} size={"sm"} colorScheme="orange" variant={"outline"}>
                         Become a seller
                     </Button>
                 </div>

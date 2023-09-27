@@ -102,8 +102,9 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                 })
                 .catch((err) => {
                     console.log(err);
+                    let message = err.response ? err.response.data.message :err.message
                     toast({
-                        title: err.message,
+                        title: message,
                         position: "top",
                         isClosable: true,
                         status: "error",

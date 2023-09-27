@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { applyPromoCodeApi, createOrderApi, getAllAddressApi, getCartsByCustomerApi, qtyIncreaseDecreaseApi, removeFromCartApi } from "../../apis/clientApis";
-import { Button, useToast, useDisclosure, Select } from "@chakra-ui/react";
+import { Button, useToast, useDisclosure, Select, Badge } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const toast = useToast();
+    const navigate = useNavigate();
     const [cartData, setCartData] = useState();
     const [promoCode, setPromoCode] = useState({
         code: "",
@@ -11,7 +13,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     });
     const [addresses, setAddresses] = useState([]);
     const [checkoutLoadingFlag, setCheckoutLoadingFlag] = useState(false);
-    const [isRemoveLoading, setIsRemoveLogin] = useState(false);
+    const [isRemoveLoading, setIsRemoveLogin] = useState([false, null]);
     const [paymentField, setPaymentField] = useState({
         addressId: "",
         paymentMode: "",
@@ -42,7 +44,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     };
     const removeFromCart = async (index) => {
         console.log(index);
-        setIsRemoveLogin(true);
+        setIsRemoveLogin([true, index]);
         await removeFromCartApi(userInfoReducer.customerId, index, tokenReducer)
             .then((res) => {
                 console.log(res);
@@ -63,7 +65,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                     isClosable: true,
                 });
             });
-        setIsRemoveLogin(false);
+        setIsRemoveLogin([true, null]);
     };
 
     const applyPromoCode = async () => {
@@ -80,7 +82,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         setPromoCode((old) => {
                             return { ...old, amount: res.data.data };
                         });
-                    }else{
+                    } else {
                         setPromoCode({ code: "", amount: 0 });
                     }
                     toast({
@@ -253,21 +255,31 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         <div className="hidden sm:flex mt-10 mb-5">
                             <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">Product Details</h3>
                             <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">Quantity</h3>
-                            <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">Price</h3>
+                            <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">Price/Unit</h3>
                             <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">Total</h3>
                         </div>
                         {cartData &&
                             cartData.products.map((el, idx) => (
                                 <div key={el._id} className="flex flex-col sm:flex-row sm:items-center hover:bg-gray-100 -mx-8 px-6 py-5">
                                     <div className="flex w-full sm:w-2/5">
-                                        <div className="w-20">
+                                        <div className="w-20 cursor-pointer" onClick={() => navigate(`/product/${el.product_id.slug}`)}>
                                             <img className="h-24" src={el.product_id.thumbnail_pic} alt="" />
                                         </div>
                                         <div className="flex flex-col justify-start sm:justify-between ml-4 flex-grow">
                                             <span className="font-bold text-sm">{el.product_id.product_name}</span>
+                                            <div className="text-sm flex items-center justify-start space-x-1">
+                                                <span>{el.color.colorName}</span>
+                                                <Badge>{el.lotSize}</Badge>
+                                            </div>
                                             <div className="flex sm:flex-col space-x-2 sm:space-x-0 sm:space-y-2 items-start justify-start">
                                                 <span className="text-red-500 text-xs">{el.product_id.brandId.brand_name}</span>
-                                                <Button onClick={() => removeFromCart(idx)} size={"xs"} isLoading={isRemoveLoading} variant={"unstyled"} loadingText={"Please wait"}>
+                                                <Button
+                                                    onClick={() => removeFromCart(idx)}
+                                                    size={"xs"}
+                                                    isLoading={isRemoveLoading[1] === idx && isRemoveLoading[0]}
+                                                    variant={"unstyled"}
+                                                    loadingText={"Please wait"}
+                                                >
                                                     Remove
                                                 </Button>
                                             </div>
@@ -379,7 +391,14 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                         <label className="text-xs font-semibold" htmlFor="paymentmode">
                                             Payment Mode
                                         </label>
-                                        <Select value={paymentField.paymentMode} backgroundColor={"white"} onChange={(e) => paymentModeHandler(e.target.value)} size={"sm"} id="paymentmode" placeholder="Select Mode">
+                                        <Select
+                                            value={paymentField.paymentMode}
+                                            backgroundColor={"white"}
+                                            onChange={(e) => paymentModeHandler(e.target.value)}
+                                            size={"sm"}
+                                            id="paymentmode"
+                                            placeholder="Select Mode"
+                                        >
                                             <option value={"CUSTOM"}>Custom Amount</option>
                                             <option value={"TWENTY_ADV"}>20 % of Total Amount</option>
                                             <option value={"PREPAID"}>Prepaid</option>
