@@ -103,7 +103,7 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         <hr className="my-5" />
                         <div>
                             {order.ordered_products.products.map((el) => (
-                                <div key={el._id} className="flex mt-2">
+                                <div key={el._id} className={`flex mt-2 relative ${el.isRemoved && 'bg-red-200'}`}>
                                     <div className="p-3 border w-fit h-fit rounded-lg bg-gray-50">
                                         <Image className="h-16 w-16" src={el.product_id.thumbnail_pic} />
                                     </div>
@@ -130,6 +130,7 @@ const OrderInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                             </div>
                                         </div>
                                     </div>
+                                    {el.isRemoved && <div className="absolute text-xs bottom-0 right-0  bg-black text-yellow-300 rounded-md px-2">Product cancelled</div>}
                                 </div>
                             ))}
                         </div>
