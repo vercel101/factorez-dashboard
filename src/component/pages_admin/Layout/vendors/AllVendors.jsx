@@ -406,7 +406,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.firmName}
+                                                    defaultValue={editData.firmName && editData.firmName}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, firmName: e.target.value };
@@ -420,9 +420,15 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                                 Brand Name
                                             </Th>
                                             <Td p={1}>
-                                                {editData.brand_id.map((bEl, i) => (
-                                                    <Input key={bEl._id} size={"xs"} defaultValue={bEl.brand_name} onChange={(e) => brandChangeHandler(i, bEl._id, e.target.value)} />
-                                                ))}
+                                                {editData.brand_id &&
+                                                    editData.brand_id.map((bEl, i) => (
+                                                        <Input
+                                                            key={bEl._id}
+                                                            size={"xs"}
+                                                            defaultValue={bEl.brand_name && bEl.brand_name}
+                                                            onChange={(e) => brandChangeHandler(i, bEl._id, e.target.value)}
+                                                        />
+                                                    ))}
                                             </Td>
                                         </Tr>
                                         <Tr>
@@ -432,7 +438,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.gstNo}
+                                                    defaultValue={editData.gstNo && editData.gstNo}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, gstNo: e.target.value };
@@ -448,7 +454,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.representativeName}
+                                                    defaultValue={editData.representativeName && editData.representativeName}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, representativeName: e.target.value };
@@ -464,7 +470,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.emailId}
+                                                    defaultValue={editData.emailId && editData.emailId}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, emailId: e.target.value };
@@ -480,7 +486,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.mobileNo}
+                                                    defaultValue={editData.mobileNo && editData.mobileNo}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, mobileNo: e.target.value };
@@ -496,7 +502,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.altMobileNo}
+                                                    defaultValue={editData.altMobileNo && editData.altMobileNo}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, altMobileNo: e.target.value };
@@ -512,7 +518,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.pickupState}
+                                                    defaultValue={editData.pickupState && editData.pickupState}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, pickupState: e.target.value };
@@ -528,7 +534,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.pickupCity}
+                                                    defaultValue={editData.pickupCity && editData.pickupCity}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, pickupCity: e.target.value };
@@ -544,7 +550,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.pickupPincode}
+                                                    defaultValue={editData.pickupPincode && editData.pickupPincode}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, pickupPincode: e.target.value };
@@ -560,7 +566,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.invoiceAddress}
+                                                    defaultValue={editData.invoiceAddress && editData.invoiceAddress}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, invoiceAddress: e.target.value };
@@ -576,7 +582,7 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.pickupAddress}
+                                                    defaultValue={editData.pickupAddress && editData.pickupAddress}
                                                     onChange={(e) =>
                                                         setNewEditData((old) => {
                                                             return { ...old, pickupAddress: e.target.value };
@@ -592,10 +598,10 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.bank_id.acHolderName}
+                                                    defaultValue={editData.bank_id && editData.bank_id.acHolderName && editData.bank_id.acHolderName}
                                                     onChange={(e) =>
                                                         setBankEditData((old) => {
-                                                            return { ...old, acHolderName: e.target.value, bank_id: editData.bank_id._id };
+                                                            return { ...old, acHolderName: e.target.value, bank_id: editData.bank_id ? editData.bank_id._id : null };
                                                         })
                                                     }
                                                 />
@@ -608,10 +614,10 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.bank_id.acNo}
+                                                    defaultValue={editData.bank_id && editData.bank_id.acNo && editData.bank_id.acNo}
                                                     onChange={(e) =>
                                                         setBankEditData((old) => {
-                                                            return { ...old, acNo: e.target.value, bank_id: editData.bank_id._id };
+                                                            return { ...old, acNo: e.target.value, bank_id: editData.bank_id ? editData.bank_id._id : null };
                                                         })
                                                     }
                                                 />
@@ -624,10 +630,10 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.bank_id.bankName}
+                                                    defaultValue={editData.bank_id && editData.bank_id.bankName && editData.bank_id.bankName}
                                                     onChange={(e) =>
                                                         setBankEditData((old) => {
-                                                            return { ...old, bankName: e.target.value, bank_id: editData.bank_id._id };
+                                                            return { ...old, bankName: e.target.value, bank_id: editData.bank_id ? editData.bank_id._id : null };
                                                         })
                                                     }
                                                 />
@@ -640,10 +646,10 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.bank_id.branch}
+                                                    defaultValue={editData.bank_id && editData.bank_id.branch && editData.bank_id.branch}
                                                     onChange={(e) =>
                                                         setBankEditData((old) => {
-                                                            return { ...old, branch: e.target.value, bank_id: editData.bank_id._id };
+                                                            return { ...old, branch: e.target.value, bank_id: editData.bank_id ? editData.bank_id._id : null };
                                                         })
                                                     }
                                                 />
@@ -656,10 +662,10 @@ function AllVendors({ tokenReducer, userInfoReducer }) {
                                             <Td p={1}>
                                                 <Input
                                                     size={"xs"}
-                                                    defaultValue={editData.bank_id.ifsc}
+                                                    defaultValue={editData.bank_id && editData.bank_id.ifsc && editData.bank_id.ifsc}
                                                     onChange={(e) =>
                                                         setBankEditData((old) => {
-                                                            return { ...old, ifsc: e.target.value, bank_id: editData.bank_id._id };
+                                                            return { ...old, ifsc: e.target.value, bank_id: editData.bank_id ? editData.bank_id._id : null };
                                                         })
                                                     }
                                                 />
