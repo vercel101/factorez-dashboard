@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import { applyPromoCodeApi, createOrderApi, getAllAddressApi, getCartsByCustomerApi, qtyIncreaseDecreaseApi, removeFromCartApi } from "../../apis/clientApis";
 import { Button, useToast, useDisclosure, Select, Badge } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { userInfoAdd } from "../../Redux/ReducerAction";
 
 const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
     const toast = useToast();
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const [cartData, setCartData] = useState();
     const [promoCode, setPromoCode] = useState({
         code: "",
@@ -40,7 +37,6 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
             .then((res) => {
                 console.log(res.data);
                 setCartData(res.data.data);
-                dispatch(userInfoAdd(res.data.customerData))
             })
             .catch((err) => {
                 console.log(err);
