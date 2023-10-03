@@ -150,87 +150,6 @@ const LoginSignup = ({ storeInfoReducer }) => {
     return (
         <div className=" bg-[url(https://images.unsplash.com/photo-1561955147-098dd3ef9ae5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1134&q=80)] h-screen bg-cover bg-bottom bg-no-repeat">
             <div className="bg-[#00000088] h-screen flex justify-center items-center">
-                {/* <div className="bg-white w-96 overflow-hidden">
-                    <div className={`${isSignupPage && "-translate-x-96"} transition-all duration-300 w-[48rem] flex justify-center`}>
-                        <div className="w-full p-6">
-                            <Text fontWeight={700} fontSize={"2xl"}>
-                                Login
-                            </Text>
-                            <Text fontSize={12}>welcome back, Seller!</Text>
-                            <div className="mt-3">
-                                <label className="text-xs text-gray-600 font-semibold" htmlFor="username">
-                                    Mobile Number/Email
-                                </label>
-                                <Input borderRadius={0} id="username" placeholder="Enter your mobile number or email" />
-                            </div>
-                            <div className="mt-2">
-                                <label className="text-xs text-gray-600 font-semibold" htmlFor="password">
-                                    Password
-                                </label>
-                                <InputGroup size="md">
-                                    <Input borderRadius={0} id="password" pr="4.5rem" type={show ? "text" : "password"} placeholder="Enter password" />
-                                    <InputRightElement width="4.5rem">
-                                        <Button h="1.75rem" size="sm" onClick={handleClick}>
-                                            {show ? <HiOutlineEyeOff /> : <HiOutlineEye />}
-                                        </Button>
-                                    </InputRightElement>
-                                </InputGroup>
-                            </div>
-                            <div className="flex justify-end">
-                                <Button fontSize={14} variant={"unstyled"}>
-                                    Reset Password?
-                                </Button>
-                            </div>
-                            <Button colorScheme="blue" borderRadius={0} width={"full"}>
-                                Login
-                            </Button>
-                            <div className="flex justify-center mt-5">
-                                <Button onClick={() => setIsSignupPage(true)} fontSize={14} textColor={"red.700"} variant={"link"}>
-                                    Become FactorEz seller | Signup Now
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="w-full p-6">
-                            <Text fontWeight={700} fontSize={"2xl"}>
-                                Sign up
-                            </Text>
-                            <Text fontSize={12}>Become a seller</Text>
-                            <div className="mt-3">
-                                <label className="text-xs text-gray-600 font-semibold" htmlFor="username">
-                                    Mobile Number/Email
-                                </label>
-                                <Input borderRadius={0} id="username" placeholder="Enter your mobile number or email" />
-                            </div>
-                            <div className="mt-2">
-                                <label className="text-xs text-gray-600 font-semibold" htmlFor="password">
-                                    Password
-                                </label>
-                                <InputGroup size="md">
-                                    <Input borderRadius={0} id="password" pr="4.5rem" type={show ? "text" : "password"} placeholder="Enter password" />
-                                    <InputRightElement width="4.5rem">
-                                        <Button h="1.75rem" size="sm" onClick={handleClick}>
-                                            {show ? <HiOutlineEyeOff /> : <HiOutlineEye />}
-                                        </Button>
-                                    </InputRightElement>
-                                </InputGroup>
-                            </div>
-                            <div className="flex justify-end">
-                                <Button fontSize={14} variant={"unstyled"}>
-                                    Reset Password?
-                                </Button>
-                            </div>
-                            <Button colorScheme="blue" borderRadius={0} width={"full"}>
-                                Login
-                            </Button>
-                            <div className="flex justify-center mt-5">
-                                <Button onClick={() => setIsSignupPage(false)} fontSize={14} textColor={"red.700"} variant={"link"}>
-                                    Become FactorEz seller | Signup Now
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-
                 <div className="lg:w-[40%] lg:min-w-[40%] lg:max-w-[40%] p-2">
                     <div className="bg-teal-100 relative rounded-t-lg">
                         <h1 className="font-[Pacifico] text-center text-4xl text-blue-500">{!isLoginPage ? "Register" : "ShoesHouse Welcomes you!!"}</h1>
@@ -406,28 +325,6 @@ const LoginSignup = ({ storeInfoReducer }) => {
                                                 />
                                             </div>
                                             <div>
-                                                <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">Select Gender</h1>
-                                                <select
-                                                    name="gender"
-                                                    id=""
-                                                    value={basicDetails.gender}
-                                                    className="outline-none border  rounded-md p-1 w-full dark:bg-[#424242] dark:border-[#424242] "
-                                                    onChange={(e) =>
-                                                        setBasicDetails((preData) => {
-                                                            return {
-                                                                ...preData,
-                                                                gender: e.target.value,
-                                                            };
-                                                        })
-                                                    }
-                                                >
-                                                    <option value="">Select Gender</option>
-                                                    <option value="MALE">Male</option>
-                                                    <option value="FEMALE">Female</option>
-                                                    <option value="OTHER">Other</option>
-                                                </select>
-                                            </div>
-                                            <div>
                                                 <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">GST Number</h1>
                                                 <input
                                                     type="text"
@@ -497,10 +394,10 @@ const LoginSignup = ({ storeInfoReducer }) => {
                                                 />
                                             </div>
                                             <div>
-                                                <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">Pickup State</h1>
+                                                <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">State</h1>
                                                 <input
                                                     type="text"
-                                                    placeholder="Pickup State"
+                                                    placeholder="State"
                                                     value={basicDetails.pickupState}
                                                     onChange={(e) =>
                                                         setBasicDetails((preData) => {
@@ -514,10 +411,10 @@ const LoginSignup = ({ storeInfoReducer }) => {
                                                 />
                                             </div>
                                             <div>
-                                                <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">Pickup City</h1>
+                                                <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">City</h1>
                                                 <input
                                                     type="text"
-                                                    placeholder="Pickup City"
+                                                    placeholder="City"
                                                     value={basicDetails.pickupCity}
                                                     onChange={(e) =>
                                                         setBasicDetails((preData) => {
@@ -531,10 +428,10 @@ const LoginSignup = ({ storeInfoReducer }) => {
                                                 />
                                             </div>
                                             <div>
-                                                <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">Pickup Pincode</h1>
+                                                <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">Pincode</h1>
                                                 <input
                                                     type="text"
-                                                    placeholder="Pickup Pincode"
+                                                    placeholder="Pincode"
                                                     value={basicDetails.pickupPincode}
                                                     onChange={(e) =>
                                                         setBasicDetails((preData) => {
@@ -565,10 +462,10 @@ const LoginSignup = ({ storeInfoReducer }) => {
                                                 />
                                             </div>
                                             <div>
-                                                <h1 className="dark:text-white text-[#384047] font-semibold text-sm mb-1">Pickup Address</h1>
+                                                <h1 className="dark:text-white text-[#384047] font-semibold text-sm mb-1">Address</h1>
                                                 <input
                                                     type="text"
-                                                    placeholder="Pickup Address"
+                                                    placeholder="Address"
                                                     value={basicDetails.pickupAddress}
                                                     onChange={(e) =>
                                                         setBasicDetails((preData) => {
