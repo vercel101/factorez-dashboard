@@ -110,8 +110,8 @@ const LoginSignup = ({ storeInfoReducer }) => {
     const loginFn = async () => {
         const EmailRegex = /^\w+([\.]?\w+)*@\w+([\.]?\w+)*(\.\w{2,5})+$/;
         const UserIDReges = /^[0-9]{8,14}$/;
-        const PasswordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{10,20}$/;
-        if (UserIDReges.test(loginDetail.email) || (EmailRegex.test(loginDetail.email) && PasswordRegex.test(loginDetail.password))) {
+        // const PasswordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{10,20}$/;
+        if (UserIDReges.test(loginDetail.email) || (EmailRegex.test(loginDetail.email) && loginDetail.password.length >= 8 && loginDetail.password.length <= 20)) {
             setIsLoginLoading(true);
             await adminLogin(loginDetail)
                 .then((res) => {
