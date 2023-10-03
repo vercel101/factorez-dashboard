@@ -134,7 +134,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
         },
         {
             name: <span className="whitespace-normal">Shipping Address</span>,
-            selector: (row) => <span className="whitespace-normal">{row.shipping_address.address}</span>,
+            selector: (row) => <span className="whitespace-normal">{row.shipping_address && row.shipping_address.address}</span>,
         },
         {
             name: <span className="whitespace-normal">Item Qty</span>,
