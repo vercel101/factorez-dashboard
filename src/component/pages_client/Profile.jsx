@@ -179,7 +179,7 @@ const Profile = ({ tokenReducer, userInfoReducer }) => {
             </div>
             <div className="bg-gradient-to-br from-[#a3abd985] to-[#FF834F51] p-3 mt-5 rounded-t-2xl mb-2">
                 <div className="flex flex-col sm:flex-row sm:items-end sm:justify-start sm:space-x-3">
-                    <Image borderRadius="full" boxSize="150px" src="https://www.logiconme.com/assets/img-temp/400x450/img5.jpg" alt="Dan Abramov" />
+                    {/* <Image borderRadius="full" boxSize="150px" src="https://www.logiconme.com/assets/img-temp/400x450/img5.jpg" alt="Dan Abramov" /> */}
                     <div>
                         <Table>
                             <Tbody>
