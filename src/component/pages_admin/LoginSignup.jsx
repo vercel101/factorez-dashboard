@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { authToken, authTokenClear, spinnerOverlayOffFn, spinnerOverlayOnFn, userInfoAdd, userInfoClear } from "../../Redux/ReducerAction";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, InputGroup, InputRightElement, Text, useToast } from "@chakra-ui/react";
+import { StateAndCode } from "../../utils/stateNameAndCode";
 
 let basicDetailInitial = {
     firmName: "",
@@ -395,7 +396,30 @@ const LoginSignup = ({ storeInfoReducer }) => {
                                             </div>
                                             <div>
                                                 <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">State</h1>
-                                                <input
+                                                <select
+                                                    name="gender"
+                                                    id=""
+                                                    value={basicDetails.pickupState}
+                                                    className="outline-none border  rounded-md p-1 w-full dark:bg-[#424242] dark:border-[#424242] "
+                                                    onChange={(e) =>
+                                                        setBasicDetails((preData) => {
+                                                            return {
+                                                                ...preData,
+                                                                pickupState: e.target.value,
+                                                            };
+                                                        })
+                                                    }
+                                                >
+                                                    <option value="">Select State</option>
+                                                    {Object.keys(StateAndCode)
+                                                        .sort()
+                                                        .map((el, i) => (
+                                                            <option key={i} value={el}>
+                                                                {el}
+                                                            </option>
+                                                        ))}
+                                                </select>
+                                                {/* <input
                                                     type="text"
                                                     placeholder="State"
                                                     value={basicDetails.pickupState}
@@ -408,7 +432,7 @@ const LoginSignup = ({ storeInfoReducer }) => {
                                                         })
                                                     }
                                                     className="outline-none border  rounded-md p-1 w-full dark:bg-[#424242] dark:border-[#424242] "
-                                                />
+                                                /> */}
                                             </div>
                                             <div>
                                                 <h1 className="dark:text-white requiredField text-[#384047] font-semibold text-sm mb-1">City</h1>
