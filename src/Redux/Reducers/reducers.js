@@ -137,3 +137,16 @@ export const storeInfoReducer = (state = {}, action) => {
             return state;
     }
 };
+
+export const categoryFilterReducer = (state = [], action) => {
+    switch (action.type) {
+        case ActionType.PRODUCT_FILTER_CATEGORY:
+            state = action.payload;
+            return state;
+        case ActionType.PRODUCT_FILTER_CATEGORY_CLEAR:
+            state = [];
+            return state;
+        default:
+            return state;
+    }
+};

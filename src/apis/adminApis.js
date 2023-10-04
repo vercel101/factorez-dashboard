@@ -728,3 +728,14 @@ export const updateProductApi = (data, productId, token) => {
         data: data,
     });
 };
+
+export const changePasswordApi = (data, customerId, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/change-password/${customerId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};

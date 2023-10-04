@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import CategoryBar from "./CategoryBar";
 import { useDispatch } from "react-redux";
 import { authTokenClear, userInfoClear } from "../../../Redux/ReducerAction";
-const Navbar = ({ tokenReducer, userInfoReducer }) => {
+const Navbar = ({ tokenReducer, userInfoReducer, storeInfoReducer, categoryFilterReducer }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isLogOutDialogOpen, setIsLogOutDialogOpen] = React.useState(false);
@@ -86,7 +86,7 @@ const Navbar = ({ tokenReducer, userInfoReducer }) => {
             )}
             {tokenReducer && (
                 <div className="hidden h-7 categoryBar-scrollbar bg-[#FF834F] md:flex sm:px-16 overflow-x-auto">
-                    <CategoryBar />
+                    <CategoryBar categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} />
                 </div>
             )}
         </div>

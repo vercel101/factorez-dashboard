@@ -11,6 +11,7 @@ import {
     productBrandDDindexReducer,
     spinnerOverlayReducer,
     storeInfoReducer,
+    categoryFilterReducer
 } from "./reducers";
 
 export default combineReducers({
@@ -24,4 +25,5 @@ export default combineReducers({
     productBrandDDindexReducer,
     spinnerOverlayReducer,
     storeInfoReducer,
+    categoryFilterReducer
 });

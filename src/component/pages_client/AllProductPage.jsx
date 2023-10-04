@@ -17,8 +17,11 @@ import { BsFillSquareFill } from "react-icons/bs";
 import { FcFilledFilter } from "react-icons/fc";
 import { allDashboardProductsApi } from "../../apis/clientApis";
 import ProductCard from "./Layout/ProductCard";
+import { useDispatch } from "react-redux";
+import { categoryFilterClearFn } from "../../Redux/ReducerAction";
 
-const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
+const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer, categoryFilterReducer }) => {
+    const dispatch = useDispatch();
     const [products, setProducts] = React.useState([]);
     const [filteredProduct, setFilteredProduct] = React.useState([]);
     const [minPrice, setMinPrice] = React.useState(100);
@@ -34,6 +37,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
                 console.log(res.data);
                 setProducts(res.data.data);
                 setFilteredProduct(res.data.data);
+                subCategoryFilter(res.data.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -46,6 +50,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
     };
     const colorFilter = (isChecked, colorID) => {
         console.log(isChecked, colorID);
+        dispatch(categoryFilterClearFn());
         let arr = [];
         setColorChecked((old) => {
             arr = [...old];
@@ -75,6 +80,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
     };
     const categoryFilter = (isChecked, categoryID) => {
         console.log(isChecked, categoryID);
+        dispatch(categoryFilterClearFn());
         let arr = [];
         setCategoryChecked((old) => {
             arr = [...old];
@@ -93,12 +99,43 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => 
                 return o;
             }
         });
-        if (x.length > 0) {
+        if (arr.length) {
             setFilteredProduct((old) => x);
-        } else {
+        } else if (arr.length === 0) {
             setFilteredProduct((old) => products);
         }
     };
+
+    const subCategoryFilter = (listOfProduct) => {
+        console.log(categoryFilterReducer);
+        setCategoryChecked([]);
+        setColorChecked([]);
+        if (categoryFilterReducer.length > 0) {
+            console.log(products);
+            if (products.length > 0) {
+                let x = products.filter((o) => {
+                    console.log(categoryFilterReducer[0], categoryFilterReducer[1]);
+                    if (o.categoryId._id === categoryFilterReducer[0] && o.subCatId._id === categoryFilterReducer[1]) {
+                        console.log("yes product is exists");
+                        return o;
+                    }
+                });
+                setFilteredProduct((old) => x);
+            } else if (listOfProduct.length > 0) {
+                let x = listOfProduct.filter((o) => {
+                    console.log(categoryFilterReducer[0], categoryFilterReducer[1]);
+                    if (o.categoryId._id === categoryFilterReducer[0] && o.subCatId._id === categoryFilterReducer[1]) {
+                        console.log("yes product is exists");
+                        return o;
+                    }
+                });
+                setFilteredProduct((old) => x);
+            }
+        }
+    };
+    React.useEffect(() => {
+        subCategoryFilter([]);
+    }, [categoryFilterReducer]);
 
     React.useEffect(() => {
         allProducts();

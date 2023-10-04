@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
-import { blockCustomerByIdApi, deleteCustomerByIdApi, getAllCustomerAPi } from "../../../../apis/adminApis";
-import { useToast } from "@chakra-ui/react";
+import { blockCustomerByIdApi, changePasswordApi, deleteCustomerByIdApi, getAllCustomerAPi } from "../../../../apis/adminApis";
+import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast } from "@chakra-ui/react";
 import { localDate, localDateInIndiaTime } from "../../../../utils/stringToLocalDate";
 
 const AllCustomers = ({ tokenReducer }) => {
     const [customers, setCustomers] = useState([]);
+    const [isOpenChangePasswordModel, setIsOpenChangePasswordModel] = useState(false);
+    const [isPasswordSaveLoading, setIsPasswordSaveLoading] = useState(false);
+    const [customerId, setCustomerId] = useState(null);
+    const [newPasswordValue, setNewPasswordValue] = useState("");
     const toast = useToast();
     const getAllCustomer = async () => {
         await getAllCustomerAPi(tokenReducer)
@@ -51,8 +55,11 @@ const AllCustomers = ({ tokenReducer }) => {
         }
     };
 
-    const blockCustomer = async (customerId) => {
-        if (window.confirm("Are you sure!")) {
+    const blockCustomer = async (customerId, value) => {
+        if (value === "changePassword") {
+            setIsOpenChangePasswordModel(true);
+            setCustomerId(customerId);
+        } else if (window.confirm("Are you sure!")) {
             await blockCustomerByIdApi(customerId, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
@@ -67,14 +74,50 @@ const AllCustomers = ({ tokenReducer }) => {
                 })
                 .catch((err) => {
                     console.log(err);
+                    let message = err.response ? err.response.data.message : err.message;
                     toast({
                         title: "something went wrong",
-                        description: err.message,
+                        description: message,
                         position: "top",
                         status: "error",
                         isClosable: true,
                     });
                 });
+        }
+    };
+    const passwordChangeFn = async () => {
+        if (newPasswordValue.length >= 8 && newPasswordValue.length <= 20 && customerId) {
+            setIsPasswordSaveLoading(true);
+            await changePasswordApi({ password: newPasswordValue }, customerId, tokenReducer)
+                .then((res) => {
+                    toast({
+                        title: res.data.message,
+                        position: "top",
+                        status: "success",
+                        isClosable: true,
+                    });
+                    setIsOpenChangePasswordModel(false);
+                    setCustomerId(null);
+                    setNewPasswordValue("");
+                })
+                .catch((err) => {
+                    let message = err.response ? err.response.data.message : err.message;
+                    toast({
+                        title: "Oops!, something went wrong",
+                        description: message,
+                        position: "top",
+                        status: "error",
+                        isClosable: true,
+                    });
+                });
+            setIsPasswordSaveLoading(false);
+        } else {
+            toast({
+                title: "Password length should be 8 to 20",
+                position: "top",
+                status: "warning",
+                isClosable: true,
+            });
         }
     };
 
@@ -83,6 +126,40 @@ const AllCustomers = ({ tokenReducer }) => {
     }, []);
     return (
         <div>
+            <Modal
+                isOpen={isOpenChangePasswordModel}
+                onClose={() => {
+                    setIsOpenChangePasswordModel(false);
+                    setNewPasswordValue("");
+                    setCustomerId(null);
+                }}
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Update Password</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+                        <FormControl>
+                            <FormLabel>New Password</FormLabel>
+                            <Input placeholder="Password length 8 to 20" onChange={(e) => setNewPasswordValue(e.target.value)} />
+                        </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button isLoading={isPasswordSaveLoading} loadingText="Please wait" colorScheme="blue" mr={3} onClick={() => passwordChangeFn()}>
+                            Save
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setIsOpenChangePasswordModel(false);
+                                setNewPasswordValue("");
+                                setCustomerId(null);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
             <table className={`w-full text-sm text-left text-gray-500 dark:text-gray-400`}>
                 <thead className={`text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400`}>
                     <tr>
@@ -141,10 +218,12 @@ const AllCustomers = ({ tokenReducer }) => {
                                         value={el.isBlocked ? "suspended" : "active"}
                                         name=""
                                         id=""
-                                        onChange={(e) => blockCustomer(el._id)}
-                                        className={`border rounded outline-none dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600`}>
+                                        onChange={(e) => blockCustomer(el._id, e.target.value)}
+                                        className={`border rounded outline-none dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600`}
+                                    >
                                         <option value="active">Active</option>
                                         <option value="suspended">Suspended</option>
+                                        <option value="changePassword">Change Password</option>
                                     </select>
                                 </td>
                                 <td className={`ps-1 border-e py-1 text-right"`}>

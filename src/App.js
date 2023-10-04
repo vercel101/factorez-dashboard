@@ -28,9 +28,17 @@ import Cart from "./component/pages_client/Cart";
 import Order from "./component/pages_client/Orders";
 import OrderInfo from "./component/pages_client/OrderInfo";
 function App() {
-    const { darkModeReducer, tokenReducer, sidebarCollapse, productBrandDDindexReducer, storeInfoReducer, userInfoReducer, productCategoryNewReducer, productCategoryDDindexReducer } = useSelector(
-        (state) => state
-    );
+    const {
+        darkModeReducer,
+        categoryFilterReducer,
+        tokenReducer,
+        sidebarCollapse,
+        productBrandDDindexReducer,
+        storeInfoReducer,
+        userInfoReducer,
+        productCategoryNewReducer,
+        productCategoryDDindexReducer,
+    } = useSelector((state) => state);
     let navigate = useNavigate();
     let location = useLocation();
     let dispatch = useDispatch();
@@ -81,17 +89,38 @@ function App() {
     return (
         <div className={`${darkModeReducer && "dark"}`}>
             <Routes>
-                <Route path={"/"} element={<Client storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}>
-                    <Route path={"/"} element={<Home storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
+                <Route path={"/"} element={<Client categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}>
+                    <Route
+                        path={"/"}
+                        element={<Home categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
                     <Route path={"*"} element={<Navigate to={"/"} />} />
                     <Route path={"signup"} element={<SignUpPage />} />
                     <Route path={"login"} element={<LoginPage />} />
-                    <Route path={"cart"} element={<Cart storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
-                    <Route path={"products"} element={<AllProductPage storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
-                    <Route path={"product/:productId"} element={<ProductInfo storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
-                    <Route path={"profile"} element={<ProfileClient storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
-                    <Route path={"orders"} element={<Order storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
-                    <Route path={"order/:orderId"} element={<OrderInfo storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />} />
+                    <Route
+                        path={"cart"}
+                        element={<Cart categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
+                    <Route
+                        path={"products"}
+                        element={<AllProductPage categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
+                    <Route
+                        path={"product/:productId"}
+                        element={<ProductInfo categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
+                    <Route
+                        path={"profile"}
+                        element={<ProfileClient categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
+                    <Route
+                        path={"orders"}
+                        element={<Order categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
+                    <Route
+                        path={"order/:orderId"}
+                        element={<OrderInfo categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
                 </Route>
                 <Route path="/admin" element={<Admin storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}>
                     <Route path={"/admin/*"} element={<Navigate to={"/admin"} />} />

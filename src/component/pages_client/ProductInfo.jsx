@@ -27,7 +27,7 @@ import { Modal, Select, ModalBody, ModalCloseButton, ModalContent, ModalFooter, 
 import { useDispatch } from "react-redux";
 import { userInfoAdd } from "../../Redux/ReducerAction";
 
-const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
+const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, categoryFilterReducer }) => {
     const toast = useToast();
     const dispatch = useDispatch();
     const [addresses, setAddresses] = useState([]);
@@ -51,10 +51,20 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
         let gstAmt = (Number(marginAmt) * Number(gst)) / 100;
         return `₹${marginAmt.toFixed(2)} + ₹${gstAmt.toFixed(2)} GST`;
     };
-    const listOfPairs = (moq) => {
+    const listOfPairs = (pairs) => {
+        var sum = 0,
+            i = 0;
+        let strLength = pairs.length;
+        while (strLength > 0) {
+            if (pairs[i] === "/") {
+                sum += Number(pairs[i + 1]);
+            }
+            strLength--;
+            i++;
+        }
         let arr = [];
         for (let x = 1; x <= 20; x++) {
-            arr.push(moq * x);
+            arr.push(sum * x);
         }
         return arr;
     };
@@ -169,6 +179,13 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
             return "Select";
         }
     };
+    const lotPairHandler = (event) => {
+        setLotValue(event);
+        console.log(event);
+    };
+
+    console.log(categoryFilterReducer)
+
     useEffect(() => {
         getProductInfo();
         window.scrollTo(0, 0);
@@ -200,7 +217,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         <div className="flex mt-5">
                             <div>
                                 <h1 className="font-bold">Set size & Pairs</h1>
-                                <RadioGroup onChange={setLotValue} value={lotValue}>
+                                <RadioGroup onChange={(e) => lotPairHandler(e)} value={lotValue}>
                                     <Stack direction="column">{product && product.lotSizeQty.map((el) => <Radio value={el}>{el}</Radio>)}</Stack>
                                 </RadioGroup>
                             </div>
@@ -224,7 +241,8 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                         <div className="mt-5">
                             <Select value={selectPair} placeholder="Select Pairs" onChange={(e) => setSelectPair(e.target.value)}>
                                 {product &&
-                                    listOfPairs(product.min_order_qty).map((el) => (
+                                    lotValue &&
+                                    listOfPairs(lotValue).map((el) => (
                                         <option key={el} value={el}>
                                             {el} Pairs
                                         </option>

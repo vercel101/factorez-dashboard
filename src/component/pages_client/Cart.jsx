@@ -40,7 +40,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
             .then((res) => {
                 console.log(res.data);
                 setCartData(res.data.data);
-                dispatch(userInfoAdd(res.data.customerData))
+                dispatch(userInfoAdd(res.data.customerData));
             })
             .catch((err) => {
                 console.log(err);
@@ -116,10 +116,24 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
             });
         }
     };
-    const qtyHandler = async (type, index, moq, qty) => {
+    const listOfPairs = (pairs) => {
+        var sum = 0,
+            i = 0;
+        let strLength = pairs.length;
+        while (strLength > 0) {
+            if (pairs[i] === "/") {
+                sum += Number(pairs[i + 1]);
+            }
+            strLength--;
+            i++;
+        }
+        return sum;
+    };
+    const qtyHandler = async (type, index, pairs, qty) => {
         let qty1 = qty;
-        if (type === "DEC" && moq !== qty) {
-            qty1 = qty - moq;
+        let pairQty = listOfPairs(pairs);
+        if (type === "DEC" && pairQty !== qty) {
+            qty1 = qty - pairQty;
             await qtyIncreaseDecreaseApi(userInfoReducer.customerId, index, qty1, tokenReducer)
                 .then((res) => {
                     console.log(res);
@@ -135,7 +149,7 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                     });
                 });
         } else if (type === "INC") {
-            qty1 = qty + moq;
+            qty1 = qty + pairQty;
             await qtyIncreaseDecreaseApi(userInfoReducer.customerId, index, qty1, tokenReducer)
                 .then((res) => {
                     console.log(res);
@@ -291,21 +305,13 @@ const Cart = ({ tokenReducer, userInfoReducer, storeInfoReducer }) => {
                                     </div>
                                     <div className="flex justify-between sm:justify-center w-full sm:w-1/5">
                                         <div className="flex items-center justify-between">
-                                            <svg
-                                                onClick={() => qtyHandler("DEC", idx, el.product_id.min_order_qty, el.qty)}
-                                                className="cursor-pointer fill-current text-gray-600 w-3"
-                                                viewBox="0 0 448 512"
-                                            >
+                                            <svg onClick={() => qtyHandler("DEC", idx, el.lotSize, el.qty)} className="cursor-pointer fill-current text-gray-600 w-3" viewBox="0 0 448 512">
                                                 <path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                                             </svg>
 
                                             <input className="mx-2 border text-center w-8 outline-none" type="text" value={el.qty} readOnly />
 
-                                            <svg
-                                                onClick={() => qtyHandler("INC", idx, el.product_id.min_order_qty, el.qty)}
-                                                className="cursor-pointer fill-current text-gray-600 w-3"
-                                                viewBox="0 0 448 512"
-                                            >
+                                            <svg onClick={() => qtyHandler("INC", idx, el.lotSize, el.qty)} className="cursor-pointer fill-current text-gray-600 w-3" viewBox="0 0 448 512">
                                                 <path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                                             </svg>
                                         </div>

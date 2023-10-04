@@ -133,3 +133,15 @@ export const storeInfoClearFn = () => {
         type: ActionType.STORE_INFO_CLEAR,
     };
 };
+
+export const categoryFilterAddFn = (data) => {
+    return {
+        type: ActionType.PRODUCT_FILTER_CATEGORY,
+        payload: data,
+    };
+};
+export const categoryFilterClearFn = () => {
+    return {
+        type: ActionType.PRODUCT_FILTER_CATEGORY_CLEAR,
+    };
+};

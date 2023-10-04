@@ -5,14 +5,14 @@ import Navbar from "./pages_client/Layout/Navbar";
 import Footer from "./pages_client/Layout/Footer";
 import { getStoreInfoApi } from "../apis/clientApis";
 
-const Client = ({ userInfoReducer, tokenReducer,storeInfoReducer }) => {
+const Client = ({ userInfoReducer, tokenReducer,storeInfoReducer, categoryFilterReducer }) => {
     const location = useLocation();
     return (
         <>
             <Helmet>
                 <title>FactoEz - Client</title>
             </Helmet>
-            <Navbar tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} storeInfoReducer={storeInfoReducer}/>
+            <Navbar categoryFilterReducer={categoryFilterReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} storeInfoReducer={storeInfoReducer}/>
             <Outlet />
             {(location.pathname !== "/login" || location.pathname === "/signup") && <Footer storeInfoReducer={storeInfoReducer}/>}
         </>
