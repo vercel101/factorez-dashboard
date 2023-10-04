@@ -1,35 +1,34 @@
 import React, { useState } from "react";
 import { CgArrowsExchange } from "react-icons/cg";
 import { useDispatch } from "react-redux";
-import { productBrandDDindex, spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
+import { authTokenClear, productBrandDDindex, spinnerOverlayOffFn, spinnerOverlayOnFn, userInfoClear } from "../../../../Redux/ReducerAction";
 import { MdDeleteForever, MdDeleteOutline, MdEdit } from "react-icons/md";
 import { useEffect } from "react";
-import {
-    AddBrandApi,
-    AddCategoryApi,
-    getAllBrandApi,
-    getAllBrandByVendorApi,
-    getAllCategoryApi,
-    updateBrandApi,
-    updateCategoryApi,
-    verifyBrandById,
-} from "../../../../apis/adminApis";
+import { AddBrandApi, AddCategoryApi, getAllBrandApi, getAllBrandByVendorApi, getAllCategoryApi, updateBrandApi, updateCategoryApi, verifyBrandById } from "../../../../apis/adminApis";
 import { FaSearch } from "react-icons/fa";
 import { localDate } from "../../../../utils/stringToLocalDate";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuEye } from "react-icons/lu";
 import { Input } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
-const Brand = ({productBrandDDindexReducer, userInfoReducer, tokenReducer}) => {
+const Brand = ({ productBrandDDindexReducer, userInfoReducer, tokenReducer }) => {
     const [brandData, setBrandData] = useState([]);
     const [filteredBrand, setFilteredBrand] = useState([]);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [brandTitle, setBrandTitle] = useState("");
     const [isEditing, setEditing] = useState({ flag: false, _id: "" });
     const [brandLogo, setBrandLogo] = useState({
         url: "",
         file: null,
     });
+
+    const logoutBtn = () => {
+        dispatch(authTokenClear());
+        dispatch(userInfoClear());
+        navigate("/admin/login");
+    };
 
     const editBrand = (_id) => {
         if (productBrandDDindexReducer !== null) {
@@ -48,6 +47,9 @@ const Brand = ({productBrandDDindexReducer, userInfoReducer, tokenReducer}) => {
                     setFilteredBrand(res.data.data);
                 })
                 .catch((err) => {
+                    if (err.response && err.response.status === 401) {
+                        logoutBtn();
+                    }
                     console.log(err);
                 });
         } else {
@@ -58,6 +60,9 @@ const Brand = ({productBrandDDindexReducer, userInfoReducer, tokenReducer}) => {
                     setFilteredBrand(res.data.data);
                 })
                 .catch((err) => {
+                    if (err.response && err.response.status === 401) {
+                        logoutBtn();
+                    }
                     console.log(err);
                 });
         }
@@ -71,7 +76,7 @@ const Brand = ({productBrandDDindexReducer, userInfoReducer, tokenReducer}) => {
             }
         }
         setFilteredBrand((preState) => arr);
-    }
+    };
 
     const uploadCategory = async () => {
         let formData = new FormData();
@@ -91,6 +96,9 @@ const Brand = ({productBrandDDindexReducer, userInfoReducer, tokenReducer}) => {
                     alert("Brand Added Successfully");
                 })
                 .catch((err) => {
+                    if (err.response && err.response.status === 401) {
+                        logoutBtn();
+                    }
                     console.log(err);
                     alert("Some error occure!");
                 });
@@ -105,6 +113,9 @@ const Brand = ({productBrandDDindexReducer, userInfoReducer, tokenReducer}) => {
                     getAllBrands();
                 })
                 .catch((err) => {
+                    if (err.response && err.response.status === 401) {
+                        logoutBtn();
+                    }
                     console.log(err);
                 });
         }
@@ -178,7 +189,6 @@ const Brand = ({productBrandDDindexReducer, userInfoReducer, tokenReducer}) => {
                         </table>
                     </div>
                     <div className="flex w-[80%]">
-                        
                         <div className="flex-1 border-s ps-10">
                             <div className="w-full">
                                 <h1 className="text-gray-700 font-bold text-base dark:text-white mb-2">
@@ -231,7 +241,7 @@ const Brand = ({productBrandDDindexReducer, userInfoReducer, tokenReducer}) => {
             ) : (
                 <div className="inline-block min-w-full py-2">
                     <div className="max-w-[400px] mb-2">
-                        <Input placeholder="Search brand" onChange={e => onSearchBrandHandler(e.target.value)}/>
+                        <Input placeholder="Search brand" onChange={(e) => onSearchBrandHandler(e.target.value)} />
                     </div>
                     <div className="">
                         <table className="min-w-full bg-white dark:bg-gray-800 border text-start text-sm font-light dark:border-neutral-500">

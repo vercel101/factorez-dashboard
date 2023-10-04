@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { addToCartApi, getAllAddressApi, getProductInfoApi, setDefaultAddressApi } from "../../apis/clientApis";
 import { BsCart, BsTruck, BsFillSquareFill } from "react-icons/bs";
+import { PiStorefrontThin } from "react-icons/pi";
 import { FcFlashOn } from "react-icons/fc";
 import { FaLocationDot } from "react-icons/fa6";
 import {
+    Badge,
     Button,
     Popover,
     PopoverArrow,
@@ -23,20 +25,20 @@ import {
     useToast,
 } from "@chakra-ui/react";
 import { GrEdit } from "react-icons/gr";
-import { Modal, Select, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { Select, Text } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { userInfoAdd } from "../../Redux/ReducerAction";
 
 const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, categoryFilterReducer }) => {
     const toast = useToast();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [addresses, setAddresses] = useState([]);
-    const [defaultAddIsLoading, setDefaultAddIsLoading] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
     const [lotValue, setLotValue] = useState("");
     const [colorValue, setColorValue] = useState("");
     const [product, setProduct] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); //isBuyItNowLoading
+    const [isBuyItNowLoading, setIsBuyItNowLoading] = useState(false);
     const [selectPair, setSelectPair] = useState("");
     const [imgUrl, setImgUrl] = useState("");
     let { productId } = useParams();
@@ -87,7 +89,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
             });
     };
 
-    const addToCart = async () => {
+    const addToCart = async (wantToByNow) => {
         if (product && selectPair && lotValue && colorValue) {
             let productObj = {
                 product_id: product._id,
@@ -95,11 +97,14 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
                 lotSize: lotValue,
                 colorId: colorValue,
             };
-            setIsLoading(true);
+            if (wantToByNow) {
+                setIsBuyItNowLoading(true);
+            } else {
+                setIsLoading(true);
+            }
             await addToCartApi(userInfoReducer.customerId, productObj, tokenReducer)
                 .then((res) => {
                     console.log(res.data);
-                    setIsOpen(false);
                     setColorValue("");
                     setLotValue("");
                     setSelectPair("");
@@ -110,6 +115,9 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
                         status: "success",
                     });
                     dispatch(userInfoAdd(res.data.data));
+                    if (wantToByNow) {
+                        navigate("/cart");
+                    }
                 })
                 .catch((err) => {
                     console.log(err);
@@ -121,7 +129,11 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
                         status: "error",
                     });
                 });
-            setIsLoading(false);
+            if (wantToByNow) {
+                setIsBuyItNowLoading(false);
+            } else {
+                setIsLoading(false);
+            }
         } else {
             toast({
                 status: "warning",
@@ -132,7 +144,6 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
         }
     };
     const defaultAddress = async (addressId, index) => {
-        setDefaultAddIsLoading(true);
         await setDefaultAddressApi(userInfoReducer.customerId, addressId, tokenReducer)
             .then((res) => {
                 console.log(res.data);
@@ -155,7 +166,6 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
                     status: "error",
                 });
             });
-        setDefaultAddIsLoading(false);
     };
     const getAllAddress = async () => {
         await getAllAddressApi(userInfoReducer.customerId, tokenReducer)
@@ -184,7 +194,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
         console.log(event);
     };
 
-    console.log(categoryFilterReducer)
+    console.log(categoryFilterReducer);
 
     useEffect(() => {
         getProductInfo();
@@ -194,128 +204,135 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
     // console.log(productId);
     return (
         <div className="pt-[110px] md:pt-[90px] pb-2 md:px-[20px] lg:px-[10%]">
-            <Modal blockScrollOnMount={true} isOpen={isOpen} onClose={() => setIsOpen(false)}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Add to cart</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <Text fontSize={"xl"} fontWeight={700}>
-                            Product Name and Details
-                        </Text>
-                        <div className="flex items-center justify-between">
-                            <Text fontWeight={700}>
-                                ₹ {product && priceCal(product.seller_price, product.margin, product.sellingGST)}{" "}
-                                <span className="text-xs px-2 py-1 rounded-full bg-red-600 text-white">MRP ₹{product && product.mrp}</span>
-                            </Text>
-                            <Text fontWeight={700}>MOQ:{product && product.min_order_qty} Pairs</Text>
-                        </div>
-                        <div>
-                            <span className="text-xs text-gray-500">{product && taxableAmtAntGstAmt(product.seller_price, product.margin, product.sellingGST)}</span>
-                        </div>
-                        <hr />
-                        <div className="flex mt-5">
-                            <div>
-                                <h1 className="font-bold">Set size & Pairs</h1>
-                                <RadioGroup onChange={(e) => lotPairHandler(e)} value={lotValue}>
-                                    <Stack direction="column">{product && product.lotSizeQty.map((el) => <Radio value={el}>{el}</Radio>)}</Stack>
-                                </RadioGroup>
-                            </div>
-                            <div className="ms-10">
-                                <h1 className="font-bold">Color</h1>
-                                <RadioGroup onChange={setColorValue} value={colorValue}>
-                                    <Stack direction="column">
-                                        {product &&
-                                            product.color_id.map((el) => (
-                                                <Radio value={el._id}>
-                                                    <div className="flex items-center space-x-2">
-                                                        <BsFillSquareFill color={el.colorHex} />
-                                                        <span>{el.colorName}</span>
-                                                    </div>
-                                                </Radio>
-                                            ))}
-                                    </Stack>
-                                </RadioGroup>
-                            </div>
-                        </div>
-                        <div className="mt-5">
-                            <Select value={selectPair} placeholder="Select Pairs" onChange={(e) => setSelectPair(e.target.value)}>
-                                {product &&
-                                    lotValue &&
-                                    listOfPairs(lotValue).map((el) => (
-                                        <option key={el} value={el}>
-                                            {el} Pairs
-                                        </option>
-                                    ))}
-                            </Select>
-                        </div>
-                        <div className="text-sm text-gray-500">
-                            {selectPair && (
-                                <>
-                                    <span className="text-sm">
-                                        ₹{totalPrice(product.seller_price, product.margin, product.sellingGST)[0]} x {selectPair} Pairs ={" "}
-                                    </span>
-                                    <span className="text-blue-600">₹{totalPrice(product.seller_price, product.margin, product.sellingGST)[1]}</span>
-                                </>
-                            )}
-                        </div>
-                    </ModalBody>
-
-                    <ModalFooter>
-                        <Button isLoading={isLoading} loadingText="Please wait" colorScheme="yellow" mr={3} onClick={() => addToCart()}>
-                            Add to cart
-                        </Button>
-                        <Button colorScheme="red" onClick={() => setIsOpen(false)}>
-                            Cancel
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
             <div className="">
                 <div className="flex px-2 sm:px-0 flex-col sm:flex-row items-start justify-center">
                     <div className="w-full sm:w-[60%] ">
-                        <div className="h-[300px] sm:h-[600px] border overflow-hidden">
-                            <img className="w-full h-full object-cover " src={imgUrl ? imgUrl : product && product.thumbnail_pic} alt="" />
+                        <div className="h-[300px] sm:h-[600px] flex items-center justify-center border rounded-md overflow-hidden">
+                            <img className="h-full" src={imgUrl ? imgUrl : product && product.thumbnail_pic} alt="" />
                         </div>
                         <div className="flex mt-2 flex-wrap">
-                            <div className="h-16 w-16 sm:h-28 sm:w-28 border me-1 mb-1">
-                                <img onClick={() => setImgUrl(product && product.thumbnail_pic)} className="h-full w-full object-cover" src={product && product.thumbnail_pic} alt="" />
+                            <div className="h-16 w-16 sm:h-28 sm:w-28 border rounded-md me-1 mb-1 flex items-center justify-center">
+                                <img onClick={() => setImgUrl(product && product.thumbnail_pic)} className="h-full object-contain" src={product && product.thumbnail_pic} alt="" />
                             </div>
                             {product &&
                                 product.multiple_pics.map((url) => (
-                                    <div className="h-16 w-16 sm:h-28 sm:w-28 border me-1 mb-1">
-                                        <img onClick={() => setImgUrl(url)} className="h-full w-full object-cover" src={url} alt="" />
+                                    <div className="h-16 w-16 sm:h-28 sm:w-28 border rounded-md me-1 mb-1 flex items-center justify-center">
+                                        <img onClick={() => setImgUrl(url)} className="h-full object-cover" src={url} alt="" />
                                     </div>
                                 ))}
                         </div>
                     </div>
                     <div className="w-full sm:w-[40%] sm:ps-4">
-                        <h1 className="text-4xl font-bold">{product && product.product_name}</h1>
-                        <p className="my-2 text-sm">{product && product.description}</p>
-                        {product && <p className="font-semibold my-3 text-lg text-red-500">₹ {priceCal(product.seller_price, product.margin, product.sellingGST)}</p>}
-                        <div className="flex items-center space-x-2 mb-2 flex-wrap">
-                            <span className="font-bold">Color: </span>
-                            {product &&
-                                product.color_id.map((el) => (
+                        <h1 className="text-xl md:text-4xl font-bold">{product && product.product_name}</h1>
+                        <div className="flex items-center justify-start mt-2">
+                            <PiStorefrontThin size={23} color="green" />
+                            <Text color={"blackAlpha.700"} fontWeight={"semibold"} fontSize={"sm"} ms={2}>
+                                Sold By : {product && product.vendor_id.firmName}
+                            </Text>
+                        </div>
+                        <div className="flex items-start justify-between mt-6">
+                            <div>
+                                {product && (
                                     <>
-                                        <span>{el.colorName}</span>
-                                        <div className="h-5 w-5" style={{ backgroundColor: el.colorHex }}></div>
+                                        <p className="font-semibold  text-lg text-red-500">
+                                            ₹ {priceCal(product.seller_price, product.margin, product.sellingGST)}{" "}
+                                            <Badge borderRadius={"full"} py={0} px={2} bg={"red.500"} color={"white"}>
+                                                MRP ₹{product && product.mrp}
+                                            </Badge>
+                                        </p>
+                                        <span className="text-xs ms-1 text-gray-500">{taxableAmtAntGstAmt(product.seller_price, product.margin, product.sellingGST)}</span>
                                     </>
-                                ))}
+                                )}
+                                <div className="flex items-center space-x-2 my-2 flex-wrap">
+                                    <span className="font-bold">Color: </span>
+                                    {product &&
+                                        product.color_id.map((el) => (
+                                            <>
+                                                <span>{el.colorName}</span>
+                                                <div className="h-5 w-5" style={{ backgroundColor: el.colorHex }}></div>
+                                            </>
+                                        ))}
+                                </div>
+                            </div>
+                            <div>
+                                <Text fontWeight={700}>MOQ:{product && product.min_order_qty} Pairs</Text>
+                            </div>
                         </div>
                         <hr />
                         <h3 className="font-bold text-gray-600 mt-4">Available Set Sizes</h3>
                         <div className="space-x-3 mt-2">{product && product.lotSizeQty.map((el) => <span className="border rounded p-1 text-sm font-semibold text-gray-800">{el}</span>)}</div>
-                        <div className="flex space-x-3 mt-3">
-                            <Button onClick={() => setIsOpen(true)} py={7} width={"full"} leftIcon={<BsCart />} colorScheme="messenger" fontSize={20}>
-                                Add to Cart
-                            </Button>
-                            <Button py={7} width={"full"} leftIcon={<FcFlashOn />} colorScheme="whatsapp" fontSize={20}>
-                                Buy It Now
-                            </Button>
+                        <div className="border p-3 mt-5 rounded-md shadow-lg">
+                            <div className="flex ">
+                                <div>
+                                    <h1 className="font-bold">Set size & Pairs</h1>
+                                    <RadioGroup onChange={(e) => lotPairHandler(e)} value={lotValue}>
+                                        <Stack direction="column">{product && product.lotSizeQty.map((el) => <Radio value={el}>{el}</Radio>)}</Stack>
+                                    </RadioGroup>
+                                </div>
+                                <div className="ms-10">
+                                    <h1 className="font-bold">Color</h1>
+                                    <RadioGroup onChange={setColorValue} value={colorValue}>
+                                        <Stack direction="column">
+                                            {product &&
+                                                product.color_id.map((el) => (
+                                                    <Radio value={el._id}>
+                                                        <div className="flex items-center space-x-2">
+                                                            <BsFillSquareFill color={el.colorHex} />
+                                                            <span>{el.colorName}</span>
+                                                        </div>
+                                                    </Radio>
+                                                ))}
+                                        </Stack>
+                                    </RadioGroup>
+                                </div>
+                            </div>
+                            <div className="mt-5">
+                                <Select value={selectPair} placeholder="Select Pairs" onChange={(e) => setSelectPair(e.target.value)}>
+                                    {product &&
+                                        lotValue &&
+                                        listOfPairs(lotValue).map((el) => (
+                                            <option key={el} value={el}>
+                                                {el} Pairs
+                                            </option>
+                                        ))}
+                                </Select>
+                            </div>
+                            <div className="text-sm text-gray-500">
+                                {selectPair && (
+                                    <>
+                                        <span className="text-sm">
+                                            ₹{totalPrice(product.seller_price, product.margin, product.sellingGST)[0]} x {selectPair} Pairs ={" "}
+                                        </span>
+                                        <span className="text-blue-600">₹{totalPrice(product.seller_price, product.margin, product.sellingGST)[1]}</span>
+                                    </>
+                                )}
+                            </div>
+                            <div className="flex space-x-3 mt-3">
+                                <Button
+                                    isLoading={isLoading}
+                                    loadingText="Please wait"
+                                    className="py-2 text-sm md:py-7"
+                                    onClick={() => addToCart(false)}
+                                    width={"full"}
+                                    leftIcon={<BsCart />}
+                                    colorScheme="messenger"
+                                >
+                                    Add to Cart
+                                </Button>
+                                <Button
+                                    isLoading={isBuyItNowLoading}
+                                    loadingText="Please wait"
+                                    onClick={() => addToCart(true)}
+                                    className="py-2 text-sm md:py-7"
+                                    width={"full"}
+                                    leftIcon={<FcFlashOn />}
+                                    colorScheme="whatsapp"
+                                >
+                                    Buy It Now
+                                </Button>
+                            </div>
                         </div>
-
-                        <div className="mt-10 border px-3">
+                        <div className="mt-10 border rounded-md p-3 pb-6">
                             <h1 className="font-bold text-xl ">Delivery Information</h1>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center mt-3 space-x-2">
@@ -347,13 +364,12 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                            <div className="flex items-center mt-3 space-x-2">
+                            {/* <div className="flex items-center mt-3 space-x-2">
                                 <BsTruck size={40} color="blue" />
                                 <h4 className="font-semibold text-teal-500">Expected Delivery: 20 Jun 2023</h4>
-                            </div>
+                            </div> */}
                         </div>
-
-                        <div className="pt-3 border px-3">
+                        <div className="pt-3 border rounded-md p-3 pb-6 mt-10">
                             <h1 className="font-bold text-xl ">Specifications</h1>
                             <Table className="mt-2">
                                 <Tbody>
@@ -378,7 +394,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
                                             Color
                                         </Td>
                                         <Td borderBottom={0} py={1}>
-                                            {product && product.color_id.colorName}
+                                            <ul>{product && product.color_id.map((el) => <li key={el._id}>{el.colorName}</li>)}</ul>
                                         </Td>
                                     </Tr>
                                     <Tr>
@@ -402,7 +418,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
                                             Weight
                                         </Td>
                                         <Td borderBottom={0} py={1}>
-                                            {product && product.weight} g.
+                                            {product && product.weight}kg.
                                         </Td>
                                     </Tr>
                                     <Tr>
@@ -425,6 +441,10 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
                             </Table>
                         </div>
                     </div>
+                </div>
+                <div className="border rounded-md my-5 p-3">
+                    <h1 className="font-bold text-xl">Delivery Information</h1>
+                    <p className="text-sm text-justify">{product && product.description}</p>
                 </div>
             </div>
         </div>

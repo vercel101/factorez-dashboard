@@ -3,6 +3,9 @@ import { MdDelete } from "react-icons/md";
 import { blockCustomerByIdApi, changePasswordApi, deleteCustomerByIdApi, getAllCustomerAPi } from "../../../../apis/adminApis";
 import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast } from "@chakra-ui/react";
 import { localDate, localDateInIndiaTime } from "../../../../utils/stringToLocalDate";
+import { useDispatch } from "react-redux";
+import { authTokenClear, userInfoClear } from "../../../../Redux/ReducerAction";
+import { useNavigate } from "react-router-dom";
 
 const AllCustomers = ({ tokenReducer }) => {
     const [customers, setCustomers] = useState([]);
@@ -11,6 +14,8 @@ const AllCustomers = ({ tokenReducer }) => {
     const [customerId, setCustomerId] = useState(null);
     const [newPasswordValue, setNewPasswordValue] = useState("");
     const toast = useToast();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const getAllCustomer = async () => {
         await getAllCustomerAPi(tokenReducer)
             .then((res) => {
@@ -28,6 +33,11 @@ const AllCustomers = ({ tokenReducer }) => {
                 });
             });
     };
+    const logoutBtn = () => {
+        dispatch(authTokenClear());
+        dispatch(userInfoClear());
+        navigate("/admin/login");
+    };
     const deleteCustomer = async (customerId) => {
         if (window.confirm("After delete It cannot be undone.")) {
             await deleteCustomerByIdApi(customerId, tokenReducer)
@@ -43,6 +53,9 @@ const AllCustomers = ({ tokenReducer }) => {
                     getAllCustomer();
                 })
                 .catch((err) => {
+                    if (err.response && err.response.status === 401) {
+                        logoutBtn();
+                    }
                     console.log(err);
                     toast({
                         title: "something went wrong",
@@ -73,6 +86,9 @@ const AllCustomers = ({ tokenReducer }) => {
                     getAllCustomer();
                 })
                 .catch((err) => {
+                    if (err.response && err.response.status === 401) {
+                        logoutBtn();
+                    }
                     console.log(err);
                     let message = err.response ? err.response.data.message : err.message;
                     toast({
@@ -101,6 +117,9 @@ const AllCustomers = ({ tokenReducer }) => {
                     setNewPasswordValue("");
                 })
                 .catch((err) => {
+                    if (err.response && err.response.status === 401) {
+                        logoutBtn();
+                    }
                     let message = err.response ? err.response.data.message : err.message;
                     toast({
                         title: "Oops!, something went wrong",

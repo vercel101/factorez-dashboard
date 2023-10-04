@@ -6,13 +6,22 @@ import { deleteCouponsAPI, getAllCouponsAPI } from "../../../../apis/adminApis";
 import { localDate } from "../../../../utils/stringToLocalDate";
 import CouponInfoModel from "./CouponInfoModel";
 import { useToast } from "@chakra-ui/react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { authTokenClear, userInfoClear } from "../../../../Redux/ReducerAction";
 
-
-const AllCoupons = ({tokenReducer}) => {
+const AllCoupons = ({ tokenReducer }) => {
     const toast = useToast();
     const [coupons, setCoupons] = useState([]);
     const [activeInfoModel, setActiveInfoModel] = useState(false);
     const [activeInfoModelData, setActiveInfoModelData] = useState(null);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const logoutBtn = () => {
+        dispatch(authTokenClear());
+        dispatch(userInfoClear());
+        navigate("/admin/login");
+    };
     const getAllCoupon = async () => {
         getAllCouponsAPI(tokenReducer)
             .then((res) => {
@@ -21,6 +30,9 @@ const AllCoupons = ({tokenReducer}) => {
                 updateTable();
             })
             .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                    logoutBtn();
+                }
                 console.log(err.message);
             });
     };
@@ -34,7 +46,7 @@ const AllCoupons = ({tokenReducer}) => {
                         title: "Coupon Deleted.",
                         description: res.data.message,
                         status: "success",
-                        position:'top',
+                        position: "top",
                         duration: 9000,
                         isClosable: true,
                     });
@@ -43,8 +55,8 @@ const AllCoupons = ({tokenReducer}) => {
                 .catch((err) => {
                     toast({
                         title: err.message,
-                        status: 'error',
-                        position:'top',
+                        status: "error",
+                        position: "top",
                         isClosable: true,
                     });
                 });
@@ -54,11 +66,11 @@ const AllCoupons = ({tokenReducer}) => {
         console.log(element);
         setActiveInfoModel(true);
         setActiveInfoModelData(element);
-    }
+    };
     const activeInfoClose = () => {
         setActiveInfoModel(false);
         setActiveInfoModelData(null);
-    }
+    };
 
     const updateTable = () => {
         return (
@@ -93,7 +105,7 @@ const AllCoupons = ({tokenReducer}) => {
     }, []);
     return (
         <div>
-            {activeInfoModel && <CouponInfoModel data={activeInfoModelData} close={activeInfoClose}/>}
+            {activeInfoModel && <CouponInfoModel data={activeInfoModelData} close={activeInfoClose} />}
             <table className={`w-full text-sm text-left text-gray-500 dark:text-gray-400`}>
                 <thead className={`text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400`}>
                     <tr>

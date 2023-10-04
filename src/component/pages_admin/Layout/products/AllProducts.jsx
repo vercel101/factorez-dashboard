@@ -9,7 +9,7 @@ import { allProductApi, changeProductStatusApi, changeProductStockStatusApi, get
 import { localDate } from "../../../../utils/stringToLocalDate";
 import TableActionModel from "../TableActionModel";
 import TableProductModel from "../TableProductModel";
-import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
+import { authTokenClear, spinnerOverlayOffFn, spinnerOverlayOnFn, userInfoClear } from "../../../../Redux/ReducerAction";
 import DataTable from "react-data-table-component";
 import { PiMicrosoftExcelLogoDuotone } from "react-icons/pi";
 import {
@@ -49,9 +49,11 @@ import { FilterByProductName } from "./FilterComponent";
 import { customStyles } from "../../../../utils/customStylesDataTable";
 import { convertProductArrayOfObjectsToCSV } from "../../../../utils/convertArrayToCsv";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 const AllProducts = ({ userInfoReducer, tokenReducer }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const toast = useToast();
     const [editData, setEditData] = useState("");
     const [catData, setCatData] = useState([]);
@@ -194,6 +196,11 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
             ),
         },
     ];
+    const logoutBtn = () => {
+        dispatch(authTokenClear());
+        dispatch(userInfoClear());
+        navigate("/admin/login");
+    };
 
     const getAllProduct = async () => {
         await allProductApi(tokenReducer)
@@ -205,6 +212,10 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
                 });
             })
             .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                    logoutBtn();
+                }
+                console.log(err.status);
                 console.log(err);
             });
     };
@@ -246,6 +257,9 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
                     });
                 })
                 .catch((err) => {
+                    if (err.response && err.response.status === 401) {
+                        logoutBtn();
+                    }
                     console.log(err);
                     let message = err.response ? err.response.data.message : err.message;
                     toast({
@@ -274,6 +288,9 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
                 })
                 .catch((err) => {
                     console.log(err);
+                    if (err.response && err.response.status === 401) {
+                        logoutBtn();
+                    }
                     let message = err.response ? err.response.data.message : err.message;
                     toast({
                         title: "Error",
@@ -296,6 +313,9 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
                 alert(res.data.data.message);
             })
             .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                    logoutBtn();
+                }
                 console.log(err);
             });
         dispatch(spinnerOverlayOffFn());
@@ -398,6 +418,9 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
             })
             .catch((err) => {
                 console.log(err);
+                if (err.response && err.response.status === 401) {
+                    logoutBtn();
+                }
                 let message = err.response ? err.response.data.message : err.message;
                 toast({
                     title: "Error",
