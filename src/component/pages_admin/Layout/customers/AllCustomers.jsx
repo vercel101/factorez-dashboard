@@ -36,7 +36,7 @@ const AllCustomers = ({ tokenReducer }) => {
     const logoutBtn = () => {
         dispatch(authTokenClear());
         dispatch(userInfoClear());
-        navigate("/admin/login");
+        navigate("/seller/login");
     };
     const deleteCustomer = async (customerId) => {
         if (window.confirm("After delete It cannot be undone.")) {

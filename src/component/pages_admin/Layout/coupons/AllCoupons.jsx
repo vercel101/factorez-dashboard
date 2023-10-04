@@ -20,7 +20,7 @@ const AllCoupons = ({ tokenReducer }) => {
     const logoutBtn = () => {
         dispatch(authTokenClear());
         dispatch(userInfoClear());
-        navigate("/admin/login");
+        navigate("/seller/login");
     };
     const getAllCoupon = async () => {
         getAllCouponsAPI(tokenReducer)

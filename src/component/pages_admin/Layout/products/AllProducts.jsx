@@ -199,7 +199,7 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
     const logoutBtn = () => {
         dispatch(authTokenClear());
         dispatch(userInfoClear());
-        navigate("/admin/login");
+        navigate("/seller/login");
     };
 
     const getAllProduct = async () => {

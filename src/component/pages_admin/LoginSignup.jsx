@@ -129,7 +129,7 @@ const LoginSignup = ({ storeInfoReducer }) => {
                         status: "success",
                         position: "top",
                     });
-                    history("/admin/dashboard");
+                    history("/seller/dashboard");
                 })
                 .catch((err) => {
                     let message = err.response ? err.response.data.message : err.message;

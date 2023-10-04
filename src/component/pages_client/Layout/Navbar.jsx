@@ -15,14 +15,14 @@ const Navbar = ({ tokenReducer, userInfoReducer, storeInfoReducer, categoryFilte
         if (tokenReducer) {
             setIsLogOutDialogOpen(true);
         } else {
-            navigate("/admin/login/");
+            navigate("/seller/login/");
         }
     };
     const logoutBtn = () => {
         setIsLogOutDialogOpen(false);
         dispatch(authTokenClear());
         dispatch(userInfoClear());
-        navigate("/admin/login/");
+        navigate("/seller/login/");
     };
 
     return (

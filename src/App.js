@@ -60,8 +60,8 @@ function App() {
         console.log("location", location);
         storeInformation();
         if (!tokenReducer) {
-            if (location.pathname.startsWith("/admin")) {
-                navigate("/admin/login");
+            if (location.pathname.startsWith("/seller")) {
+                navigate("/seller/login");
             } else {
                 navigate("/login");
             }
@@ -70,15 +70,15 @@ function App() {
         } else {
             if (location.pathname === "/login" && tokenReducer) {
                 if (userInfoReducer.userType !== "CUSTOMER") {
-                    navigate("/admin");
+                    navigate("/seller");
                 } else {
                     navigate("/");
                 }
             } else if (location.pathname === "/" && userInfoReducer.userType !== "CUSTOMER") {
                 dispatch(userInfoClear());
                 dispatch(authTokenClear());
-                navigate("/admin/login");
-            } else if (location.pathname.startsWith("/admin") && userInfoReducer.userType === "CUSTOMER") {
+                navigate("/seller/login");
+            } else if (location.pathname.startsWith("/seller") && userInfoReducer.userType === "CUSTOMER") {
                 dispatch(userInfoClear());
                 dispatch(authTokenClear());
                 navigate("/login");
@@ -122,10 +122,10 @@ function App() {
                         element={<OrderInfo categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
                     />
                 </Route>
-                <Route path="/admin" element={<Admin storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}>
-                    <Route path={"/admin/*"} element={<Navigate to={"/admin"} />} />
-                    <Route path={"/admin"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
-                    <Route path={"/admin/dashboard"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
+                <Route path="/seller" element={<Admin storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}>
+                    <Route path={"/seller/*"} element={<Navigate to={"/seller"} />} />
+                    <Route path={"/seller"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
+                    <Route path={"/seller/dashboard"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
                     <Route path="login" element={<LoginSignup storeInfoReducer={storeInfoReducer} />} />
                     {userInfoReducer.role && isRoleExists(userInfoReducer.role, productEnumList) && (
                         <Route

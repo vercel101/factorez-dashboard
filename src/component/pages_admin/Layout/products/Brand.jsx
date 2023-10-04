@@ -27,7 +27,7 @@ const Brand = ({ productBrandDDindexReducer, userInfoReducer, tokenReducer }) =>
     const logoutBtn = () => {
         dispatch(authTokenClear());
         dispatch(userInfoClear());
-        navigate("/admin/login");
+        navigate("/seller/login");
     };
 
     const editBrand = (_id) => {
