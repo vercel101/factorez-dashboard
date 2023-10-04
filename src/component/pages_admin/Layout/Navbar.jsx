@@ -31,7 +31,7 @@ const Navbar = () => {
         setIsLogOutDialogOpen(false);
         dispatch(authTokenClear());
         dispatch(userInfoClear());
-        navigate("/admin/login");
+        navigate("/seller/login");
     };
 
     useEffect(() => {

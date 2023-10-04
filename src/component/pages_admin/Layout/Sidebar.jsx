@@ -19,7 +19,7 @@ const Sidebar = () => {
     return (
         <div className={`${sidebarCollapse ? "w-[50px]" : "w-[250px]"} dark:bg-[#232730] dark:text-white transition-all duration-300 border-e dark:border-[#525355] fixed top-0 bottom-0 bg-white`}>
             <div className="font-extrabold text-[20px] flex justify-center items-center px-2 h-[45px] border-b dark:border-[#525355]">
-                <Link to={"/admin"}>
+                <Link to={"/seller"}>
                     {sidebarCollapse ? (
                         <img src={require("../../../assets/factorlogosmall.png")} alt="FactorEz" width={"20px"} />
                     ) : (
