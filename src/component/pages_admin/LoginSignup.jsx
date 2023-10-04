@@ -153,7 +153,7 @@ const LoginSignup = ({ storeInfoReducer }) => {
             <div className="bg-[#00000088] h-screen flex justify-center items-center">
                 <div className="lg:w-[40%] lg:min-w-[40%] lg:max-w-[40%] p-2">
                     <div className="bg-teal-100 relative rounded-t-lg">
-                        <h1 className="font-[Pacifico] text-center text-4xl text-blue-500">{isLoginPage ? "Register" : "ShoesHouse Welcomes you!!"}</h1>
+                        <h1 className="font-[Itim] text-center font-bold text-4xl text-blue-500">{isLoginPage ? "Register" : "FactorEz Welcomes you!!"}</h1>
                         <p className="font-[Montserrat] text-teal-700 text-center mt-3 pb-4 text-xl font-semibold">{isLoginPage ? "Seller Registration Form" : "Login for Dashboard"}</p>
                         <button className={`absolute py-1 px-2 rounded-sm bg-violet-500 text-white bottom-2 right-2`} onClick={() => setIsLoginPage(!isLoginPage)}>
                             {isLoginPage ? "Login Page" : "SignUp Page"}
