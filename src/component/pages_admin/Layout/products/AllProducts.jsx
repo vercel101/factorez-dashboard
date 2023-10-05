@@ -213,9 +213,9 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
             })
             .catch((err) => {
                 if (err.response && err.response.status === 401) {
-                    logoutBtn();
+                    // logoutBtn();
+                    navigate('/seller/login');
                 }
-                console.log(err.status);
                 console.log(err);
             });
     };

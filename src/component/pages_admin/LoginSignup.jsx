@@ -92,7 +92,6 @@ const LoginSignup = ({ storeInfoReducer }) => {
                     setBankDetail(bankAccountInitial);
                     setBasicDetails(basicDetailInitial);
                     setDocumentFile(documentFileInitial);
-                    // history('/admin/login');
                 })
                 .catch((err) => {
                     console.log(err);
@@ -701,7 +700,7 @@ const LoginSignup = ({ storeInfoReducer }) => {
                                             />
                                             <span className="ms-3">
                                                 I have read and agreed to the{" "}
-                                                <a href="www.example.com/termAndCondition" className="text-blue-500">
+                                                <a href="https://factorez.s3.ap-south-1.amazonaws.com/images/2023-10-5_9%3A33%3A48_Factorez-_Seller%20Agreement.pdf" className="text-blue-500">
                                                     Terms And Conditions
                                                 </a>
                                             </span>

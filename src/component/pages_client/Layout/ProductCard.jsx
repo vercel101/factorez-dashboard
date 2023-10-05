@@ -17,15 +17,16 @@ const ProductCard = ({ element, customerId, tokenReducer }) => {
     return (
         <Card maxW="md" borderRadius={0}>
             <CardBody padding={0}>
-                <Image
-                    onClick={() => productInfo()}
-                    src={element && element.thumbnail_pic}
-                    alt="Green double couch with wooden legs"
-                    borderRadius="xs"
-                    width={"100%"}
-                    objectFit={"cover"}
-                    className="cursor-pointer h-[300px] lg:h-[200px]"
-                />
+                <div className="flex items-center justify-center">
+                    <Image
+                        onClick={() => productInfo()}
+                        src={element && element.thumbnail_pic}
+                        alt="Green double couch with wooden legs"
+                        borderRadius="xs"
+                        objectFit={"cover"}
+                        className="cursor-pointer h-[300px] lg:h-[200px]"
+                    />
+                </div>
                 <Stack mt="2" spacing="3" padding={1}>
                     <h1 className="text-2xl md:text-lg font-bold">{element && element.product_name}</h1>
                     <p className=" text-[16px] sm:text-md">{element && element.description}</p>

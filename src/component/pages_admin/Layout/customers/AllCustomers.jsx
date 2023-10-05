@@ -255,6 +255,7 @@ const AllCustomers = ({ tokenReducer }) => {
                     )}
                 </tbody>
             </table>
+            {/* <button onClick={() => logoutBtn()}>demo</button> */}
         </div>
     );
 };

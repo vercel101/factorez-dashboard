@@ -48,7 +48,7 @@ const Brand = ({ productBrandDDindexReducer, userInfoReducer, tokenReducer }) =>
                 })
                 .catch((err) => {
                     if (err.response && err.response.status === 401) {
-                        logoutBtn();
+                        navigate('/seller/login');
                     }
                     console.log(err);
                 });
@@ -61,7 +61,7 @@ const Brand = ({ productBrandDDindexReducer, userInfoReducer, tokenReducer }) =>
                 })
                 .catch((err) => {
                     if (err.response && err.response.status === 401) {
-                        logoutBtn();
+                        navigate('/seller/login');
                     }
                     console.log(err);
                 });
@@ -97,7 +97,7 @@ const Brand = ({ productBrandDDindexReducer, userInfoReducer, tokenReducer }) =>
                 })
                 .catch((err) => {
                     if (err.response && err.response.status === 401) {
-                        logoutBtn();
+                        navigate('/seller/login');
                     }
                     console.log(err);
                     alert("Some error occure!");
@@ -114,7 +114,7 @@ const Brand = ({ productBrandDDindexReducer, userInfoReducer, tokenReducer }) =>
                 })
                 .catch((err) => {
                     if (err.response && err.response.status === 401) {
-                        logoutBtn();
+                        navigate('/seller/login');
                     }
                     console.log(err);
                 });

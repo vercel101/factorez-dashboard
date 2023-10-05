@@ -443,7 +443,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
                     </div>
                 </div>
                 <div className="border rounded-md my-5 p-3">
-                    <h1 className="font-bold text-xl">Delivery Information</h1>
+                    <h1 className="font-bold text-xl">Description</h1>
                     <p className="text-sm text-justify">{product && product.description}</p>
                 </div>
             </div>

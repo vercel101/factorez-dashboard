@@ -6,13 +6,12 @@ import Sidebar from "./pages_admin/Layout/Sidebar";
 
 const Admin = ({ userInfoReducer, tokenReducer,storeInfoReducer }) => {
     const location = useLocation();
-    console.log('admin',location)
     return (
         <>
             <Helmet>
-                <title>FactoEz - Admin</title>
+                <title>FactoEz - Seller</title>
             </Helmet>
-            {location.pathname !== "/admin/login" && tokenReducer && (
+            {location.pathname !== "/seller/login" && tokenReducer && (
                 <>
                     <Navbar />
                     <Sidebar />

@@ -8,6 +8,7 @@ import CategoryBar from "./CategoryBar";
 import { useDispatch } from "react-redux";
 import { authTokenClear, userInfoClear } from "../../../Redux/ReducerAction";
 const Navbar = ({ tokenReducer, userInfoReducer, storeInfoReducer, categoryFilterReducer }) => {
+    const storeInfo = storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo;
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isLogOutDialogOpen, setIsLogOutDialogOpen] = React.useState(false);
@@ -46,7 +47,7 @@ const Navbar = ({ tokenReducer, userInfoReducer, storeInfoReducer, categoryFilte
             <div className="h-[53px] flex items-center justify-between lg:px-16 md:px-10 ">
                 <div className="h-full w-full overflow-hidden flex items-center justify-between md:justify-start space-x-2 me-3">
                     <img
-                        src="/factorlogo.png"
+                        src={storeInfo && storeInfo.business_Logo}
                         alt=""
                         className="h-full cursor-pointer"
                         onClick={() => {
