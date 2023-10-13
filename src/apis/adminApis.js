@@ -440,6 +440,16 @@ export const changeOrderStatusApi = (orderid, data, token) => {
         data: data,
     });
 };
+export const changeReturnOrderStatusApi = (orderid, data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/return-order-status/${orderid}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
 export const changeBulkOrderStatusApi = (data, token) => {
     return axios({
         method: "POST",

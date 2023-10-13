@@ -10,11 +10,13 @@ const Footer = ({ storeInfoReducer }) => {
             <div className="mx-auto w-full">
                 <div className="grid grid-cols-2 gap-8 sm:px-[100px] px-4 py-6 lg:py-8 md:grid-cols-4 lg:grid-cols-5">
                     <div className="col-span-2">
-                        <div className="w-2/3">
+                        <div className="md:w-2/3">
                             <img src="./factorez.png" alt="factorez" width={"250px"} />
-                            <p className="text-teal-50 mt-2">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam, error similique inventore sequi ex quod. Quia quod facilis mollitia itaque perspiciatis quasi,
-                            </p>
+                            <div className="mt-5">
+                                <p className="text-teal-50 font-bold">FACTOREZ INFOTECH PRIVATE LIMITED</p>
+                                <p className="text-teal-50 text-sm">CIN: U74999DL2022PTC408360</p>
+                                <p className="text-teal-50 text-sm mt-2">Plot No-1056, 1st Floor, Udyog Vihar, Phase-1, Gurugram, Haryana -122016</p>
+                            </div>
                         </div>
                     </div>
                     <div>
