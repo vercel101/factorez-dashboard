@@ -402,7 +402,9 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
         for (let x of checkedColorData) {
             formData.append("color_id", x);
         }
-        setIsEditSaveLoading(true);
+        // console.log(formData.getAll('color_id'))
+         
+         setIsEditSaveLoading(true);
         await updateProductApi(formData, id, tokenReducer)
             .then((res) => {
                 toast({
@@ -431,6 +433,7 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
                 });
             });
         setIsEditSaveLoading(false);
+        
     };
     const cancelEditProductInfo = () => {
         setNewProductInfo({
@@ -575,7 +578,7 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
                                             <Td p={1}>
                                                 <Menu>
                                                     <MenuButton p={0} px={2} fontSize={12} width={"full"} borderRadius={2} textAlign={"start"} transition="all 0.2s" borderWidth={1}>
-                                                        Color Select <ChevronDownIcon />
+                                                        {checkedColorData.length > 0 ? "Color Selected" : "Color Select"} <ChevronDownIcon />
                                                     </MenuButton>
                                                     <MenuList className="flex flex-col">
                                                         {colorData.map((el) => (

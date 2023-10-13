@@ -11,7 +11,7 @@ const Footer = ({ storeInfoReducer }) => {
                 <div className="grid grid-cols-2 gap-8 sm:px-[100px] px-4 py-6 lg:py-8 md:grid-cols-4 lg:grid-cols-5">
                     <div className="col-span-2">
                         <div className="w-2/3">
-                            <img src="./factorlogo.png" alt="factorez" width={"250px"} />
+                            <img src="./factorez.png" alt="factorez" width={"250px"} />
                             <p className="text-teal-50 mt-2">
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam, error similique inventore sequi ex quod. Quia quod facilis mollitia itaque perspiciatis quasi,
                             </p>
