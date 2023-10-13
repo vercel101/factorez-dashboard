@@ -440,6 +440,16 @@ export const changeOrderStatusApi = (orderid, data, token) => {
         data: data,
     });
 };
+export const changeBulkOrderStatusApi = (data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/change-bulk-order-status`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
 export const getAllQuestions = (token) => {
     return axios({
         method: "GET",

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+    changeBulkOrderStatusApi,
     changeOrderStatusApi,
     downloadInvoiceByInvoiceNumberApi,
     getAllOrdersAPI,
@@ -17,7 +18,7 @@ import { GrClose } from "react-icons/gr";
 import { GoDotFill } from "react-icons/go";
 import OrderStatusModel from "./OrderStatusModel";
 import { isRoleExists } from "../../../../utils/checkRole";
-import { Button, useToast } from "@chakra-ui/react";
+import { Button, Select, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Stack, useToast, Badge, Text } from "@chakra-ui/react";
 import { dateToLocalDateTime } from "../../../../utils/dateUtils";
 import { spinnerOverlayOffFn, spinnerOverlayOnFn } from "../../../../Redux/ReducerAction";
 import DataTable from "react-data-table-component";
@@ -30,8 +31,12 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
     const dispatch = useDispatch();
     const [orders, setOrders] = useState([]);
     const [listOfQuestion, setListOfQuestion] = useState([]);
+    const [selectedOrders, setSelectedOrders] = useState([]);
+    const [selectedOrderStatus, setSelectedOrderStatus] = useState("");
+    const [bulkOrderProcessBtnLoading, setBulkOrderProcessBtnLoading] = useState(false);
     const [orderModelFlag, setOrderModelFlag] = useState(false);
     const [statusListFlag, setStatusListFlag] = useState(false);
+    const [statusList, setStatusList] = useState([]);
     const [filterText, setFilterText] = React.useState("");
     const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
     const [orderModelData, setOrderModelData] = useState({
@@ -56,11 +61,8 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
 
     const filteredItems = orders.filter((item) => {
         let record = null;
-        console.log(item);
-        if (
-            item.orderId.toLowerCase().includes(filterText.toLowerCase()) ||
-            item.vendorId.firmName.toLowerCase().includes(filterText.toLowerCase())
-        ) {
+        // console.log(item);
+        if (item.orderId.toLowerCase().includes(filterText.toLowerCase()) || item.vendorId.firmName.toLowerCase().includes(filterText.toLowerCase())) {
             record = item;
         }
         return record;
@@ -103,11 +105,37 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
             <div className="flex items-center space-x-3">
                 <OrderFilter onFilter={(e) => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
                 <Export onExport={() => downloadCSV(filteredItems)} />
+                <Popover onClose={() => setSelectedOrderStatus("")}>
+                    <PopoverTrigger>
+                        <Button colorScheme="messenger">Bulk Order Process</Button>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                        <PopoverArrow />
+                        <PopoverCloseButton />
+                        <PopoverHeader>Choose Order status</PopoverHeader>
+                        <PopoverBody>
+                            <Stack spacing={3}>
+                                <Select value={selectedOrderStatus} onChange={(e) => setSelectedOrderStatus(e.target.value)} variant="outline" placeholder="Select...">
+                                    <option value="PICKUP_ALIGNED">Pickup aligned</option>
+                                    <option value="PICKUP_DONE">Pickup Done/InTransit</option>
+                                    <option value="RETURNED_RTO">RTO</option>
+                                    <option value="RETURNED_RTO_DELIVERED">RTO Delivered To seller</option>
+                                    <option value="OUT_FOR_DELIVERY">Out for delivery</option>
+                                    <option value="DELIVERED">Delivered</option>
+                                </Select>
+                            </Stack>
+                            <Button isLoading={bulkOrderProcessBtnLoading} loadingText="Please wait" mt={3} width={"full"} colorScheme="green" onClick={() => changeBulkOrderStatus()}>
+                                Bulk Order Process
+                            </Button>
+                        </PopoverBody>
+                    </PopoverContent>
+                </Popover>
             </div>
         );
     }, [filterText, filteredItems, resetPaginationToggle]);
     const selectedRows = (e) => {
         console.log(e);
+        setSelectedOrders(e.selectedRows);
     };
     const columnsAdmin = [
         {
@@ -148,26 +176,21 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
         },
         {
             name: <span className="whitespace-normal">Action</span>,
-            width: '210px',
+            width: "210px",
             selector: (row) => (
                 <button
                     onClick={() => orderManageFn(row)}
-                    className={`border 
-                                                flex p-1 rounded 
-                                                justify-center 
-                                                items-center text-center
-                                                px-2
-                                                text-xs
-                                                ${
-                                                    row.order_status_id && row.order_status_id.status === "PENDING"
-                                                        ? "bg-gray-400 border-0 text-black"
-                                                        : row.order_status_id && row.order_status_id.status === "PARTIAL_CONFIRMED"
-                                                        ? "bg-blue-400 border-0 text-white"
-                                                        : row.order_status_id && row.order_status_id.status === "CANCELLED"
-                                                        ? "bg-red-600 text-white border-0"
-                                                        : "bg-green-500 border-0 text-white"
-                                                }
-                                                `}
+                    className={`border flex p-1 rounded justify-center  items-center text-center px-2 text-xs
+                                ${
+                                    row.order_status_id && row.order_status_id.status === "PENDING"
+                                        ? "bg-gray-400 border-0 text-black"
+                                        : row.order_status_id && row.order_status_id.status === "PARTIAL_CONFIRMED"
+                                        ? "bg-blue-400 border-0 text-white"
+                                        : row.order_status_id && row.order_status_id.status === "CANCELLED"
+                                        ? "bg-red-600 text-white border-0"
+                                        : "bg-green-500 border-0 text-white"
+                                }
+                                `}
                 >
                     {row.order_status_id && row.order_status_id.status.replace("_", " ")}
                 </button>
@@ -198,7 +221,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
             name: "Status",
             selector: (row) => (
                 <div className="flex items-center justify-center">
-                    <FaListCheck size={30} onClick={() => setStatusListFlag(true)} className="hover:bg-teal-300 p-1 rounded cursor-pointer" />
+                    <FaListCheck size={30} onClick={() => statusListHandler(true, row)} className="hover:bg-teal-300 p-1 rounded cursor-pointer" />
                 </div>
             ),
             width: "100px",
@@ -273,6 +296,13 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
             width: "100px",
         },
     ];
+
+    const statusListHandler = (flag, selectedRow) => {
+        setStatusListFlag(true);
+        // console.log(flag, selectedRow);
+        setStatusList(selectedRow.order_status_id.statusList);
+        // console.log(selectedRow.order_status_id.statusList);
+    };
     const orderedProduct = async (id) => {
         await getOrderedProductAPI(id, tokenReducer)
             .then((res) => {
@@ -285,7 +315,50 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
                 console.log(err);
             });
     };
-
+    const changeBulkOrderStatus = async () => {
+        if (selectedOrders.length > 0 && selectedOrderStatus !== "") {
+            let objectIds = [];
+            for (let id of selectedOrders) {
+                objectIds.push(id._id);
+            }
+            let data = {
+                status: selectedOrderStatus,
+                orderIds: objectIds,
+            };
+            setBulkOrderProcessBtnLoading(true);
+            await changeBulkOrderStatusApi(data, tokenReducer)
+                .then((res) => {
+                    setSelectedOrderStatus("");
+                    setSelectedOrders([]);
+                    toast({
+                        status: "success",
+                        position: "top",
+                        isClosable: true,
+                        title: "Success",
+                        description: res.data.message,
+                    });
+                    fetchOrders();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast({
+                        status: "error",
+                        position: "top",
+                        isClosable: true,
+                        title: "Error",
+                        description: err.message,
+                    });
+                });
+            setBulkOrderProcessBtnLoading(false);
+        } else {
+            toast({
+                status: "warning",
+                position: "top",
+                isClosable: true,
+                title: "Orders not selected",
+            });
+        }
+    };
     const changeOrderStatus = async (orderid, status) => {
         await changeOrderStatusApi(orderid, { status }, tokenReducer)
             .then((res) => {
@@ -314,7 +387,7 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
     const allQuestions = async () => {
         await getAllQuestionByUserApi(tokenReducer)
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 setListOfQuestion(res.data.data);
             })
             .catch((err) => {
@@ -440,60 +513,38 @@ function AllOrders({ tokenReducer, userInfoReducer }) {
             <div className={`bg-white pt-12 z-10 dark:bg-neutral-800 dark:border-gray-700 border-s transition-transform h-screen w-96 fixed top-0 right-0 ${!statusListFlag && "translate-x-full"}`}>
                 <div className="flex items-center justify-between p-2">
                     <h1 className="font-bold text-2xl">Status List</h1>
-                    <GrClose className="border cursor-pointer p-1 rounded-md hover:bg-teal-200" size={30} onClick={() => setStatusListFlag(false)} />
+                    <GrClose
+                        className="border cursor-pointer p-1 rounded-md hover:bg-teal-200"
+                        size={30}
+                        onClick={() => {
+                            setStatusListFlag(false);
+                            setStatusList([]);
+                        }}
+                    />
                 </div>
                 <div className="overflow-y-auto h-[calc(100vh_-_100px)] px-7 pt-4">
                     <ul>
-                        <li className="py-5 border-s-4 ps-8 relative  min-h-[88px]">
-                            <span className="absolute -top-3 -left-2 flex items-center space-x-2">
-                                <span class="relative flex h-3 w-3">
-                                    {/* <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span> */}
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-                                </span>
-                                <span>Ready For Dispatch</span>
-                            </span>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, ut.
-                        </li>
-                        <li className="py-5 border-s-4 ps-8 relative  min-h-[88px]">
-                            <span className="absolute -top-3 -left-2 flex items-center space-x-2">
-                                <span class="relative flex h-3 w-3">
-                                    {/* <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span> */}
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-                                </span>
-                                <span>Pickup Aligned</span>
-                            </span>
-                            {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, ut. */}
-                        </li>
-                        <li className="py-5 border-s-4 ps-8 relative  min-h-[88px]">
-                            <span className="absolute -top-3 -left-2 flex items-center space-x-2">
-                                <span class="relative flex h-3 w-3">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-                                </span>
-                                <span>Pickup Done/Intransit</span>
-                            </span>
-                            {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, ut. */}
-                        </li>
-                        <li className="py-5 border-s-4 ps-8 relative min-h-[88px]">
-                            <span className="absolute -top-3 -left-2 flex items-center space-x-2">
-                                <span class="relative flex h-3 w-3">
-                                    {/* <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span> */}
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-[#E5E7EB]"></span>
-                                </span>
-                                <span>Out for delivery</span>
-                            </span>
-                            {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, ut. */}
-                        </li>
-                        <li className="py-5 border-s-4 border-transparent ps-8 relative  min-h-[88px]">
-                            <span className="absolute -top-3 -left-2 flex items-center space-x-2">
-                                <span class="relative flex h-3 w-3">
-                                    {/* <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span> */}
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-[#E5E7EB]"></span>
-                                </span>
-                                <span>Delivered</span>
-                            </span>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, ut.
-                        </li>
+                        {statusList.length > 0 ? (
+                            statusList.map((el, i) => (
+                                <li className={`py-5 border-s-4 ps-8 relative  min-h-[88px] ${statusList.length === i + 1 && "border-transparent"}`}>
+                                    <span className="absolute -top-3 -left-2 flex items-center space-x-2">
+                                        <span className="relative flex h-3 w-3">
+                                            {statusList.length === i + 1 && (
+                                                <>
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                                </>
+                                            )}
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                                        </span>
+                                        <span>{el.status}</span>
+                                    </span>
+                                    <Text className="font-bold text-xs">{dateToLocalDateTime(el.updatedAt)}</Text>
+                                    {el.updatedBy.hasOwnProperty("vendor") ? <Badge colorScheme="green">SELLER</Badge> : <Badge colorScheme="messenger">ADMIN</Badge>}
+                                </li>
+                            ))
+                        ) : (
+                            <li>Action not taken</li>
+                        )}
                     </ul>
                 </div>
             </div>
