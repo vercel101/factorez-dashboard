@@ -222,7 +222,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer, categ
                                                 <Input value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} id="maxVal" defaultValue={maxPrice} rounded={0} p={3} />
                                             </div>
                                         </div>
-                                        <RangeSlider onChange={(val) => rangSliderHandler(val)} aria-label={["min", "max"]} defaultValue={[minPrice, maxPrice]} min={50} max={10000}>
+                                        <RangeSlider onChange={(val) => rangSliderHandler(val)} ariaLabel={["min", "max"]} defaultValue={[minPrice, maxPrice]} min={50} max={10000}>
                                             <RangeSliderTrack>
                                                 <RangeSliderFilledTrack />
                                             </RangeSliderTrack>
@@ -237,7 +237,7 @@ const AllProductPage = ({ tokenReducer, userInfoReducer, storeInfoReducer, categ
                     <div className="col-span-9 mb-16">
                         <div className="col-span-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4 mx-3 mt-5 sm:mx-0 sm:mt-0">
                             {filteredProduct.map((el) => (
-                                <ProductCard customerId={userInfoReducer.customerId} tokenReducer={tokenReducer} key={el._id} element={el} />
+                                <ProductCard disableFooter={false} customerId={userInfoReducer.customerId} tokenReducer={tokenReducer} key={el._id} element={el} />
                             ))}
                         </div>
                     </div>

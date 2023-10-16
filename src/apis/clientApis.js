@@ -219,3 +219,43 @@ export const downloadCustomerInvoiceByInvoiceNumberApi = (invoiceNumber, invoice
     });
 };
 
+export const bannerGetApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/bannerimagesforclient`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const getWishlistProductApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/get-wishlist`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const removeFromWishlistApi = (wishlistId, token) => {
+    return axios({
+        method: "DELETE",
+        url: `${process.env.REACT_APP_API_ADDRESS}/remove-from-wishlist/${wishlistId}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const addToWishlistApi = (data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/add-to-wishlist`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};

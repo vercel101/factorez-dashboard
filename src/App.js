@@ -27,6 +27,7 @@ import ProductInfo from "./component/pages_client/ProductInfo";
 import Cart from "./component/pages_client/Cart";
 import Order from "./component/pages_client/Orders";
 import OrderInfo from "./component/pages_client/OrderInfo";
+import Wishlist from "./component/pages_client/wishlist";
 function App() {
     const {
         darkModeReducer,
@@ -100,6 +101,10 @@ function App() {
                     <Route
                         path={"cart"}
                         element={<Cart categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
+                    <Route
+                        path={"wishlist"}
+                        element={<Wishlist categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
                     />
                     <Route
                         path={"products"}

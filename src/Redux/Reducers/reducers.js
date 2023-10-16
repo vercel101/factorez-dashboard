@@ -150,3 +150,13 @@ export const categoryFilterReducer = (state = [], action) => {
             return state;
     }
 };
+
+export const wishlistLengthReducer = (state = 0, action) => {
+    switch (action.type) {
+        case ActionType.WISHLIST_LENGTH_UPDATE:
+            state = action.payload;
+            return state;
+        default:
+            return state;
+    }
+};

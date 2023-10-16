@@ -1,7 +1,7 @@
 import React from "react";
 import SearchNav from "./SearchNav";
 import { Button, IconButton, Input, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Badge } from "@chakra-ui/react";
-import { BsCart } from "react-icons/bs";
+import { BsCart, BsSuitHeart } from "react-icons/bs";
 import UserBtn from "./UserBtn";
 import { useNavigate } from "react-router-dom";
 import CategoryBar from "./CategoryBar";
@@ -67,6 +67,9 @@ const Navbar = ({ tokenReducer, userInfoReducer, storeInfoReducer, categoryFilte
                                 <Badge className="absolute left-6 top-0" rounded={"full"} colorScheme="messenger">
                                     {userInfoReducer.cartLength}
                                 </Badge>
+                            </div>
+                            <div className="relative cursor-pointer" onClick={() => navigate("/wishlist")}>
+                                <IconButton _hover={{ bg: "#fff1f1" }} bgColor={"transparent"} aria-label="Search database" icon={<BsSuitHeart size={35} color="#A46A38" className=" p-2" />} />
                             </div>
                             <UserBtn tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />
                         </>

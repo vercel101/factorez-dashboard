@@ -759,3 +759,34 @@ export const changePasswordApi = (data, customerId, token) => {
         data: data,
     });
 };
+
+export const bannerUploadApi = (data, token) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/bannerupload`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+        data: data,
+    });
+};
+
+export const bannerGetApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/bannerimages`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};
+
+export const deleteBannerByIdApi = (bannerID, token) => {
+    return axios({
+        method: "DELETE",
+        url: `${process.env.REACT_APP_API_ADDRESS}/deletebanner/${bannerID}`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};

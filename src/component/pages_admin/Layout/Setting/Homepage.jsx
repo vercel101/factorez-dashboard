@@ -1,13 +1,27 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { MdDelete } from "react-icons/md";
-import { allProductsForFilterApi, getallfeaturedproductsApi, removeFeaturedproductsApi, setHomepageProductsForBestSellingApi } from "../../../../apis/adminApis";
+import {
+    allProductsForFilterApi,
+    bannerGetApi,
+    bannerUploadApi,
+    deleteBannerByIdApi,
+    getallfeaturedproductsApi,
+    removeFeaturedproductsApi,
+    setHomepageProductsForBestSellingApi,
+} from "../../../../apis/adminApis";
 import { calculateMarginAndSelling } from "../../../../utils/percentage";
-import { useToast } from "@chakra-ui/react";
+import { Button, Card, CardBody, Input, useToast } from "@chakra-ui/react";
 const Homepage = ({ tokenReducer }) => {
     const toast = useToast();
     const [filteredProduct, setFilteredProduct] = useState([]);
     const [products, setProducts] = useState([]);
+    const [banners, setBanners] = useState([]);
+    const [bannerImage, setBannerImage] = useState(null);
+    const [singleBannerUploadLoading, setSingleBannerUploadLoading] = useState(false);
+    const [multipleBannerUploadLoading, setMultipleBannerUploadLoading] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState({ flag: false, id: "" });
+    const [bannerMultipleImage, setBannerMultipleImage] = useState(null);
     const [featuredProductObj, setFeaturedProductObj] = useState(null);
     const [singleProduct, setSingleProduct] = useState(null);
     const [data, setData] = useState({
@@ -34,7 +48,7 @@ const Homepage = ({ tokenReducer }) => {
         }
     };
     const singleProductHandler = (el) => {
-        console.log(el)
+        console.log(el);
         setSingleProduct(el);
         setData({
             newArrival: "",
@@ -142,13 +156,114 @@ const Homepage = ({ tokenReducer }) => {
         }
     };
 
+    const uploadMultipleBanner = async () => {
+        console.log(bannerMultipleImage);
+        let formData = new FormData();
+        formData.append("type", "MULTIPLE");
+        for (let img of bannerMultipleImage) {
+            formData.append("images", img);
+        }
+        setMultipleBannerUploadLoading(true);
+        await bannerUploadApi(formData, tokenReducer)
+            .then((res) => {
+                console.log(res.data);
+                toast({
+                    title: res.data.message,
+                    status: "success",
+                    isClosable: true,
+                    position: "top",
+                });
+                bannerImages();
+            })
+            .catch((err) => {
+                console.log(err);
+                let message = err.response ? err.response.data.message : err.message;
+                toast({
+                    title: message,
+                    status: "error",
+                    isClosable: true,
+                    position: "top",
+                });
+            });
+        setMultipleBannerUploadLoading(false);
+    };
+
+    const uploadSingleBanner = async () => {
+        let formData = new FormData();
+        formData.append("type", "SINGLE");
+        formData.append("images", bannerImage);
+        setSingleBannerUploadLoading(true);
+        await bannerUploadApi(formData, tokenReducer)
+            .then((res) => {
+                console.log(res.data);
+                toast({
+                    title: res.data.message,
+                    status: "success",
+                    isClosable: true,
+                    position: "top",
+                });
+                bannerImages();
+            })
+            .catch((err) => {
+                console.log(err);
+                let message = err.response ? err.response.data.message : err.message;
+                toast({
+                    title: message,
+                    status: "error",
+                    isClosable: true,
+                    position: "top",
+                });
+            });
+        setSingleBannerUploadLoading(false);
+    };
+
     const homepageCancel = () => {
         setSingleProduct((old) => null);
+    };
+
+    const bannerImages = async () => {
+        await bannerGetApi(tokenReducer)
+            .then((res) => {
+                console.log(res.data);
+                setBanners(res.data.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const deleteBannerById = async (id) => {
+        if (window.confirm("Are you sure? this can't be undone")) {
+            setDeleteLoading({ flag: true, id: id });
+            await deleteBannerByIdApi(id, tokenReducer)
+                .then((res) => {
+                    console.log(res.data);
+                    toast({
+                        title: res.data.message,
+                        status: "success",
+                        isClosable: true,
+                        position: "top",
+                    });
+                    bannerImages();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    let message = err.response ? err.response.data.message : err.message;
+                    toast({
+                        title: message,
+                        status: "error",
+                        isClosable: true,
+                        position: "top",
+                    });
+                });
+            setDeleteLoading({ flag: false, id: "" });
+        }
     };
 
     useEffect(() => {
         getAllProducts();
         allFeaturedProducts();
+        bannerImages();
     }, []);
 
     return (
@@ -210,9 +325,7 @@ const Homepage = ({ tokenReducer }) => {
                                             </table>
 
                                             <div className="text-lg font-extrabold text-blue-600 p-1">
-                                                <span className="">
-                                                    ₹ {calculateMarginAndSelling(singleProduct.seller_price, singleProduct.margin, singleProduct.sellingGST).toFixed(2)}
-                                                </span>
+                                                <span className="">₹ {calculateMarginAndSelling(singleProduct.seller_price, singleProduct.margin, singleProduct.sellingGST).toFixed(2)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -241,21 +354,15 @@ const Homepage = ({ tokenReducer }) => {
                                                 <label htmlFor="bestselling">Best Selling</label>
                                             </div>
                                             <div className="flex items-center space-x-3">
-                                                <input
-                                                    defaultChecked={false}
-                                                    checked={data.newArrival === "" ? false : true}
-                                                    id="newarrival"
-                                                    type="checkbox"
-                                                    className="h-5 w-5"
-                                                    onChange={handler}
-                                                />
+                                                <input defaultChecked={false} checked={data.newArrival === "" ? false : true} id="newarrival" type="checkbox" className="h-5 w-5" onChange={handler} />
                                                 <label htmlFor="newarrival">New Arrival</label>
                                             </div>
                                         </div>
                                         <div className="mt-4 flex items-center space-x-3">
                                             <button
                                                 onClick={() => saveData()}
-                                                className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 rounded flex items-center justify-between text-sm text-white font-semibold disabled:bg-[#ababab]">
+                                                className="bg-[#ff9f43] dark:bg-[#88613a] px-3 py-2 rounded flex items-center justify-between text-sm text-white font-semibold disabled:bg-[#ababab]"
+                                            >
                                                 Save
                                             </button>
                                             <button onClick={() => homepageCancel()} className="bg-[#637381]  dark:bg-[#333b43] px-3 py-2 rounded text-sm text-white font-semibold">
@@ -303,7 +410,8 @@ const Homepage = ({ tokenReducer }) => {
                     <h1 className="mb-2 font-bold">Best Selling</h1>
                     <div className="border dark:border-[#525355] rounded bg-white dark:bg-teal-950 p-3">
                         <div className="grid gap-3 grid-cols-3">
-                            {featuredProductObj && featuredProductObj.bestSelling && (
+                            {featuredProductObj &&
+                                featuredProductObj.bestSelling &&
                                 featuredProductObj.bestSelling.map((el, i) => (
                                     <div key={el._id} className="border dark:border-[#525355] rounded-md">
                                         <div className="w-full h-[150px] rounded-t-md overflow-hidden">
@@ -322,8 +430,7 @@ const Homepage = ({ tokenReducer }) => {
                                             </div>
                                         </div>
                                     </div>
-                                ))
-                            )}
+                                ))}
                             {(featuredProductObj === null || featuredProductObj.bestSelling.length === 0) && <h1>Nothing to show</h1>}
                         </div>
                     </div>
@@ -332,7 +439,8 @@ const Homepage = ({ tokenReducer }) => {
                     <h1 className="mb-2 font-bold">New Arrival</h1>
                     <div className="border dark:border-[#525355] rounded bg-white dark:bg-teal-950 p-3">
                         <div className="grid gap-3 grid-cols-3">
-                            {featuredProductObj && featuredProductObj.newArrival && (
+                            {featuredProductObj &&
+                                featuredProductObj.newArrival &&
                                 featuredProductObj.newArrival.map((el, i) => (
                                     <div key={el._id} className="border dark:border-[#525355] rounded-md">
                                         <div className="w-full h-[150px] rounded-t-md overflow-hidden">
@@ -351,8 +459,86 @@ const Homepage = ({ tokenReducer }) => {
                                             </div>
                                         </div>
                                     </div>
-                                ))
-                            )}{(featuredProductObj === null || featuredProductObj.newArrival.length === 0) && <h1>Nothing to show</h1>}
+                                ))}
+                            {(featuredProductObj === null || featuredProductObj.newArrival.length === 0) && <h1>Nothing to show</h1>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="mt-5">
+                <div>
+                    <h1 className="mb-2 font-bold">Banner Image</h1>
+                    <div className="grid grid-cols-2 gap-2">
+                        <div className="border dark:border-[#525355] rounded bg-white dark:bg-teal-950 p-3">
+                            <div>
+                                <Input type="file" multiple onChange={(e) => setBannerMultipleImage(e.target.files)} accept="image/png, image/jpg, image/jpeg" />
+                                <Button isLoading={multipleBannerUploadLoading} loadingText="Please wait" rounded={3} size={"sm"} mt={2} colorScheme="messenger" onClick={() => uploadMultipleBanner()}>
+                                    Upload
+                                </Button>
+                            </div>
+
+                            <div className="mt-5">
+                                {banners.map((el) => (
+                                    <>
+                                        {el.type === "MULTIPLE" && (
+                                            <Card key={el._id} mt={2} rounded={0}>
+                                                <CardBody p={0}>
+                                                    <div className="flex items-center justify-between">
+                                                        <img src={el.bannerUrl} alt="" width={150} />
+                                                        <Button
+                                                            isLoading={deleteLoading.id === el._id && deleteLoading.flag === true}
+                                                            loadingText="Please wait"
+                                                            onClick={() => deleteBannerById(el._id)}
+                                                            me={2}
+                                                            size={"sm"}
+                                                            colorScheme="red"
+                                                            rounded={2}
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                    </div>
+                                                </CardBody>
+                                            </Card>
+                                        )}
+                                    </>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="border dark:border-[#525355] rounded bg-white dark:bg-teal-950 p-3">
+                            <div>
+                                <Input type="file" multiple={false} onChange={(e) => setBannerImage(e.target.files[0])} accept="image/png, image/jpg, image/jpeg" />
+                                <Button isLoading={singleBannerUploadLoading} loadingText="Please wait" rounded={3} size={"sm"} mt={2} colorScheme="messenger" onClick={() => uploadSingleBanner()}>
+                                    Upload
+                                </Button>
+                            </div>
+
+                            <div className="mt-5">
+                                {banners.map((el) => (
+                                    <>
+                                        {el.type === "SINGLE" && (
+                                            <Card key={el._id} mt={2} rounded={0}>
+                                                <CardBody p={0}>
+                                                    <div className="flex items-center justify-between">
+                                                        <img src={el.bannerUrl} alt="" width={150} />
+                                                        <Button
+                                                            isLoading={deleteLoading.id === el._id && deleteLoading.flag === true}
+                                                            loadingText="Please wait"
+                                                            onClick={() => deleteBannerById(el._id)}
+                                                            me={2}
+                                                            size={"sm"}
+                                                            colorScheme="red"
+                                                            rounded={2}
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                    </div>
+                                                </CardBody>
+                                            </Card>
+                                        )}
+                                    </>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -145,3 +145,10 @@ export const categoryFilterClearFn = () => {
         type: ActionType.PRODUCT_FILTER_CATEGORY_CLEAR,
     };
 };
+
+export const wishlistUpdateFn = (data) => {
+    return {
+        type: ActionType.WISHLIST_LENGTH_UPDATE,
+        payload: data,
+    };
+};
