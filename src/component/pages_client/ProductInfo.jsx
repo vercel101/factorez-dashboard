@@ -200,7 +200,7 @@ const ProductInfo = ({ tokenReducer, userInfoReducer, storeInfoReducer, category
         getProductInfo();
         window.scrollTo(0, 0);
         getAllAddress();
-    }, []);
+    }, [productId]);
     // console.log(productId);
     return (
         <div className="pt-[110px] md:pt-[90px] pb-2 md:px-[20px] lg:px-[10%]">

@@ -1,14 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef,useState } from "react";
 import { AiOutlineUser, AiOutlineCaretDown } from "react-icons/ai";
-import { IoMdNotificationsOutline } from "react-icons/io";
-import { HiOutlineMail } from "react-icons/hi";
 import { AiOutlineSetting } from "react-icons/ai";
 import { MdOutlineDarkMode, MdOutlineMenuOpen } from "react-icons/md";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { authTokenClear, darkModeFn, lightModeFn, sidebarCloseFn, sidebarOpenFn, userInfoClear } from "../../../Redux/ReducerAction";
-import { CiLight, CiSearch } from "react-icons/ci";
-import { useState } from "react";
+import { CiLight } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button } from "@chakra-ui/react";
 
@@ -19,7 +16,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const [userDropDownFlag, setUserDropDownFlag] = useState(false);
     const currentRef = useRef(null);
-    const collapsSidebarFn = () => {
+    const collapseSidebarFn = () => {
         if (sidebarCollapse) {
             dispatch(sidebarOpenFn());
         } else {
@@ -55,9 +52,7 @@ const Navbar = () => {
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
                             Log out
                         </AlertDialogHeader>
-
                         <AlertDialogBody>Are you sure you want to log out? Confirm and log out.</AlertDialogBody>
-
                         <AlertDialogFooter>
                             <Button onClick={() => setIsLogOutDialogOpen(false)}>Cancel</Button>
                             <Button colorScheme="red" onClick={() => logoutBtn()} ml={3}>
@@ -72,26 +67,10 @@ const Navbar = () => {
                     size={35}
                     className={`mx-2 cursor-pointer dark:text-white transition duration-1000 ${sidebarCollapse && " -scale-x-100"}`}
                     title="collapse"
-                    onClick={() => collapsSidebarFn()}
+                    onClick={() => collapseSidebarFn()}
                 />
-
-                {/*<div className="relative">*/}
-                {/*    <input type="text" placeholder="Search..."*/}
-                {/*           className="text-lg outline-none border rounded-full ps-3 pe-10 text-[#6c6cef]"/>*/}
-                {/*    <CiSearch size={20} color="blue" className="absolute top-0 right-3 bottom-0 my-auto"/>*/}
-                {/*</div>*/}
             </div>
             <div className="flex items-center">
-                {/* <HiOutlineMail
-                    size={25}
-                    className="mx-2 cursor-pointer dark:text-white"
-                    title="Mail Box"
-                />
-                <IoMdNotificationsOutline
-                    size={25}
-                    className="mx-2 cursor-pointer dark:text-white"
-                    title="Notifications"
-                /> */}
                 <div>
                     {darkModeReducer ? (
                         <CiLight size={25} className="mx-2 cursor-pointer dark:text-white" title="Dark Mode" onClick={() => dispatch(lightModeFn())} />
@@ -102,7 +81,7 @@ const Navbar = () => {
                 <div className="flex items-center ms-2 cursor-pointer" onClick={() => setUserDropDownFlag(!userDropDownFlag)}>
                     {userInfoReducer.photo ? (
                         <div className="bg-[#EDEAEA] rounded-md me-2 border dark:bg-[#3d0f82]">
-                            <img src={userInfoReducer.photo} className="h-8 w-8 rounded-md object-cover" />
+                            <img src={userInfoReducer.photo} className="h-8 w-8 rounded-md object-cover" alt="" />
                         </div>
                     ) : (
                         <div className="bg-[#EDEAEA] p-1 rounded-md me-2 dark:bg-[#3d0f82]">
