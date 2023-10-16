@@ -183,7 +183,7 @@ const AllProducts = ({ userInfoReducer, tokenReducer }) => {
                             <PopoverBody>
                                 <div className="flex items-center">
                                     <LuEye size={30} color="green" className="m-2 cursor-pointer" title="Information" onClick={() => eyeBtn(row._id, row)} />
-                                    {userInfoReducer.userType !== "Seller" && userInfoReducer.role && isRoleExists(userInfoReducer.role, "PRODUCT_EDIT") && (
+                                    {userInfoReducer.userType !== "Seller" && userInfoReducer.role && isRoleExists(userInfoReducer.role, ["PRODUCT_EDIT","ADMIN"]) && (
                                         <>
                                             <MdEdit size={30} color="blue" className="m-2 cursor-pointer" title="Edit Product" onClick={() => editBtn(row._id, row)} />
                                             {/* <MdDeleteOutline size={30} color="red" className="m-2 cursor-pointer" title="Delete" onClick={() => deleteBtn(row._id)} /> */}
