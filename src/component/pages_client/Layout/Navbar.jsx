@@ -119,13 +119,16 @@ const Navbar = ({ tokenReducer, userInfoReducer, storeInfoReducer, categoryFilte
                 </div>
             </div>
             {tokenReducer && (
-                <div className="categoryBar-scrollbar bg-[#FF834F] md:hidden flex items-center sm:px-16 overflow-x-auto px-1 py-2 space-x-5">
-                    <Input value={searchText} onChange={e => filterProductFn(e.target.value)} rounded={"md"} size={"sm"} placeholder="Search..." backgroundColor={"white"} />
+                <div className="categoryBar-scrollbar bg-[#FF834F] md:hidden flex items-center sm:px-16 overflow-x-auto px-1 py-2 space-x-1">
+                    <Input value={searchText} onChange={(e) => filterProductFn(e.target.value)} rounded={"md"} size={"sm"} placeholder="Search..." backgroundColor={"white"} />
                     <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
                         <IconButton _hover={{ bg: "#fff1f1" }} bgColor={"transparent"} aria-label="Search database" icon={<BsCart size={35} color="#A46A38" className=" p-2" />} />
                         <Badge className="absolute left-6 top-0" rounded={"full"} colorScheme="messenger">
                             {userInfoReducer.cartLength}
                         </Badge>
+                    </div>
+                    <div className="relative cursor-pointer" onClick={() => navigate("/wishlist")}>
+                        <IconButton _hover={{ bg: "#fff1f1" }} bgColor={"transparent"} aria-label="Search database" icon={<BsSuitHeart size={35} color="#A46A38" className="p-2" />} />
                     </div>
                     <UserBtn size={"sm"} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />
                 </div>
