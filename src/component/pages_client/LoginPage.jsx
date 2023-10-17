@@ -253,7 +253,7 @@ const LoginPage = () => {
     return (
         <div className="flex bg-cover bg-bottom bg-no-repeat items-center h-screen w-full" style={{ backgroundImage: `url(${img})` }}>
             <div className="w-full bg-white rounded shadow-lg p-8 m-4 md:max-w-sm md:mx-auto">
-                <span className="block w-full text-xl uppercase font-bold mb-4">{!isUsingPassword && !isSignup ? "Forget Password" : isSignup ? "Signup using OTP" : "Login"}</span>
+                <span className="block w-full text-xl uppercase font-bold mb-4">{!isUsingPassword && !isSignup ? "Forgot Password" : isSignup ? "Signup using OTP" : "Login"}</span>
                 <div className="md:w-full">
                     <label htmlFor="mobile-no" className="block text-xs mb-1">
                         Mobile number
@@ -330,7 +330,7 @@ const LoginPage = () => {
                 )}
                 <div className="mb-4">
                     <Button onClick={() => loginForgetHandler()} fontSize={"xs"} colorScheme="messenger" variant="link">
-                        {!isUsingPassword ? "← Back to Login" : "Forget password"}
+                        {!isUsingPassword ? "← Back to Login" : "Forgot password"}
                     </Button>
                 </div>
 

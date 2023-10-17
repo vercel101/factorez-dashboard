@@ -23,16 +23,16 @@ const Footer = ({ storeInfoReducer }) => {
                         <h2 className="mb-4 md:mb-6 text-xl font-extrabold text-[#dadada] uppercase ">Company</h2>
                         <ul className="text-white  font-medium">
                             <li className="mb-3 md:mb-4">
-                                <a href="#" className=" hover:underline">
+                                <a href="/about" className="hover:underline">
                                     About
                                 </a>
                             </li>
                             <li className="mb-3 md:mb-4">
-                                <a href="#" className="hover:underline">
-                                    Careers
+                                <a href="/contact" className="hover:underline">
+                                    Contact Us
                                 </a>
                             </li>
-                            <li className="mb-3 md:mb-4">
+                            {/* <li className="mb-3 md:mb-4">
                                 <a href="#" className="hover:underline">
                                     Brand Center
                                 </a>
@@ -41,7 +41,7 @@ const Footer = ({ storeInfoReducer }) => {
                                 <a href="#" className="hover:underline">
                                     Blog
                                 </a>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
                     <div>
@@ -49,7 +49,7 @@ const Footer = ({ storeInfoReducer }) => {
                         <ul className="text-white font-medium">
                             <li className="mb-3 md:mb-4">
                                 <a
-                                    href={storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.privacyPolicy ? storeInfoReducer.storeInfo.privacyPolicy : "#"}
+                                    href={storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.privacyPolicy ? storeInfoReducer.storeInfo.privacyPolicy : "/#"}
                                     target="_blank"
                                     className="hover:underline"
                                 >

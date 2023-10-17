@@ -790,3 +790,13 @@ export const deleteBannerByIdApi = (bannerID, token) => {
         },
     });
 };
+
+export const dashboardDataApi = (token) => {
+    return axios({
+        method: "GET",
+        url: `${process.env.REACT_APP_API_ADDRESS}/admin-dashboard`,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+};

@@ -28,6 +28,8 @@ import Cart from "./component/pages_client/Cart";
 import Order from "./component/pages_client/Orders";
 import OrderInfo from "./component/pages_client/OrderInfo";
 import Wishlist from "./component/pages_client/wishlist";
+import Contact from "./component/pages_client/Contact";
+import About from "./component/pages_client/About";
 function App() {
     const {
         darkModeReducer,
@@ -111,6 +113,14 @@ function App() {
                         element={<AllProductPage categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
                     />
                     <Route
+                        path={"contact"}
+                        element={<Contact categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
+                     <Route
+                        path={"about"}
+                        element={<About categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
+                    />
+                    <Route
                         path={"product/:productId"}
                         element={<ProductInfo categoryFilterReducer={categoryFilterReducer} storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}
                     />
@@ -129,8 +139,8 @@ function App() {
                 </Route>
                 <Route path="/seller" element={<Admin storeInfoReducer={storeInfoReducer} tokenReducer={tokenReducer} userInfoReducer={userInfoReducer} />}>
                     <Route path={"/seller/*"} element={<Navigate to={"/seller"} />} />
-                    <Route path={"/seller"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
-                    <Route path={"/seller/dashboard"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} />} />
+                    <Route path={"/seller"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} tokenReducer={tokenReducer} />} />
+                    <Route path={"/seller/dashboard"} exact element={<Dashboard sidebarCollapse={sidebarCollapse} darkModeReducer={darkModeReducer} tokenReducer={tokenReducer}/>} />
                     <Route path="login" element={<LoginSignup storeInfoReducer={storeInfoReducer} />} />
                     {userInfoReducer.role && isRoleExists(userInfoReducer.role, productEnumList) && (
                         <Route
