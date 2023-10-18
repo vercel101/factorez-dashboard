@@ -84,7 +84,7 @@ const About = ({ storeInfoReducer }) => {
                         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-11">
                             <Card>
                                 <CardBody p={0}>
-                                    <img src="https://amigos-themes.com/profix/assets/images/outsource/member-1.jpg" alt="" className="rounded-t-md" />
+                                    <img src={require("../../assets/KaranAggarwal.jpg")} alt="" className="rounded-t-md" />
                                 </CardBody>
                                 <CardFooter>
                                     <div className="w-full flex flex-col text-center items-center justify-center">
@@ -98,7 +98,7 @@ const About = ({ storeInfoReducer }) => {
                             </Card>
                             <Card>
                                 <CardBody p={0}>
-                                    <img src="https://amigos-themes.com/profix/assets/images/outsource/member-2.jpg" alt="" className="rounded-t-md" />
+                                    <img src={require("../../assets/CAHimanshuJain.jpg")} alt="" className="rounded-t-md" />
                                 </CardBody>
                                 <CardFooter>
                                     <div className="w-full flex flex-col text-center items-center justify-center">
@@ -112,7 +112,7 @@ const About = ({ storeInfoReducer }) => {
                             </Card>
                             <Card>
                                 <CardBody p={0}>
-                                    <img src="https://amigos-themes.com/profix/assets/images/outsource/member-1.jpg" alt="" className="rounded-t-md" />
+                                    <img src={require("../../assets/RishuGupta.jpg")} alt="" className="rounded-t-md" />
                                 </CardBody>
                                 <CardFooter>
                                     <div className="w-full flex flex-col text-center items-center justify-center">
