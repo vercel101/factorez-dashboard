@@ -136,6 +136,15 @@ const Dashboard = ({ sidebarCollapse, darkModeReducer, tokenReducer }) => {
                             <FcSalesPerformance size={50} />
                         </div>
                     </div>
+                    <div className="h-[100px] rounded-md p-6 border bg-[#482129]">
+                        <div className="flex text-white h-full justify-between items-center">
+                            <div className="text-white">
+                                <h1 className="font-extrabold text-2xl">{dashboardData && "₹ "+dashboardData.overAllSale}</h1>
+                                <h5 className="font-semibold">Total sale</h5>
+                            </div>
+                            <FcSalesPerformance size={50} />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
