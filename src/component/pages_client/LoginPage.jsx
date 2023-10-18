@@ -1,5 +1,5 @@
 import React from "react";
-import img from "../../assets/142.jpg";
+import img from "../../assets/WELCOME.png";
 import { Button, HStack, Input, InputGroup, InputLeftElement, InputRightElement, useToast } from "@chakra-ui/react";
 import { PinInput, PinInputField } from "@chakra-ui/react";
 import { IoCall } from "react-icons/io5";
@@ -248,7 +248,6 @@ const LoginPage = () => {
             setIsOtpVerifying((old) => false);
         }
     };
-
 
     return (
         <div className="flex bg-cover bg-bottom bg-no-repeat items-center h-screen w-full" style={{ backgroundImage: `url(${img})` }}>

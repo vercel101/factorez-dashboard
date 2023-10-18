@@ -3,10 +3,8 @@ import React from "react";
 import { MdEmail } from "react-icons/md";
 import { PiPhoneCallThin } from "react-icons/pi";
 import { BsLinkedin } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
 
 const About = ({ storeInfoReducer }) => {
-    const navigate = useNavigate();
     const storeInfo = storeInfoReducer && storeInfoReducer.storeInfo && storeInfoReducer.storeInfo;
     return (
         <div>

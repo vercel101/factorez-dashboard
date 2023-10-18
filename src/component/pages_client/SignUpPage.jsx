@@ -1,5 +1,5 @@
 import React from "react";
-import img from "../../assets/143.jpg";
+import img from "../../assets/WELCOME.png";
 import { Button, Input, InputGroup, InputLeftElement, InputRightElement, Select, Textarea, useToast } from "@chakra-ui/react";
 import { PiEyeClosedDuotone, PiEyeDuotone } from "react-icons/pi";
 import { IoCall } from "react-icons/io5";
