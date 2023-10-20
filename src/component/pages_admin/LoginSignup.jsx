@@ -4,9 +4,9 @@ import { BsPhone } from "react-icons/bs";
 import { HiOutlineEyeOff, HiOutlineEye } from "react-icons/hi";
 import { addVentorApi, adminLogin } from "../../apis/adminApis";
 import { useDispatch } from "react-redux";
-import { authToken, authTokenClear, spinnerOverlayOffFn, spinnerOverlayOnFn, userInfoAdd, userInfoClear } from "../../Redux/ReducerAction";
+import { authToken, userInfoAdd } from "../../Redux/ReducerAction";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, InputGroup, InputRightElement, Text, useToast } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import { StateAndCode } from "../../utils/stateNameAndCode";
 
 let basicDetailInitial = {
@@ -148,8 +148,8 @@ const LoginSignup = ({ storeInfoReducer }) => {
     };
 
     return (
-        <div className=" bg-[url(https://images.unsplash.com/photo-1561955147-098dd3ef9ae5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1134&q=80)] h-screen bg-cover bg-bottom bg-no-repeat">
-            <div className="bg-[#00000088] h-screen flex justify-center items-center">
+        <div className=" h-screen bg-cover bg-bottom bg-no-repeat" style={{ backgroundImage: `url(${require('../../assets/seller_bg.png')})` }}>
+            <div className="bg-[#00000030] h-screen flex justify-center items-center">
                 <div className="lg:w-[40%] lg:min-w-[40%] lg:max-w-[40%] p-2">
                     <div className="bg-teal-100 relative rounded-t-lg">
                         <h1 className="font-[Itim] pt-2 text-center font-bold text-4xl text-blue-500">{isLoginPage ? "Register" : "FactorEz Welcomes you!!"}</h1>
