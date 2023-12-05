@@ -68,7 +68,7 @@ const LoginPage = () => {
         }
     };
     const verifyOTP = async () => {
-        if (mobileNumber !== "" && RegexMobile.test(mobileNumber) && otpValue.length === 6) {
+        if (mobileNumber !== "" && RegexMobile.test(mobileNumber) && otpValue.length === 4) {
             setIsOtpVerifying((old) => true);
             await verifyOTPApi(mobileNumber, otpValue)
                 .then((res) => {
@@ -275,8 +275,8 @@ const LoginPage = () => {
                                 <PinInputField />
                                 <PinInputField />
                                 <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
+                                {/* <PinInputField />
+                                <PinInputField /> */}
                             </PinInput>
                         </HStack>
                     </div>

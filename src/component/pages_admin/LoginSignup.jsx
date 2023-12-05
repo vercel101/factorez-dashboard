@@ -58,7 +58,6 @@ const LoginSignup = ({ storeInfoReducer }) => {
     const [passwordHide, setPasswordHide] = useState(true);
     const handleClick = () => setShow(!show);
     const [loginDetail, setLoginDetail] = useState(loginField);
-
     const submitFn = async () => {
         let flag = true;
         let formData = new FormData();
@@ -148,7 +147,7 @@ const LoginSignup = ({ storeInfoReducer }) => {
     };
 
     return (
-        <div className=" h-screen bg-cover bg-bottom bg-no-repeat" style={{ backgroundImage: `url(${require('../../assets/seller_bg.png')})` }}>
+        <div className=" h-screen bg-cover bg-bottom bg-no-repeat" style={{ backgroundImage: `url(${require("../../assets/seller_bg.png")})` }}>
             <div className="bg-[#00000030] h-screen flex justify-center items-center">
                 <div className="lg:w-[40%] lg:min-w-[40%] lg:max-w-[40%] p-2">
                     <div className="bg-teal-100 relative rounded-t-lg">
@@ -163,8 +162,8 @@ const LoginSignup = ({ storeInfoReducer }) => {
                         <div className="flex items-center text-lg font-bold">
                             <span className="text-teal-700">Contact Us:</span>
                             <BsPhone className="ms-2 me-1 text-blue-700" />
-                            <a href={`tel:${storeInfoReducer.storeInfo.contactNo}`} className="text-black">
-                                {storeInfoReducer.storeInfo.contactNo}
+                            <a href={`tel:${storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.contactNo}`} className="text-black">
+                                {storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.contactNo}
                             </a>
                         </div>
                     </div>
@@ -714,8 +713,8 @@ const LoginSignup = ({ storeInfoReducer }) => {
                         </div>
                     </div>
                     <div className=" bg-blue-500 rounded-b-md text-white text-end px-2 font-semibold">
-                        <a href={`mailto:${storeInfoReducer.storeInfo.contactEmail}`} target="_blank">
-                            {storeInfoReducer.storeInfo.contactEmail}
+                        <a href={`mailto:${storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.contactEmail}`} target="_blank">
+                            {storeInfoReducer.storeInfo && storeInfoReducer.storeInfo.contactEmail}
                         </a>
                     </div>
                 </div>

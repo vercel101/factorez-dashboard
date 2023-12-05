@@ -278,7 +278,7 @@ const PaymentReport = ({ tokenReducer, userInfoReducer }) => {
                         <Tr>
                             {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
                                 <>
-                                    <Th py={2}>Seller Name</Th>
+                                    <Th py={2}>Seller</Th>
                                     <Th py={2}>Seller Phone</Th>
                                 </>
                             )}
@@ -296,7 +296,7 @@ const PaymentReport = ({ tokenReducer, userInfoReducer }) => {
                                 <Tr className="hover:bg-teal-50">
                                     {userInfoReducer.role && isRoleExists(userInfoReducer.role, ["ADMIN"]) && (
                                         <>
-                                            <Td>{el.vendorId && el.vendorId.representativeName}</Td>
+                                            <Td>{el.vendorId && el.vendorId.firmName}</Td>
                                             <Td>{el.vendorId && el.vendorId.mobileNo}</Td>
                                         </>
                                     )}
