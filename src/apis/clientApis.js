@@ -3,8 +3,9 @@ import axios from "axios";
 /* ----------------------- Category Apis start ------------------- */
 export const generateOTPApi = (phone) => {
     return axios({
-        method: "GET",
-        url: `${process.env.REACT_APP_API_ADDRESS}/sendotp/${phone}`,
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/sendOTP`,
+        data: { mobile: phone },
         // headers: {
         //     Authorization: "Bearer " + token,
         // },
@@ -13,8 +14,10 @@ export const generateOTPApi = (phone) => {
 
 export const verifyOTPApi = (phone, otp) => {
     return axios({
-        method: "GET",
-        url: `${process.env.REACT_APP_API_ADDRESS}/verifyotp/${phone}/${otp}`,
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/verifyOTP`,
+        // url: `${process.env.REACT_APP_API_ADDRESS}/verifyotp/${phone}/${otp}`,
+        data: { mobile: phone, OTP: otp },
     });
 };
 
