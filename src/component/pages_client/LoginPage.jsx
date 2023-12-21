@@ -4,7 +4,7 @@ import { Button, HStack, Input, InputGroup, InputLeftElement, InputRightElement,
 import { PinInput, PinInputField } from "@chakra-ui/react";
 import { IoCall } from "react-icons/io5";
 import { PiEyeClosedDuotone, PiEyeDuotone } from "react-icons/pi";
-import { forgetPasswordUsingOtpApi, generateOTPApi, loginCustomerApi, verifyOTPApi } from "../../apis/clientApis";
+import { forgetPasswordUsingOtpApi, generateOTPApi, generateOTPForgotApi, loginCustomerApi, verifyOTPApi } from "../../apis/clientApis";
 import { useNavigate } from "react-router-dom";
 import { authToken, userInfoAdd } from "../../Redux/ReducerAction";
 import { useDispatch } from "react-redux";
@@ -31,31 +31,59 @@ const LoginPage = () => {
     const sendOtp = async () => {
         if (mobileNumber !== "" && RegexMobile.test(mobileNumber)) {
             setIsOtpGenerating((old) => true);
-            await generateOTPApi(mobileNumber)
-                .then((res) => {
-                    console.log(res);
-                    toast({
-                        title: "Success",
-                        position: "top",
-                        status: "success",
-                        isClosable: true,
-                        description: res.data.message,
+            if (!isSignup) {
+                await generateOTPForgotApi(mobileNumber)
+                    .then((res) => {
+                        console.log(res);
+                        toast({
+                            title: "Success",
+                            position: "top",
+                            status: "success",
+                            isClosable: true,
+                            description: res.data.message,
+                        });
+                        setEnterOtpIsVisible(true);
+                        if (!isSignup) {
+                            setIsForgetUsingOtp(true);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        toast({
+                            title: "Error",
+                            position: "top",
+                            status: "error",
+                            isClosable: true,
+                            description: err.message,
+                        });
                     });
-                    setEnterOtpIsVisible(true);
-                    if (!isSignup) {
-                        setIsForgetUsingOtp(true);
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                    toast({
-                        title: "Error",
-                        position: "top",
-                        status: "error",
-                        isClosable: true,
-                        description: err.message,
+            } else {
+                await generateOTPApi(mobileNumber)
+                    .then((res) => {
+                        console.log(res);
+                        toast({
+                            title: "Success",
+                            position: "top",
+                            status: "success",
+                            isClosable: true,
+                            description: res.data.message,
+                        });
+                        setEnterOtpIsVisible(true);
+                        if (!isSignup) {
+                            setIsForgetUsingOtp(true);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        toast({
+                            title: "Error",
+                            position: "top",
+                            status: "error",
+                            isClosable: true,
+                            description: err.message,
+                        });
                     });
-                });
+            }
             setIsOtpGenerating((old) => false);
         } else {
             toast({
@@ -74,7 +102,7 @@ const LoginPage = () => {
                 .then((res) => {
                     console.log(res.data);
                     let data = res.data.data;
-                    if (isSignup && !res.data.data.isActivated) {
+                    if (isSignup) {
                         localStorage.setItem("customerId", data.customerId);
                         toast({
                             title: "Success",
@@ -222,7 +250,7 @@ const LoginPage = () => {
             });
         } else {
             setIsOtpVerifying((old) => true);
-            await forgetPasswordUsingOtpApi(mobileNumber, otpValue, { password })
+            await forgetPasswordUsingOtpApi(mobileNumber, otpValue,  password )
                 .then((res) => {
                     toast({
                         title: res.data.message,

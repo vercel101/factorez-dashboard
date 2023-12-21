@@ -12,6 +12,17 @@ export const generateOTPApi = (phone) => {
     });
 };
 
+export const generateOTPForgotApi = (phone) => {
+    return axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_API_ADDRESS}/forgetOTP`,
+        data: { mobile: phone },
+        // headers: {
+        //     Authorization: "Bearer " + token,
+        // },
+    });
+};
+
 export const verifyOTPApi = (phone, otp) => {
     return axios({
         method: "POST",
@@ -106,14 +117,14 @@ export const getCartsByCustomerApi = (customerId, token) => {
     });
 };
 
-export const forgetPasswordUsingOtpApi = (phone, otp, data) => {
+export const forgetPasswordUsingOtpApi = (phone, otp, password) => {
     return axios({
         method: "POST",
-        url: `${process.env.REACT_APP_API_ADDRESS}/forget-password/${phone}/${otp}`,
+        url: `${process.env.REACT_APP_API_ADDRESS}/verifyResetOTP`,
         // headers: {
         //     Authorization: "Bearer " + token,
         // },
-        data: data,
+        data: { mobile: phone, OTP: otp, password: password },
     });
 };
 
